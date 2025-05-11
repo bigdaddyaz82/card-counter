@@ -1,14 +1,41 @@
-<h1>Card Counting Trainer</h1>
-<div id="card">Click "Next Card" to start</div>
-<button onclick="nextCard()">Next Card</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Card Counter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Card Counter</h1>
+  <div id="counter">Count: 0</div>
 
-<div id="controls">
-  <label>What's the running count?</label>
-  <div id="inputGroup">
-    <button onclick="adjustCount(-1)">−</button>
-    <input type="number" id="userCount" value="0">
-    <button onclick="adjustCount(1)">+</button>
+  <div class="buttons">
+    <button onclick="changeCount(1)">2-6 (+1)</button>
+    <button onclick="changeCount(0)">7-9 (0)</button>
+    <button onclick="changeCount(-1)">10,J,Q,K,A (-1)</button>
+    <button onclick="resetCount()">Reset</button>
   </div>
-  <button onclick="checkCount()">Check</button>
-  <div id="result"></div>
-</div>
+
+  <div id="key">
+    <h3>Card Counting Key</h3>
+    <ul>
+      <li><strong>2–6</strong>: +1</li>
+      <li><strong>7–9</strong>: 0</li>
+      <li><strong>10, J, Q, K, A</strong>: −1</li>
+    </ul>
+  </div>
+
+  <script>
+    let count = 0;
+    function changeCount(value) {
+      count += value;
+      document.getElementById("counter").innerText = "Count: " + count;
+    }
+    function resetCount() {
+      count = 0;
+      document.getElementById("counter").innerText = "Count: " + count;
+    }
+  </script>
+</body>
+</html>
