@@ -15,3 +15,24 @@
   color: black;
   font-weight: bold;
 }
+
+#card {
+  text-align: center;
+  font-size: 24px;
+  margin: 10px;
+  color: #007bff;
+}
+
+#result {
+  font-size: 18px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+#result.correct {
+  color: lightgreen;
+}
+
+#result.wrong {
+  color: red;
+}
