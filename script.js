@@ -1,8 +1,3 @@
-const cards = [
-  '2', '3', '4', '5', '6', // +1
-  '7', '8', '9',           // 0
-  '10', 'J', 'Q', 'K', 'A' // -1
-];
 let runningCount = 0;
 
 function getCardValue(card) {
@@ -17,6 +12,11 @@ function nextCard() {
   runningCount += getCardValue(card);
   document.getElementById('result').textContent = '';
   document.getElementById('userCount').value = '';
+}
+
+function adjustCount(amount) {
+  const input = document.getElementById('userCount');
+  input.value = parseInt(input.value || '0') + amount;
 }
 
 function checkCount() {
