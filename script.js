@@ -24,9 +24,9 @@ function checkCount() {
   const result = document.getElementById('result');
   if (userCount === runningCount) {
     result.textContent = 'Correct!';
-    result.style.color = 'lightgreen';
+    result.className = 'correct'; // Adds the correct class (light green)
   } else {
     result.textContent = `Wrong. Correct count: ${runningCount}`;
-    result.style.color = 'red';
+    result.className = 'wrong'; // Adds the wrong class (red)
   }
 }
