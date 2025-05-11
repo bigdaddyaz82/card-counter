@@ -1,32 +1,38 @@
 body {
+  background-color: #001f3f;
+  color: red;
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: #0b3d91;
-  color: white;
+  margin: 0;
   padding: 20px;
 }
 
-#card {
-  font-size: 48px;
-  margin: 30px;
-  padding: 20px;
-  border: 3px solid white;
-  display: inline-block;
-  background-color: #1e90ff;
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: #003366;
   border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px white;
+}
+
+h1 {
+  color: #00bfff;
+}
+
+.key, .mode-selector, .status, .buttons, .ads {
+  margin: 20px 0;
 }
 
 button {
-  margin: 10px;
   padding: 10px 20px;
-  font-size: 18px;
+  margin: 5px;
+  font-size: 16px;
+  border-radius: 5px;
   border: none;
-  border-radius: 8px;
-  background-color: #28a745;
-  color: white;
   cursor: pointer;
 }
 
-#controls {
-  margin-top: 20px;
+button:hover {
+  background-color: #ffcc00;
 }
