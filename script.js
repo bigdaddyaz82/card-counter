@@ -1,32 +1,65 @@
-const cards = [
-  '2', '3', '4', '5', '6', // +1
-  '7', '8', '9',           // 0
-  '10', 'J', 'Q', 'K', 'A' // -1
-];
-let runningCount = 0;
+const cards = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+let count = 0;
+let currentCard = '';
+let timer;
+let timeLeft = 0;
+let mode = 'practice';
 
-function getCardValue(card) {
-  if (['2', '3', '4', '5', '6'].includes(card)) return 1;
-  if (['10', 'J', 'Q', 'K', 'A'].includes(card)) return -1;
-  return 0;
+const modeTimes = {
+  practice: 0,
+  beginner: 15,
+  advanced: 10,
+  expert: 5
+};
+
+function startGame(selectedMode) {
+  mode = selectedMode;
+  count = 0;
+  document.getElementById('countDisplay').innerText = count;
+  document.getElementById('gameArea').style.display = 'block';
+  document.getElementById('message').innerText = '';
+  nextCard();
 }
 
 function nextCard() {
-  const card = cards[Math.floor(Math.random() * cards.length)];
-  document.getElementById('card').textContent = card;
-  runningCount += getCardValue(card);
-  document.getElementById('result').textContent = '';
-  document.getElementById('userCount').value = '';
+  clearInterval(timer);
+  currentCard = cards[Math.floor(Math.random() * cards.length)];
+  document.getElementById('cardDisplay').innerText = currentCard;
+
+  timeLeft = modeTimes[mode];
+  document.getElementById('timer').innerText = timeLeft === 0 ? '∞' : timeLeft;
+
+  if (timeLeft > 0) {
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').innerText = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        gameOver('Time\'s up!');
+      }
+    }, 1000);
+  }
 }
 
-function checkCount() {
-  const userCount = parseInt(document.getElementById('userCount').value);
-  const result = document.getElementById('result');
-  if (userCount === runningCount) {
-    result.textContent = 'Correct!';
-    result.style.color = 'lightgreen';
+function cardValue(card) {
+  if (['2','3','4','5','6'].includes(card)) return 1;
+  if (['7','8','9'].includes(card)) return 0;
+  return -1;
+}
+
+function userInput(input) {
+  const correct = cardValue(currentCard);
+  if (input === correct) {
+    count += correct;
+    document.getElementById('countDisplay').innerText = count;
+    nextCard();
   } else {
-    result.textContent = `Wrong. Correct count: ${runningCount}`;
-    result.style.color = 'red';
+    gameOver('Wrong answer!');
   }
+}
+
+function gameOver(reason) {
+  clearInterval(timer);
+  document.getElementById('message').innerText = reason + ' Final Count: ' + count;
+  document.getElementById('gameArea').style.display = 'none';
 }
