@@ -4,41 +4,187 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Card Counter Trainer</title>
-  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      background: #002244;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: red;
+      margin-bottom: 10px;
+    }
+    #card {
+      display: inline-block;
+      width: 120px;
+      height: 160px;
+      background: white;
+      color: black;
+      font-size: 48px;
+      line-height: 160px;
+      border-radius: 10px;
+      border: 3px solid red;
+      margin: 20px auto;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+    #card.flipping {
+      transform: rotateY(180deg);
+    }
+    .btns button {
+      font-size: 24px;
+      margin: 10px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+    .btns button:hover {
+      background: lightblue;
+    }
+    #scoreboard {
+      margin: 15px 0;
+    }
+    #timer {
+      font-size: 24px;
+      color: yellow;
+    }
+    #levelSelect {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    #musicToggle {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Card Counter Trainer</h1>
-    <div class="key">
-      <p><strong>KEY:</strong> 2–6 = +1 | 7–9 = 0 | 10, J, Q, K, A = -1</p>
-    </div>
-    
-    <div class="mode-selector">
-      <button onclick="startGame('practice')">Practice</button>
-      <button onclick="startGame('beginner')">Beginner</button>
-      <button onclick="startGame('advanced')">Advanced</button>
-      <button onclick="startGame('expert')">Expert</button>
-    </div>
-
-    <div id="gameArea" style="display: none;">
-      <div class="status">
-        <p><strong>Card:</strong> <span id="cardDisplay">?</span></p>
-        <p><strong>Running Count:</strong> <span id="countDisplay">0</span></p>
-        <p><strong>Time Left:</strong> <span id="timer">∞</span></p>
-      </div>
-      <div class="buttons">
-        <button onclick="userInput(1)">+1</button>
-        <button onclick="userInput(0)">0</button>
-        <button onclick="userInput(-1)">-1</button>
-      </div>
-      <p id="message"></p>
-    </div>
-
-    <div class="ads">
-      <p>-- Ad Space Here --</p>
-    </div>
+  <h1>Card Counter Trainer</h1>
+  <div id="levelSelect">
+    <label for="level">Level:</label>
+    <select id="level">
+      <option value="practice">Practice</option>
+      <option value="beginner">Beginner</option>
+      <option value="advanced">Advanced</option>
+      <option value="expert">Expert</option>
+    </select>
   </div>
+  <div id="timer"></div>
+  <div id="card">?</div>
+  <div class="btns">
+    <button onclick="choose('plus')">+</button>
+    <button onclick="choose('zero')">0</button>
+    <button onclick="choose('minus')">−</button>
+  </div>
+  <div id="scoreboard">
+    <p>Score: <span id="score">0</span> | High Score: <span id="highscore">0</span></p>
+  </div>
+  <button id="musicToggle" onclick="toggleMusic()">Toggle Music</button>
 
-  <script src="script.js"></script>
+  <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="bgMusic" src="https://files.catbox.moe/hnz1r2.mp3" loop></audio>
+
+  <script>
+    const cardEl = document.getElementById("card");
+    const scoreEl = document.getElementById("score");
+    const highEl = document.getElementById("highscore");
+    const timerEl = document.getElementById("timer");
+    const levelEl = document.getElementById("level");
+    const correctSound = document.getElementById("correctSound");
+    const wrongSound = document.getElementById("wrongSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    const cards = [
+      { label: "2", val: 1 }, { label: "3", val: 1 }, { label: "4", val: 1 },
+      { label: "5", val: 1 }, { label: "6", val: 1 },
+      { label: "7", val: 0 }, { label: "8", val: 0 }, { label: "9", val: 0 },
+      { label: "10", val: -1 }, { label: "J", val: -1 },
+      { label: "Q", val: -1 }, { label: "K", val: -1 }, { label: "A", val: -1 }
+    ];
+
+    let score = 0;
+    let highScore = 0;
+    let currentCard = null;
+    let timer = null;
+    let timeLeft = 0;
+    let musicOn = true;
+
+    function setCard() {
+      currentCard = cards[Math.floor(Math.random() * cards.length)];
+      cardEl.classList.add("flipping");
+      setTimeout(() => {
+        cardEl.innerText = currentCard.label;
+        cardEl.classList.remove("flipping");
+      }, 300);
+      startTimer();
+    }
+
+    function choose(choice) {
+      let guessVal = choice === 'plus' ? 1 : choice === 'minus' ? -1 : 0;
+      if (guessVal === currentCard.val) {
+        score++;
+        correctSound.play();
+        if (score > highScore) {
+          highScore = score;
+          highEl.innerText = highScore;
+        }
+        scoreEl.innerText = score;
+        setCard();
+      } else {
+        wrongSound.play();
+        alert("Wrong! Game over.");
+        resetGame();
+      }
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      const level = levelEl.value;
+      if (level === "practice") {
+        timerEl.innerText = "";
+        return;
+      }
+
+      timeLeft = level === "beginner" ? 15 : level === "advanced" ? 10 : 5;
+      timerEl.innerText = `Time: ${timeLeft}s`;
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.innerText = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          wrongSound.play();
+          alert("Time's up! Game over.");
+          resetGame();
+        }
+      }, 1000);
+    }
+
+    function resetGame() {
+      clearInterval(timer);
+      score = 0;
+      scoreEl.innerText = score;
+      setCard();
+    }
+
+    function toggleMusic() {
+      if (musicOn) {
+        bgMusic.pause();
+        musicOn = false;
+      } else {
+        bgMusic.play();
+        musicOn = true;
+      }
+    }
+
+    levelEl.addEventListener("change", resetGame);
+    bgMusic.volume = 0.5;
+    bgMusic.play().catch(() => {});
+    setCard();
+  </script>
 </body>
 </html>
