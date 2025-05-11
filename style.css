@@ -1,50 +1,32 @@
 body {
-  background-color: #007bff;
-  color: red;
-  text-align: center;
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 30px;
+  text-align: center;
+  background-color: #0b3d91;
+  color: white;
+  padding: 20px;
 }
 
-h1 {
-  margin-bottom: 20px;
-}
-
-#counter {
-  font-size: 2em;
-  margin-bottom: 20px;
-}
-
-.buttons {
-  margin-bottom: 20px;
+#card {
+  font-size: 48px;
+  margin: 30px;
+  padding: 20px;
+  border: 3px solid white;
+  display: inline-block;
+  background-color: #1e90ff;
+  border-radius: 10px;
 }
 
 button {
+  margin: 10px;
   padding: 10px 20px;
-  font-size: 1em;
-  margin: 5px;
-  background-color: red;
-  color: white;
+  font-size: 18px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  background-color: #28a745;
+  color: white;
   cursor: pointer;
 }
 
-#key {
-  margin-top: 30px;
-  padding: 15px;
-  background-color: #e9ecef;
-  border-radius: 8px;
-  max-width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-  color: #333;
-}
-
-#key h3 {
-  margin-top: 0;
-  text-align: center;
-  color: red;
+#controls {
+  margin-top: 20px;
 }
