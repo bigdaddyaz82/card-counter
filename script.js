@@ -1,3 +1,8 @@
+const cards = [
+  '2', '3', '4', '5', '6', // +1
+  '7', '8', '9',           // 0
+  '10', 'J', 'Q', 'K', 'A' // -1
+];
 let runningCount = 0;
 
 function getCardValue(card) {
@@ -14,19 +19,14 @@ function nextCard() {
   document.getElementById('userCount').value = '';
 }
 
-function adjustCount(amount) {
-  const input = document.getElementById('userCount');
-  input.value = parseInt(input.value || '0') + amount;
-}
-
 function checkCount() {
   const userCount = parseInt(document.getElementById('userCount').value);
   const result = document.getElementById('result');
   if (userCount === runningCount) {
     result.textContent = 'Correct!';
-    result.className = 'correct'; // Adds the correct class (light green)
+    result.style.color = 'lightgreen';
   } else {
     result.textContent = `Wrong. Correct count: ${runningCount}`;
-    result.className = 'wrong'; // Adds the wrong class (red)
+    result.style.color = 'red';
   }
 }
