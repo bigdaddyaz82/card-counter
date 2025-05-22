@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Card Counter Trainer</title>
+  
+  <!-- ADDED GOOGLE FONT IMPORT FOR POPPINS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -34,7 +40,6 @@
 
     <div id="runningCountDisplay">Running Count: 0</div>
     
-    <!-- MODIFIED INSTRUCTIONS HERE -->
     <div id="instructions">
         <p>Hi-Lo Values: <strong>+1</strong> (2-6), <strong>0</strong> (7-9), <strong>-1</strong> (10, J, Q, K, A)</p>
         <p>Identify the displayed card's value:</p>
@@ -50,9 +55,12 @@
       <p>Correct Guesses: <span id="score">0</span></p>
       <p>High Score: <span id="highscore">0</span> (current level)</p>
     </div>
+    <!-- Ensured message-display class is present for new CSS -->
     <div id="messageDisplay" class="message-display message-info">Select a level. Click a value to start!</div>
 
     <!-- Audio files - ensure these URLs are stable or host them yourself -->
+    <!-- It's recommended to move these to a local 'audio' folder in your project -->
+    <!-- e.g., <audio id="correctSound" src="audio/correct.ogg" preload="auto"></audio> -->
     <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
     <audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
     <audio id="bgMusic" src="https://files.catbox.moe/hnz1r2.mp3" loop preload="auto"></audio>
