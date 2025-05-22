@@ -58,6 +58,7 @@ h1 {
   background-color: #004c80;
   color: #f0f0f0;
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out; /* Added transition */
 }
 
 .game-controls button#musicToggle:hover {
@@ -80,48 +81,65 @@ h1 {
 }
 
 .card-area {
-  perspective: 1000px;
+  perspective: 1000px; /* For 3D effect on children */
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
+  min-height: 170px; /* Ensure space for card even if empty */
 }
 
 #cardContainer {
   width: 110px;
   height: 165px; 
   position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d; /* Children are transformed in 3D space */
+  /* The main transition for the flip will be on .card-face elements */
 }
 
 .card-face {
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
+  backface-visibility: hidden; /* Crucial for flip effect */
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3.5em; /* Larger for better visibility */
+  font-size: 3.5em; 
   font-weight: bold;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  border: 2px solid #fff; /* White border for definition */
+  border: 2px solid #fff; 
+  /* THIS IS THE TRANSITION FOR THE FLIP ANIMATION */
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .card-back {
   background: linear-gradient(145deg, #4a5568, #2c3e50); /* Dark grey gradient */
   color: #a0aec0; /* Lighter grey text for '?' */
   border-color: #2d3748;
+  transform: rotateY(0deg); /* Explicitly visible initially */
 }
 
 .card-front {
   background: #ffffff; /* White card face */
   color: #1a202c; /* Dark text for numbers/letters */
-  transform: rotateY(180deg);
+  transform: rotateY(180deg); /* Explicitly hidden initially (rotated away) */
 }
 .card-front.red { color: #e53e3e; } /* Red suit color */
 .card-front.black { color: #2d3748; } /* Black suit color */
+
+/* --- RULES FOR WHEN THE CARD IS FLIPPING --- */
+/* When #cardContainer has the .flipping class, these styles apply */
+#cardContainer.flipping .card-front {
+  transform: rotateY(0deg); /* Rotate front face into view */
+}
+
+#cardContainer.flipping .card-back {
+  transform: rotateY(-180deg); /* Rotate back face away */
+  /* Using -180deg here so it rotates in the opposite direction to the front
+     If you want it to rotate in the same direction, use rotateY(180deg) */
+}
+/* --- END OF FLIPPING RULES --- */
 
 
 #runningCountDisplay {
@@ -147,8 +165,8 @@ h1 {
 .action-buttons button {
   font-size: 1.2em;
   font-weight: bold;
-  padding: 12px 0; /* Vertical padding, horizontal will be set by width */
-  width: 80px; /* Fixed width for uniform buttons */
+  padding: 12px 0; 
+  width: 80px; 
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -184,10 +202,12 @@ h1 {
   font-weight: 500;
   min-height: 1.4em; 
   padding: 5px;
+  /* Base class for message display, specific styles below */
+  transition: color 0.3s ease-in-out; /* Smooth color transition */
 }
-.message-correct { color: #68d391; } /* Softer Green */
-.message-wrong { color: #fc8181; } /* Softer Red */
-.message-info { color: #90cdf4; } /* Softer Info Blue */
+.message-correct { color: #68d391 !important; } /* Softer Green, !important if needed */
+.message-wrong { color: #fc8181 !important; } /* Softer Red, !important if needed */
+.message-info { color: #90cdf4 !important; } /* Softer Info Blue, !important if needed */
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
@@ -199,13 +219,13 @@ h1 {
   }
   .game-controls {
     flex-direction: column;
-    align-items: stretch; /* Make items full width in column */
+    align-items: stretch; 
   }
   #levelSelectContainer {
-     justify-content: space-between; /* Better spacing for label and select */
+     justify-content: space-between; 
   }
   #levelSelectContainer select {
-    flex-grow: 1; /* Allow select to take more space */
+    flex-grow: 1; 
   }
   .card-area {
     margin-bottom: 15px;
@@ -225,4 +245,4 @@ h1 {
   #runningCountDisplay, #timerDisplay {
     font-size: 1.2em;
   }
-  }
+}
