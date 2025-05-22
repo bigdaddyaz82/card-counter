@@ -34,7 +34,12 @@
 
     <div id="runningCountDisplay">Running Count: 0</div>
     
-    <p id="instructions">Identify the card's Hi-Lo value:</p>
+    <!-- MODIFIED INSTRUCTIONS HERE -->
+    <div id="instructions">
+        <p>Hi-Lo Values: <strong>+1</strong> (2-6), <strong>0</strong> (7-9), <strong>-1</strong> (10, J, Q, K, A)</p>
+        <p>Identify the displayed card's value:</p>
+    </div>
+    
     <div class="action-buttons">
       <button data-choice="plus" title="Cards: 2, 3, 4, 5, 6">+1</button>
       <button data-choice="zero" title="Cards: 7, 8, 9">0</button>
@@ -45,7 +50,7 @@
       <p>Correct Guesses: <span id="score">0</span></p>
       <p>High Score: <span id="highscore">0</span> (current level)</p>
     </div>
-    <div id="messageDisplay">Select a level. Click a value to start!</div>
+    <div id="messageDisplay" class="message-display message-info">Select a level. Click a value to start!</div>
 
     <!-- Audio files - ensure these URLs are stable or host them yourself -->
     <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
