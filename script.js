@@ -12,23 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDisplayEl = document.getElementById('messageDisplay');
     const runningCountDisplayEl = document.getElementById('runningCountDisplay');
 
+    // NEW DOM Elements for True Count and Deck Info
+    const deckSizeEl = document.getElementById('deckSize');
+    const trueCountDisplayEl = document.getElementById('trueCountDisplay');
+    const deckInfoDisplayEl = document.getElementById('deckInfoDisplay');
+    // const shuffleSound = document.getElementById('shuffleSound'); // Optional
+
     // Sounds
     const correctSound = document.getElementById('correctSound');
     const wrongSound = document.getElementById('wrongSound');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Card data (Hi-Lo system)
+    // Card data (Hi-Lo system) - This is the blueprint for a single deck
+    const singleMasterDeck = [];
     const suits = ['♥', '♦', '♣', '♠'];
     const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
     
-    const fullDeck = [];
     values.forEach(value => {
         suits.forEach(suit => {
             let hiLoValue;
             if (['2', '3', '4', '5', '6'].includes(value)) hiLoValue = 1;
             else if (['7', '8', '9'].includes(value)) hiLoValue = 0;
             else hiLoValue = -1; // 10, J, Q, K, A
-            fullDeck.push({
+            singleMasterDeck.push({
                 label: value,
                 suit: suit,
                 hiLoVal: hiLoValue,
@@ -37,43 +43,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Game State Variables
     let currentCard = null;
     let score = 0;
     let runningCount = 0;
     let highScore = 0;
-    
     let gameTimer = null;
     let timeLeft = 0;
     let gameActive = false;
     let musicOn = false;
 
+    // NEW Game State Variables for Shoe and True Count
+    let gameShoe = []; // This will hold the current multi-deck shoe
+    let cardsDealtInShoe = 0;
+    let totalCardsInShoe = 0;
+    let trueCount = 0;
+    const SHUFFLE_PENETRATION = 0.75; // Shuffle when 75% of the shoe is dealt
+
     const levelTimes = { practice: 0, beginner: 15, advanced: 10, expert: 5 };
 
     function initializeApp() {
-        levelSelectEl.addEventListener('change', handleLevelChange);
+        levelSelectEl.addEventListener('change', handleGameSettingChange); // Changed to generic handler
+        deckSizeEl.addEventListener('change', handleGameSettingChange);   // NEW: Deck size also resets game
         musicToggleBtn.addEventListener('click', toggleMusic);
         actionButtons.forEach(button => {
             button.addEventListener('click', () => handleUserChoice(button.dataset.choice));
         });
         
-        bgMusic.volume = 0.2; // Quieter background music
+        bgMusic.volume = 0.2;
         updateMusicButtonVisuals();
         setupInitialScreen();
     }
 
     function setupInitialScreen() {
+        console.log("SCRIPT DEBUG: setupInitialScreen called");
         clearInterval(gameTimer);
         gameActive = false;
         score = 0;
         runningCount = 0;
+        trueCount = 0; // NEW
+        cardsDealtInShoe = 0; // NEW
         
-        loadHighScoreForCurrentLevel();
+        loadHighScoreForCurrentLevel(); // High score is level-dependent, not deck-size dependent
         updateScoreboardVisuals();
-        updateRunningCountVisuals();
+        updateAllCountVisuals(); // NEW: Updates RC, TC, and Deck Info
         
-        displayMessage("Select level. Click a value (+1, 0, -1) to start!", "info");
+        displayMessage("Select settings. Click a value to start!", "info");
         
-        cardContainerEl.classList.remove('flipping'); // Show card back
+        cardContainerEl.classList.remove('flipping');
         cardBackEl.textContent = '?';
         cardFrontEl.textContent = '';
         
@@ -81,35 +98,59 @@ document.addEventListener('DOMContentLoaded', () => {
         timerDisplayEl.textContent = (currentLevel === "practice") ? "Time: ∞" : `Time: ${levelTimes[currentLevel]}s`;
     }
 
-    function handleLevelChange() {
-        setupInitialScreen(); // Reset everything for the new level
+    function handleGameSettingChange() {
+        console.log("SCRIPT DEBUG: Game setting changed (level or deck size)");
+        // Changing level or deck size should reset the game and the shoe
+        setupInitialScreen(); 
+    }
+
+    function buildShoe() {
+        console.log("SCRIPT DEBUG: buildShoe called");
+        const numDecks = parseInt(deckSizeEl.value);
+        gameShoe = [];
+        for (let i = 0; i < numDecks; i++) {
+            gameShoe.push(...singleMasterDeck); // Add copies of the master deck
+        }
+        totalCardsInShoe = gameShoe.length;
+        cardsDealtInShoe = 0;
+        
+        // Shuffle the shoe (Fisher-Yates shuffle)
+        for (let i = gameShoe.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [gameShoe[i], gameShoe[j]] = [gameShoe[j], gameShoe[i]];
+        }
+        console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards from ${numDecks} deck(s).`);
+        // if (shuffleSound) playSound(shuffleSound); // Optional
     }
 
     function handleUserChoice(choice) {
         if (!gameActive) {
-            startNewGame();
-            // The first click starts the game. Subsequent logic in processGuess handles guesses.
+            startNewGame(); 
             return; 
         }
         processGuess(choice);
     }
     
     function startNewGame() {
+        console.log("SCRIPT DEBUG: startNewGame called");
         clearInterval(gameTimer);
         gameActive = true;
-        score = 0;
-        runningCount = 0; // Reset running count for each new game
+        score = 0; // Score resets per game (within a shoe)
+        runningCount = 0; // Running count resets at the START of a NEW SHOE
+        trueCount = 0;    // True count also resets
 
-        loadHighScoreForCurrentLevel(); // Ensure high score for the current level is displayed
-        updateScoreboardVisuals();
-        updateRunningCountVisuals();
+        buildShoe(); // Build and shuffle a new shoe based on selected deck size
         
-        displayMessage("Game started. Good luck!", "info");
+        loadHighScoreForCurrentLevel();
+        updateScoreboardVisuals();
+        updateAllCountVisuals(); // Update RC, TC, and Deck Info
+        
+        displayMessage("Shoe ready. Good luck!", "info");
         dealNewCard();
     }
 
     function processGuess(userChoice) {
-        if (!currentCard || !gameActive) return; // Added !gameActive check for safety
+        if (!currentCard || !gameActive) return;
 
         let expectedValue;
         if (userChoice === 'plus') expectedValue = 1;
@@ -127,69 +168,105 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveHighScoreForCurrentLevel();
             }
             updateScoreboardVisuals();
-            updateRunningCountVisuals();
-            dealNewCard(); // Deal next card immediately on correct guess
+            updateAllCountVisuals(); // Update RC, TC, and Deck Info
+            dealNewCard(); 
         } else {
             playSound(wrongSound);
-            gameOver(`Wrong guess! Expected ${currentCard.hiLoVal > 0 ? '+' : ''}${currentCard.hiLoVal} for ${currentCard.label}${currentCard.suit}.`);
+            // Game over for this "hand/round", but the shoe continues unless it's empty or needs shuffle
+            // For this trainer, a wrong guess still means "game over" for the current attempt.
+            // The running count is preserved until a new shoe is explicitly started (by pressing button when game is not active)
+            // or settings are changed.
+            gameOver(`Wrong guess! Expected ${currentCard.hiLoVal > 0 ? '+' : ''}${currentCard.hiLoVal} for ${currentCard.label}${currentCard.suit}. RC: ${runningCount}`);
         }
     }
 
     function dealNewCard() {
-        if (!gameActive) return; // Don't deal if game is not active
-        currentCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
+        console.log("SCRIPT DEBUG: dealNewCard called");
+        if (!gameActive) return;
+
+        // Check if shuffle is needed
+        if (gameShoe.length === 0 || cardsDealtInShoe >= totalCardsInShoe * SHUFFLE_PENETRATION) {
+            displayMessage(`Shuffle time! Penetration: ${((cardsDealtInShoe/totalCardsInShoe)*100).toFixed(0)}%. Starting new shoe.`, "info");
+            // A short delay before auto-restarting allows user to see message
+            setTimeout(() => {
+                startNewGame(); // This will build a new shoe and reset counts
+            }, 2000); // 2-second delay
+            return;
+        }
+
+        currentCard = gameShoe.pop(); // Deal from the end of the array
+        cardsDealtInShoe++;
+        console.log("SCRIPT DEBUG: Card dealt from shoe. Cards remaining in shoe:", gameShoe.length);
+        
+        updateAllCountVisuals(); // Update TC and Deck Info as a card is dealt
         animateCardFlip();
     }
+    
+    function updateAllCountVisuals() {
+        // Update Running Count Display
+        runningCountDisplayEl.textContent = `Running Count: ${runningCount}`;
+
+        // Calculate and Update True Count & Deck Info
+        const decksRemaining = (totalCardsInShoe - cardsDealtInShoe) / 52;
+        
+        if (decksRemaining > 0.25) { // Avoid extreme true counts with very few cards left, or division by zero
+            trueCount = runningCount / decksRemaining;
+        } else if (totalCardsInShoe > 0 && decksRemaining <= 0.25 && decksRemaining > 0) { // Still some cards but less than 1/4 deck
+             trueCount = runningCount / decksRemaining; // Could be very volatile, but calculate
+        }
+        else {
+            trueCount = 0; // Or indicate N/A if no decks left or at start
+        }
+        
+        trueCountDisplayEl.textContent = `True Count: ${trueCount.toFixed(1)}`; // Display TC to one decimal
+        deckInfoDisplayEl.textContent = `Shoe: ${cardsDealtInShoe}/${totalCardsInShoe} cards (${decksRemaining.toFixed(1)} decks left)`;
+        console.log(`SCRIPT DEBUG: Counts updated - RC: ${runningCount}, TC: ${trueCount.toFixed(1)}, Decks Left: ${decksRemaining.toFixed(1)}`);
+    }
+
 
     function animateCardFlip() {
-        if (!gameActive) return; // Safety check
+        if (!gameActive) return; 
 
-        if (cardContainerEl.classList.contains('flipping')) { // If front is showing (for subsequent cards after a correct guess)
-            cardContainerEl.classList.remove('flipping'); // Flip to back first
-            // Wait for the flip-to-back animation to mostly complete before updating content and flipping back to front
-            setTimeout(updateCardFaceAndFlipToFront, 350); // Assumes your CSS flip transition is around 0.6s-0.7s
-        } else { // If back is showing (or initial card of the game)
+        if (cardContainerEl.classList.contains('flipping')) { 
+            cardContainerEl.classList.remove('flipping'); 
+            setTimeout(updateCardFaceAndFlipToFront, 350); 
+        } else { 
             updateCardFaceAndFlipToFront();
         }
     }
 
     function updateCardFaceAndFlipToFront() {
-        // --- START OF ADDED CONSOLE LOGS ---
         console.log("SCRIPT DEBUG: updateCardFaceAndFlipToFront called"); 
         if (!currentCard) {
             console.error("SCRIPT DEBUG: currentCard is null or undefined in updateCardFaceAndFlipToFront. Aborting flip.");
+            // This can happen if a shuffle was triggered and dealNewCard returned early
+            if (gameActive) { // If game is supposed to be active, try to deal another card
+                 // displayMessage("Preparing next card after shuffle...", "info"); // This might be too quick
+            }
             return;
         }
-        console.log("SCRIPT DEBUG: Current card:", JSON.parse(JSON.stringify(currentCard))); // Deep copy for logging
-        // --- END OF ADDED CONSOLE LOGS ---
+        console.log("SCRIPT DEBUG: Current card:", JSON.parse(JSON.stringify(currentCard))); 
 
         cardFrontEl.textContent = currentCard.label + currentCard.suit;
-        // --- ADDED CONSOLE LOG ---
         console.log("SCRIPT DEBUG: Card front text set to:", cardFrontEl.textContent); 
-        // --- END OF ADDED CONSOLE LOG ---
 
-        cardFrontEl.className = 'card-face card-front'; // Reset classes
-        cardFrontEl.classList.add(currentCard.color);   // Add suit color
+        cardFrontEl.className = 'card-face card-front'; 
+        cardFrontEl.classList.add(currentCard.color);   
 
-        // Short delay to ensure content is set before flip animation starts
         setTimeout(() => {
-            // --- ADDED CONSOLE LOGS ---
             console.log("SCRIPT DEBUG: Attempting to add 'flipping' class to cardContainerEl"); 
             if (!cardContainerEl) {
                 console.error("SCRIPT DEBUG: cardContainerEl is null! Cannot add class.");
                 return;
             }
-            // --- END OF ADDED CONSOLE LOGS ---
             cardContainerEl.classList.add('flipping'); 
-            // --- ADDED CONSOLE LOGS ---
             if (cardContainerEl.classList.contains('flipping')) {
                 console.log("SCRIPT DEBUG: 'flipping' class successfully ADDED to cardContainerEl."); 
             } else {
                 console.error("SCRIPT DEBUG: 'flipping' class FAILED to add to cardContainerEl.");
             }
-            // --- END OF ADDED CONSOLE LOGS ---
             startRoundTimer();
-        }, 50); // 50ms delay
+        }, 50); 
     }
 
     function startRoundTimer() {
@@ -211,17 +288,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (timeLeft <= 0) {
                 clearInterval(gameTimer);
                 playSound(wrongSound);
-                gameOver("Time's up!");
+                // A "Time's up" still uses the current shoe's running count.
+                gameOver(`Time's up! RC: ${runningCount}`);
             }
         }, 1000);
     }
 
     function gameOver(reason) {
         clearInterval(gameTimer);
-        gameActive = false; // Set game to inactive
-        displayMessage(`${reason} Final Score: ${score}. Running Count: ${runningCount}. Click a value to play again.`, "wrong");
-        // Do not flip card back here, let it show the card that caused the game over.
-        // setupInitialScreen() will be called if user starts a new game or changes level.
+        gameActive = false; 
+        // The 'reason' should already include the running count or other context.
+        displayMessage(`${reason}. Score: ${score}. Click a value to play again with this shoe, or change settings for a new shoe.`, "wrong");
+        // Note: Score and runningCount are NOT reset here. They persist for the current shoe.
+        // They are reset in startNewGame (for RC when shoe changes) or setupInitialScreen (for score when settings change).
     }
 
     function updateScoreboardVisuals() {
@@ -229,21 +308,19 @@ document.addEventListener('DOMContentLoaded', () => {
         highscoreEl.textContent = highScore;
     }
 
-    function updateRunningCountVisuals() {
-        runningCountDisplayEl.textContent = `Running Count: ${runningCount}`;
-    }
+    // updateRunningCountVisuals is now part of updateAllCountVisuals
 
     function displayMessage(msg, typeClass) {
         messageDisplayEl.textContent = msg;
-        messageDisplayEl.className = ''; // Clear existing classes
-        messageDisplayEl.classList.add('message-display'); // Base class if you have one
+        messageDisplayEl.className = ''; 
+        messageDisplayEl.classList.add('message-display'); 
         if (typeClass) {
             messageDisplayEl.classList.add(`message-${typeClass}`);
         }
     }
 
     function playSound(soundElement) {
-        if (soundElement && typeof soundElement.play === 'function') { // Check if it's a valid audio element
+        if (soundElement && typeof soundElement.play === 'function') { 
             soundElement.currentTime = 0; 
             soundElement.play().catch(error => console.warn(`Sound play failed for ${soundElement.id || 'unknown sound'}: ${error.message}`));
         } else {
@@ -272,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveHighScoreForCurrentLevel() {
         try {
-            const currentLevel = levelSelectEl.value;
+            const currentLevel = levelSelectEl.value; // High score is per level
             localStorage.setItem(`cardCounterHighScore_${currentLevel}`, highScore.toString());
         } catch (e) {
             console.warn("Could not save high score to localStorage:", e.message);
