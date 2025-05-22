@@ -26,19 +26,27 @@
         </select>
       </div>
       
-      <!-- NEW: DECK SIZE SELECTOR -->
       <div id="deckSizeContainer">
         <label for="deckSize">Decks:</label>
         <select id="deckSize">
           <option value="1">1 Deck</option>
           <option value="2">2 Decks</option>
-          <option value="4" selected>4 Decks</option> <!-- Default to 4 -->
+          <option value="4" selected>4 Decks</option>
           <option value="6">6 Decks</option>
           <option value="8">8 Decks</option>
         </select>
       </div>
 
+      <!-- NEW: Configurable Card Speed -->
+      <div id="speedControlContainer">
+        <label for="cardSpeed">Card Speed (s):</label>
+        <input type="number" id="cardSpeed" min="0.5" max="15" step="0.1" value="3">
+        <!-- <span id="currentSpeedDisplay">3.0s</span> Speed display can be managed by JS if needed -->
+      </div>
+
       <button id="musicToggle">Music OFF</button>
+      <!-- NEW: How to Play Button -->
+      <button id="howToPlayButton">How to Play</button>
     </div>
 
     <div id="timerDisplay">Time: ∞</div>
@@ -50,13 +58,10 @@
       </div>
     </div>
 
-    <!-- COUNT DISPLAYS AREA -->
     <div class="count-displays">
         <div id="runningCountDisplay">Running Count: 0</div>
-        <!-- NEW: TRUE COUNT DISPLAY -->
         <div id="trueCountDisplay">True Count: 0</div>
     </div>
-    <!-- NEW: DECK INFO DISPLAY -->
     <div id="deckInfoDisplay">Shoe: 0/208 cards (4.0 decks left)</div>
 
 
@@ -74,18 +79,62 @@
     <div id="scoreboard">
       <p>Correct Guesses: <span id="score">0</span></p>
       <p>High Score: <span id="highscore">0</span> (current level)</p>
+      <!-- NEW: Basic Statistics - Accuracy Display -->
+      <p>Accuracy: <span id="accuracyDisplay">N/A</span></p>
     </div>
+
+    <!-- NEW: Betting Practice Section (initially hidden by JS or CSS) -->
+    <div id="bettingPracticeSection" style="display:none; margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; text-align: center;">
+      <h3>Betting Practice</h3>
+      <p>Current True Count: <strong id="bettingTrueCountDisplay">0</strong></p>
+      <p>How would you bet based on this True Count?</p>
+      <div class="betting-buttons" style="margin-bottom: 10px;">
+        <button id="betMinButton" class="bet-button">Bet Minimum</button>
+        <button id="betMidButton" class="bet-button">Bet Medium</button>
+        <button id="betMaxButton" class="bet-button">Bet Maximum</button>
+      </div>
+      <p id="bettingFeedback" style="margin-top: 10px; font-weight: bold; min-height: 20px;"></p>
+      <button id="continueDealingButton" style="display:none; margin-top:10px;">Continue Dealing</button>
+    </div>
+
     <div id="messageDisplay" class="message-display message-info">Select settings. Click a value to start!</div>
 
+    <!-- Audio Elements -->
     <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
     <audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
-    
-    <!-- THIS IS THE MODIFIED LINE for your background music -->
     <audio id="bgMusic" src="lofi-chill-background.mp3" loop preload="auto"></audio>
     
     <!-- Optional: Shuffle Sound -->
     <!-- <audio id="shuffleSound" src="audio/shuffle.mp3" preload="auto"></audio> -->
 
-  </div>
-  <script src="script.js"></script></body>
+    <!-- NEW: How to Play Modal (initially hidden by CSS: .modal { display: none; }) -->
+    <div id="howToPlayModal" class="modal">
+      <div class="modal-content">
+        <span id="closeHowToPlayModalButton" class="close-button">×</span>
+        <h2>How to Play Hi-Lo Card Counting</h2>
+        <p><strong>The Goal:</strong> Estimate if the remaining cards in the deck/shoe are rich in high cards (good for player) or low cards (good for dealer).</p>
+        <p><strong>Hi-Lo Values:</strong></p>
+        <ul>
+          <li>Cards 2-6: <strong>+1</strong> (Low cards, good for player when they're gone)</li>
+          <li>Cards 7-9: <strong>0</strong> (Neutral cards)</li>
+          <li>Cards 10, Jack, Queen, King, Ace: <strong>-1</strong> (High cards, bad for player when they're gone)</li>
+        </ul>
+        <p><strong>Running Count:</strong> Start at 0 before any cards are dealt. For each card you see, add its Hi-Lo value to your Running Count.
+           A positive count means more low cards have left the shoe (advantageous for the player). A negative count means more high cards have left (disadvantageous).</p>
+        <p><strong>True Count:</strong> This is a more accurate measure of your advantage. Calculate it by dividing your <strong>Running Count</strong> by the <strong>number of decks remaining</strong> in the shoe.
+           <em>Example: If your Running Count is +4 and there are 2 decks left, your True Count is +2.</em></p>
+        <p><strong>Basic Betting Strategy (using True Count):</strong></p>
+        <ul>
+          <li>Low/Negative True Count (e.g., less than +1): Bet small (table minimum). The shoe is not in your favor.</li>
+          <li>Neutral/Slightly Positive True Count (e.g., +1 to +2): Consider a moderate bet.</li>
+          <li>High Positive True Count (e.g., +2 or more, ideally +3 or higher): Bet larger! The odds are significantly more in your favor.</li>
+        </ul>
+        <p><em>This app helps you practice identifying card values and maintaining the Running Count. The True Count is calculated for you. Use the "Betting Practice" prompts to test your betting decisions based on the True Count!</em></p>
+      </div>
+    </div>
+
+  </div> <!-- End of .container -->
+
+  <script src="script.js"></script>
+</body>
 </html>
