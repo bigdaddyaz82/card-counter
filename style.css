@@ -1,10 +1,27 @@
+/* --- Google Font Import (Alternative: Use @import in CSS, but <link> in HTML is often preferred) --- */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'); */
+
+/* --- Base & Variables (Conceptual - CSS variables can be used for easier theme changes) --- */
+:root {
+  --bg-color: #1a202c; /* Very Dark Slate/Blue */
+  --container-bg: #2d3748; /* Darker Slate */
+  --text-primary: #e2e8f0; /* Light Grey/Off-White */
+  --text-secondary: #94a3b8; /* Muted Grey */
+  --accent-primary: #22d3ee; /* Vibrant Cyan/Teal */
+  --accent-primary-darker: #06b6d4;
+  --accent-secondary: #facc15; /* Bright Yellow */
+  --accent-green: #34d399; /* For Music ON & Correct */
+  --accent-red: #f87171;   /* For Wrong */
+  --font-main: 'Poppins', sans-serif;
+}
+
 body {
-  background-color: #001f3f; /* Dark navy blue */
-  color: #f0f0f0; /* Light grey for text */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-main);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: flex-start; /* Aligns container to the top if content is short */
   min-height: 100vh;
   margin: 0;
   padding: 20px;
@@ -12,230 +29,231 @@ body {
 }
 
 .container {
-  background: #003366; /* Medium blue */
-  padding: 20px 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  background: var(--container-bg);
+  padding: 25px 30px; /* Slightly more padding */
+  border-radius: 16px; /* More pronounced rounding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0,0,0,0.2); /* Softer, deeper shadow */
   width: 100%;
-  max-width: 500px;
+  max-width: 480px; /* Slightly narrower for a sleeker feel on desktop */
   text-align: center;
 }
 
 h1 {
-  color: #00bfff; /* Deep sky blue */
+  color: var(--accent-primary);
   margin-top: 0;
-  margin-bottom: 25px;
-  font-size: 2.2em;
-  letter-spacing: 1px;
+  margin-bottom: 30px;
+  font-size: 2.3em; /* Slightly larger */
+  font-weight: 700; /* Bolder */
+  letter-spacing: 0.5px;
 }
 
 .game-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   flex-wrap: wrap;
-  gap: 10px; /* Spacing between items if they wrap */
+  gap: 15px;
 }
 
 #levelSelectContainer {
   display: flex;
   align-items: center;
-  gap: 8px; /* Spacing between label and select */
+  gap: 10px;
 }
 
 #levelSelectContainer label {
-  font-size: 1em;
-  color: #cceeff;
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
-#levelSelectContainer select, 
+#levelSelectContainer select,
 .game-controls button#musicToggle {
   font-size: 0.9em;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #005f99;
-  background-color: #004c80;
-  color: #f0f0f0;
+  font-family: var(--font-main);
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #475569; /* Slate 600 for border */
+  background-color: #334155; /* Slate 700 for bg */
+  color: var(--text-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out; /* Added transition */
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
+#levelSelectContainer select:hover,
 .game-controls button#musicToggle:hover {
-  background-color: #006bb3;
+  background-color: #475569; /* Slate 600 */
+  border-color: #525f74;
 }
 .game-controls button#musicToggle.on {
-  background-color: #28a745; /* Green for ON */
-  border-color: #1e7e34;
+  background-color: var(--accent-green);
+  border-color: #15803d; /* Darker green */
+  color: white;
 }
 .game-controls button#musicToggle.on:hover {
-  background-color: #218838;
+  background-color: #10b981; /* Lighter green for hover */
 }
 
-
 #timerDisplay {
-  font-size: 1.6em;
-  color: #ffdd44; /* Bright yellow */
-  margin-bottom: 20px;
-  font-weight: bold;
+  font-size: 1.8em; /* Larger timer */
+  color: var(--accent-secondary);
+  margin-bottom: 25px;
+  font-weight: 600; /* Bolder */
 }
 
 .card-area {
-  perspective: 1000px; /* For 3D effect on children */
-  margin-bottom: 20px;
+  perspective: 1200px; /* Increased perspective */
+  margin-bottom: 25px;
   display: flex;
   justify-content: center;
-  min-height: 170px; /* Ensure space for card even if empty */
+  min-height: 185px; /* Adjusted for potentially larger card */
 }
 
 #cardContainer {
-  width: 110px;
-  height: 165px; 
+  width: 120px; /* Slightly larger card */
+  height: 180px;
   position: relative;
-  transform-style: preserve-3d; /* Children are transformed in 3D space */
-  /* The main transition for the flip will be on .card-face elements */
+  transform-style: preserve-3d;
 }
 
 .card-face {
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden; /* Crucial for flip effect */
-  border-radius: 10px;
+  backface-visibility: hidden;
+  border-radius: 12px; /* Consistent rounding */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3.5em; 
-  font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  border: 2px solid #fff; 
-  /* THIS IS THE TRANSITION FOR THE FLIP ANIMATION */
-  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-size: 4em; /* Larger card text */
+  font-weight: 700;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.1); /* Refined shadow */
+  border: none; /* Removing border for a cleaner look, relying on shadow and bg */
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncier flip */
 }
 
 .card-back {
-  background: linear-gradient(145deg, #4a5568, #2c3e50); /* Dark grey gradient */
-  color: #a0aec0; /* Lighter grey text for '?' */
-  border-color: #2d3748;
-  transform: rotateY(0deg); /* Explicitly visible initially */
+  background: linear-gradient(145deg, #4b5563, #374151); /* Grey gradient */
+  color: #9ca3af; /* Muted grey for '?' */
 }
 
 .card-front {
-  background: #ffffff; /* White card face */
-  color: #1a202c; /* Dark text for numbers/letters */
-  transform: rotateY(180deg); /* Explicitly hidden initially (rotated away) */
+  background: #f9fafb; /* Very light grey, almost white */
+  color: #1f2937; /* Dark grey for card text */
+  transform: rotateY(180deg);
 }
-.card-front.red { color: #e53e3e; } /* Red suit color */
-.card-front.black { color: #2d3748; } /* Black suit color */
+.card-front.red { color: #ef4444; } /* Updated Red */
+.card-front.black { color: #1f2937; } /* Same as default card text */
 
-/* --- RULES FOR WHEN THE CARD IS FLIPPING --- */
-/* When #cardContainer has the .flipping class, these styles apply */
 #cardContainer.flipping .card-front {
-  transform: rotateY(0deg); /* Rotate front face into view */
+  transform: rotateY(0deg);
 }
-
 #cardContainer.flipping .card-back {
-  transform: rotateY(-180deg); /* Rotate back face away */
-  /* Using -180deg here so it rotates in the opposite direction to the front
-     If you want it to rotate in the same direction, use rotateY(180deg) */
+  transform: rotateY(-180deg);
 }
-/* --- END OF FLIPPING RULES --- */
-
 
 #runningCountDisplay {
-  font-size: 1.4em;
-  margin-bottom: 15px;
-  color: #63b3ed; /* Light blue */
-  font-weight: 500;
+  font-size: 1.5em; /* Larger running count */
+  margin-bottom: 20px;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 #instructions {
-  font-size: 1em;
-  margin-bottom: 15px;
-  color: #a0deff; /* Lighter blue for instructions */
+  font-size: 0.95em;
+  line-height: 1.6; /* Better readability */
+  margin-bottom: 25px;
+  color: var(--text-secondary);
 }
-
-/* ADDED STYLES FOR THE INSTRUCTIONS PARAGRAPHS AND STRONG TAGS */
 #instructions p {
-  margin: 5px 0; /* Add a little space between the two instruction lines */
+  margin: 8px 0;
 }
-
-#instructions strong { /* Make the +1, 0, -1 stand out a bit more */
-    color: #f0f0f0; /* White, to match general text color */
+#instructions strong {
+  color: var(--text-primary);
+  font-weight: 600;
 }
-/* END OF ADDED STYLES */
 
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px; /* Space between buttons */
-  margin-bottom: 25px;
+  gap: 20px; /* More space */
+  margin-bottom: 30px;
 }
 
 .action-buttons button {
+  font-family: var(--font-main);
   font-size: 1.2em;
-  font-weight: bold;
-  padding: 12px 0; 
-  width: 80px; 
-  border-radius: 8px;
+  font-weight: 600; /* Bolder */
+  padding: 15px 0; /* More vertical padding */
+  width: 90px; /* Wider buttons */
+  border-radius: 25px; /* Pill shape */
   border: none;
   cursor: pointer;
-  background-color: #007bff; /* Primary blue */
-  color: white;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  background-color: var(--accent-primary);
+  color: #111827; /* Dark text on light accent for contrast */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-out;
 }
 
 .action-buttons button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: var(--accent-primary-darker);
+  transform: translateY(-3px) scale(1.03); /* More pronounced hover */
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
 }
 .action-buttons button:active {
-  background-color: #004085; /* Even darker blue on active */
-  transform: translateY(2px); /* Slight press effect */
+  background-color: #0891b2; /* Even darker cyan */
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 #scoreboard {
-  margin-top: 20px;
-  font-size: 1.05em;
-  color: #bee3f8; /* Very light blue for score text */
+  margin-top: 25px;
+  font-size: 1.1em;
+  color: var(--text-secondary);
 }
 #scoreboard p {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 #scoreboard span {
-  font-weight: bold;
-  color: #f0f0f0; /* White for actual score numbers */
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-#messageDisplay {
-  margin-top: 20px;
-  font-size: 1.1em;
+#messageDisplay { /* This class should be on the element by default in HTML */
+  margin-top: 25px;
+  font-size: 1.15em;
   font-weight: 500;
-  min-height: 1.4em; 
-  padding: 5px;
-  /* Base class for message display, specific styles below */
-  transition: color 0.3s ease-in-out; /* Smooth color transition */
+  min-height: 1.5em; 
+  padding: 8px;
+  border-radius: 6px; /* Rounded corners for messages */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-/* Ensure message-display class is on the element in HTML for these to apply consistently */
-.message-display.message-correct, /* More specific if needed */
-.message-correct { 
-  color: #68d391; 
+.message-display.message-correct {
+  background-color: rgba(52, 211, 153, 0.15); /* Light green bg */
+  color: var(--accent-green); 
 } 
-.message-display.message-wrong,
-.message-wrong { 
-  color: #fc8181; 
+.message-display.message-wrong {
+  background-color: rgba(248, 113, 113, 0.15); /* Light red bg */
+  color: var(--accent-red); 
 } 
-.message-display.message-info,
-.message-info { 
-  color: #90cdf4; 
+.message-display.message-info {
+  background-color: rgba(56, 189, 248, 0.1); /* Light info blue bg */
+  color: #38bdf8; /* Info Blue */
 }
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
+  body {
+    padding: 15px; /* Slightly less padding on small screens */
+  }
   .container {
-    padding: 15px;
+    padding: 20px;
+    max-width: 100%; /* Allow container to be full width */
   }
   h1 {
-    font-size: 1.8em;
+    font-size: 2em;
   }
   .game-controls {
     flex-direction: column;
@@ -247,22 +265,26 @@ h1 {
   #levelSelectContainer select {
     flex-grow: 1; 
   }
-  .card-area {
-    margin-bottom: 15px;
-  }
   #cardContainer {
-    width: 90px;
-    height: 135px;
+    width: 100px; /* Adjust card size for smaller screens */
+    height: 150px;
   }
   .card-face {
-    font-size: 2.8em;
+    font-size: 3.2em;
+  }
+  .action-buttons {
+    gap: 10px;
   }
   .action-buttons button {
     font-size: 1.1em;
-    padding: 10px 0;
-    width: 70px;
+    padding: 12px 0;
+    width: 75px; /* Adjust button size */
+    border-radius: 20px;
   }
   #runningCountDisplay, #timerDisplay {
-    font-size: 1.2em;
+    font-size: 1.4em; /* Adjust text sizes */
+  }
+  #instructions {
+    font-size: 0.9em;
   }
 }
