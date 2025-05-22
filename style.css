@@ -17,6 +17,7 @@
   --input-border: #475569; /* Slate 600 for input borders */
   --button-secondary-bg: #4b5563; /* Grey for less prominent buttons */
   --button-secondary-hover-bg: #525f74;
+  --button-primary-text: #111827; /* Dark text for primary buttons */
 }
 
 body {
@@ -25,7 +26,7 @@ body {
   font-family: var(--font-main);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: flex-start; /* Changed to flex-start to avoid cutting off top on long pages */
   min-height: 100vh;
   margin: 0;
   padding: 20px;
@@ -38,7 +39,7 @@ body {
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0,0,0,0.2);
   width: 100%;
-  max-width: 480px;
+  max-width: 480px; /* Keeping your original max-width */
   text-align: center;
 }
 
@@ -53,68 +54,73 @@ h1 {
 
 .game-controls {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */ /* Switched to center for better wrapping */
+  justify-content: center;
   align-items: center;
   margin-bottom: 25px;
   flex-wrap: wrap;
-  gap: 10px; /* Reduced gap slightly for more items */
+  gap: 10px; 
 }
 
-/* Styling for select and button elements within game-controls */
 .game-controls select,
-.game-controls button,
-.game-controls input[type="number"] { /* Added input for card speed */
+.game-controls button, /* Generic style for buttons within game-controls */
+.game-controls input[type="number"] {
   font-size: 0.9em;
   font-family: var(--font-main);
   font-weight: 500;
-  padding: 10px 12px; /* Adjusted padding */
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid var(--input-border);
   background-color: var(--input-bg);
   color: var(--text-primary);
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-  box-sizing: border-box; /* Ensure padding doesn't increase size */
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease;
+  box-sizing: border-box;
 }
 
 .game-controls select:hover,
-.game-controls button:not(#musicToggle.on):not(#howToPlayButton):hover, /* Exclude styled buttons from generic hover */
-.game-controls input[type="number"]:hover {
+.game-controls input[type="number"]:hover,
+.game-controls button:not(#musicToggle.on):not(#howToPlayButton):not(#newShoeButton):hover { /* More specific exclusion */
   background-color: var(--button-secondary-hover-bg);
   border-color: #525f74;
 }
+.game-controls button:active { /* General active state for secondary buttons */
+    transform: translateY(1px);
+}
+
 
 .game-controls button#musicToggle.on {
   background-color: var(--accent-green);
   border-color: #15803d;
-  color: white;
+  color: white; /* Ensure text is visible */
 }
 .game-controls button#musicToggle.on:hover {
-  background-color: #10b981;
+  background-color: #10b981; /* Slightly lighter green */
 }
 
 /* Specific styling for control containers */
-#levelSelectContainer,
-#deckSizeContainer,
-#speedControlContainer {
+.control-group { /* --- UPDATED/NEW --- Added a common class for control groups for better flex behavior */
   display: flex;
   align-items: center;
-  gap: 8px; /* Gap between label and input/select */
-  flex-grow: 1; /* Allow them to grow */
-  min-width: 180px; /* Minimum width before wrapping */
+  gap: 8px;
+  flex-grow: 1; 
+  min-width: 180px; /* Minimum width before wrapping for individual control groups */
 }
+/* Apply common class to your HTML:
+   <div class="control-group" id="levelSelectContainer">...</div>
+   <div class="control-group" id="deckSizeContainer">...</div>
+   <div class="control-group" id="speedControlContainer">...</div>
+*/
 
-#levelSelectContainer label,
-#deckSizeContainer label,
-#speedControlContainer label {
-  font-size: 0.9em; /* Slightly smaller labels */
+.control-group label {
+  font-size: 0.9em;
   color: var(--text-secondary);
   font-weight: 500;
-  white-space: nowrap; /* Prevent label text from wrapping */
+  white-space: nowrap;
 }
 
-#speedControlContainer input[type="number"] {
-  width: 60px; /* Specific width for speed input */
+#speedControlContainer input[type="number"] { /* Retained your specific width */
+  width: 60px; 
   text-align: center;
 }
 
@@ -125,6 +131,33 @@ h1 {
 }
 .game-controls button#howToPlayButton:hover {
   background-color: var(--button-secondary-hover-bg);
+}
+
+
+/* --- UPDATED/NEW --- Styling for the New Shoe / Start Game Button */
+#newShoeButton {
+  background-color: var(--accent-primary);
+  color: var(--button-primary-text); /* Using a variable for dark text on light primary bg */
+  font-weight: 600;
+  font-size: 1em; /* Slightly larger font size for emphasis */
+  padding: 12px 20px; /* More padding */
+  border: none; /* Override generic border if any */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1);
+  width: 100%; /* Make it full width initially in flex container, adjust as needed */
+  margin-top: 10px; /* Add some space if it wraps to a new line */
+  order: 5; /* Attempt to place it last if other items are not ordered */
+}
+
+#newShoeButton:hover {
+  background-color: var(--accent-primary-darker);
+  transform: translateY(-2px); /* Slight lift */
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
+}
+
+#newShoeButton:active {
+  background-color: #0891b2; /* Even darker for active state */
+  transform: translateY(0px); /* Settle back down */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 
@@ -140,7 +173,7 @@ h1 {
   margin-bottom: 25px;
   display: flex;
   justify-content: center;
-  min-height: 185px;
+  min-height: 185px; /* Ensures space for the card */
 }
 
 #cardContainer {
@@ -148,6 +181,7 @@ h1 {
   height: 180px;
   position: relative;
   transform-style: preserve-3d;
+  /* Removed transition from here, it's on .card-face now which is good */
 }
 
 .card-face {
@@ -162,25 +196,28 @@ h1 {
   font-size: 4em;
   font-weight: 700;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.1);
-  border: none;
+  border: none; /* Good, clean look */
   transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .card-back {
-  background: linear-gradient(145deg, #4b5563, #374151);
+  background: linear-gradient(145deg, #4b5563, #374151); /* Nice gradient */
   color: #9ca3af;
+  transform: rotateY(0deg); /* Ensure initial state is correct */
 }
 
 .card-front {
-  background: #f9fafb;
-  color: #1f2937;
-  transform: rotateY(180deg);
+  background: #f9fafb; /* White card face */
+  color: #1f2937; /* Dark text for card value */
+  transform: rotateY(180deg); /* Initially hidden */
 }
-.card-front.red { color: #ef4444; }
-.card-front.black { color: #1f2937; }
+.card-front.red { color: #ef4444; } /* Your red for card suits */
+.card-front.black { color: #1f2937; } /* Your black for card suits */
 
+/* Card flip animation */
 #cardContainer.flipping .card-front { transform: rotateY(0deg); }
 #cardContainer.flipping .card-back { transform: rotateY(-180deg); }
+
 
 .count-displays {
   display: flex;
@@ -189,7 +226,7 @@ h1 {
   margin-bottom: 10px; 
   flex-wrap: wrap; 
   gap: 15px;
-  width: 100%;
+  width: 100%; /* Ensure it takes full width for centering content */
 }
 
 #runningCountDisplay, 
@@ -198,22 +235,24 @@ h1 {
   font-weight: 600;
   color: var(--text-primary); 
   padding: 5px 10px;
-  text-align: center;
+  text-align: center; /* Good for when they wrap */
 }
 
 #deckInfoDisplay {
   font-size: 0.95em;
   color: var(--text-secondary);
-  margin-top: 5px;
+  margin-top: 5px; /* Vertical spacing */
   margin-bottom: 20px;
   font-weight: 500;
+  width: 100%; /* Ensure it's centered if it's the only item on a line */
 }
 
-#instructions {
+#instructions { /* This was in your original CSS, keeping it */
   font-size: 0.95em;
   line-height: 1.6;
   margin-bottom: 25px;
   color: var(--text-secondary);
+  text-align: left; /* Instructions are better left-aligned */
 }
 #instructions p { margin: 8px 0; }
 #instructions strong {
@@ -224,7 +263,7 @@ h1 {
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 20px; /* Generous gap */
   margin-bottom: 30px;
 }
 
@@ -232,25 +271,25 @@ h1 {
   font-family: var(--font-main);
   font-size: 1.2em;
   font-weight: 600;
-  padding: 15px 0;
-  width: 90px;
-  border-radius: 25px;
+  padding: 15px 0; /* Vertical padding, text-align center handles horizontal */
+  width: 90px; /* Fixed width */
+  border-radius: 25px; /* Very rounded, distinct style */
   border: none;
   cursor: pointer;
   background-color: var(--accent-primary);
-  color: #111827;
+  color: var(--button-primary-text); /* Dark text for visibility */
   box-shadow: 0 3px 6px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.1);
-  transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out; /* Smooth transitions */
 }
 
 .action-buttons button:hover {
   background-color: var(--accent-primary-darker);
-  transform: translateY(-3px) scale(1.03);
+  transform: translateY(-3px) scale(1.03); /* Nice hover effect */
   box-shadow: 0 5px 10px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
 }
 .action-buttons button:active {
-  background-color: #0891b2;
-  transform: translateY(-1px) scale(0.98);
+  background-color: #0891b2; /* Even darker on active */
+  transform: translateY(-1px) scale(0.98); /* Subtle press effect */
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -258,30 +297,25 @@ h1 {
   margin-top: 25px;
   font-size: 1.1em;
   color: var(--text-secondary);
+  text-align: left; /* Scoreboard info usually better left-aligned */
 }
 #scoreboard p { margin: 8px 0; }
-#scoreboard span {
+#scoreboard span { /* This includes score, highscore, and accuracy if accuracy is a span */
   font-weight: 700;
   color: var(--text-primary);
 }
-/* NEW: Accuracy Display (inherits #scoreboard p styling) */
-#accuracyDisplay {
-    /* Inherits styling from #scoreboard span if it's inside a p > span like others */
-    /* If it's just a span, it uses #scoreboard span styling directly */
-}
-
 
 #messageDisplay {
   margin-top: 25px;
   font-size: 1.15em;
   font-weight: 500;
-  min-height: 1.5em; 
-  padding: 8px;
+  min-height: 1.5em; /* Prevents layout jump */
+  padding: 8px 12px; /* Added horizontal padding */
   border-radius: 6px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 .message-display.message-correct {
-  background-color: rgba(52, 211, 153, 0.15);
+  background-color: rgba(52, 211, 153, 0.15); /* Semi-transparent background */
   color: var(--accent-green); 
 } 
 .message-display.message-wrong {
@@ -290,20 +324,19 @@ h1 {
 } 
 .message-display.message-info {
   background-color: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
+  color: #38bdf8; /* Info blue */
 }
 
-/* --- NEW STYLES for Added Features --- */
-
-/* Betting Practice Section */
+/* --- Betting Practice Section (Existing styles look good) --- */
 #bettingPracticeSection {
-  background-color: rgba(255, 255, 255, 0.05); /* Slightly lighter than container for distinction */
+  background-color: rgba(255, 255, 255, 0.05); 
   padding: 20px;
   margin-top: 25px;
   border-radius: 10px;
   border: 1px solid var(--input-border);
+  text-align: center; /* Ensure content within is centered */
 }
-#bettingPracticeSection h3 {
+#bettingPracticeSection h3 { /* Assuming you use h3 here */
   color: var(--accent-secondary);
   margin-top: 0;
   margin-bottom: 15px;
@@ -322,7 +355,7 @@ h1 {
   margin-bottom: 15px;
   flex-wrap: wrap;
 }
-.betting-buttons button, /* Includes #betMinButton, #betMidButton, #betMaxButton via class */
+.betting-buttons button, 
 #continueDealingButton {
   font-family: var(--font-main);
   font-size: 0.95em;
@@ -345,38 +378,37 @@ h1 {
 }
 #bettingFeedback {
   font-weight: 600;
-  min-height: 20px; /* Prevent layout jump */
+  min-height: 20px; 
   padding: 5px;
   border-radius: 4px;
 }
-/* Feedback message styles (can reuse existing message-correct etc. if JS adds them) */
 #bettingFeedback.message-correct {
   color: var(--accent-green);
   background-color: rgba(52, 211, 153, 0.1);
 }
-#bettingFeedback.message-info { /* For "Considered X, Optimal Y" */
-  color: #38bdf8; /* Info blue */
+#bettingFeedback.message-info { 
+  color: #38bdf8; 
   background-color: rgba(56, 189, 248, 0.08);
 }
-#bettingFeedback.message-wrong { /* If you want a specific "wrong bet" style */
+#bettingFeedback.message-wrong { 
    color: var(--accent-red);
    background-color: rgba(248, 113, 113, 0.1);
 }
 
 
-/* How to Play Modal */
+/* --- How to Play Modal (Existing styles look good) --- */
 .modal {
-  display: none; /* Initially hidden - JS will change to 'flex' or 'block' */
+  display: none; 
   position: fixed;
-  z-index: 1000; /* Ensure it's on top */
+  z-index: 1000; 
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Enable scroll if content is too long */
-  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
-  align-items: center; /* Vertically center */
-  justify-content: center; /* Horizontally center */
+  overflow: auto; 
+  background-color: rgba(0, 0, 0, 0.7); 
+  align-items: center; 
+  justify-content: center; 
 }
 
 .modal-content {
@@ -387,10 +419,10 @@ h1 {
   border: 1px solid var(--input-border);
   border-radius: 12px;
   width: 90%;
-  max-width: 600px; /* Max width for the modal */
+  max-width: 600px; 
   box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  position: relative; /* For positioning the close button */
-  text-align: left; /* Modal content usually left-aligned */
+  position: relative; 
+  text-align: left; 
 }
 .modal-content h2 {
   color: var(--accent-primary);
@@ -409,7 +441,7 @@ h1 {
 }
 .modal-content ul {
   list-style-position: inside;
-  padding-left: 0; /* Remove default padding if using list-style-position inside */
+  padding-left: 0; 
   margin-bottom: 15px;
 }
 .modal-content ul li {
@@ -437,84 +469,89 @@ h1 {
   cursor: pointer;
 }
 
-/* --- End NEW STYLES --- */
-
-
-/* Responsive adjustments */
+/* --- Responsive adjustments --- */
 @media (max-width: 480px) {
   body {
-    padding: 10px; /* Even less padding on very small screens */
+    padding: 10px;
+    align-items: flex-start; /* Keep content at the top */
   }
   .container {
-    padding: 15px;
+    padding: 20px 15px; /* Adjusted padding */
     max-width: 100%;
   }
   h1 {
-    font-size: 1.8em; /* Smaller h1 */
+    font-size: 1.8em;
     margin-bottom: 20px;
   }
   .game-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px; /* Adjust gap for stacked controls */
+    flex-direction: column; /* Stack controls */
+    align-items: stretch; /* Make items take full width */
+    gap: 12px;
   }
-  #levelSelectContainer,
-  #deckSizeContainer,
-  #speedControlContainer {
+  .control-group { /* --- UPDATED/NEW --- For stacked control groups */
      width: 100%;
-     justify-content: space-between;
-     margin-bottom: 8px; /* Space between stacked control groups */
-     min-width: unset; /* Remove min-width for stacked items */
+     justify-content: space-between; /* Label on left, input on right */
+     margin-bottom: 0; /* Gap is handled by .game-controls */
+     min-width: unset; 
   }
-  #levelSelectContainer select,
-  #deckSizeContainer select,
-  #speedControlContainer input[type="number"],
-  .game-controls button { /* Target all buttons in game-controls for full width */
-    width: 100%; /* Make selects and buttons full width in stacked layout */
-    flex-grow: 0; /* Prevent select from growing oddly if label is short */
+  .control-group select,
+  .control-group input[type="number"] {
+    /* flex-grow: 1; Allow input/select to take available space if needed, but label is fixed */
+  }
+  /* Ensure all buttons in game-controls (including specific ones) take full width */
+  .game-controls button { 
+    width: 100%; 
   }
   #speedControlContainer input[type="number"] {
-      width: 80px; /* Give speed input a bit more room */
+      width: 80px; /* Retain specific width, control-group handles alignment */
+      flex-grow: 0; /* Don't let it grow excessively */
   }
+  #newShoeButton { /* Ensure it's full width and margins are correct */
+      margin-top: 5px; /* Adjust top margin if needed when stacked */
+      width: 100%;
+  }
+
 
   .count-displays {
       flex-direction: column;
-      gap: 5px;
+      gap: 8px; /* Slightly reduced gap */
       margin-bottom: 15px;
   }
   #runningCountDisplay, 
   #trueCountDisplay {
       font-size: 1.3em;
-      width: 100%;
+      width: 100%; /* Take full width for better centering */
   }
   #deckInfoDisplay {
       font-size: 0.85em;
+      margin-bottom: 15px; /* Adjusted margin */
   }
   #cardContainer {
-    width: 90px; /* Smaller card */
-    height: 135px;
+    width: 100px; /* Slightly larger small card */
+    height: 150px;
   }
   .card-face {
-    font-size: 2.8em; /* Smaller card font */
+    font-size: 3em; /* Adjust font size for new card dimensions */
   }
   .action-buttons {
-    gap: 8px; /* Tighter gap for action buttons */
+    gap: 10px; /* Tighter gap */
   }
   .action-buttons button {
     font-size: 1em;
-    padding: 10px 0;
-    width: 70px;
-    border-radius: 18px;
+    padding: 12px 0; /* Adjusted padding */
+    width: 80px; /* Adjusted width */
+    border-radius: 20px; /* Adjusted radius */
   }
   #timerDisplay {
-    font-size: 1.3em;
+    font-size: 1.4em; /* Adjusted size */
   }
   #instructions {
-    font-size: 0.85em;
+    font-size: 0.9em; /* Adjusted size */
     margin-bottom: 20px;
   }
   #scoreboard {
       font-size: 1em;
+      margin-top: 20px; /* Adjusted margin */
   }
   #messageDisplay {
       font-size: 1em;
@@ -526,22 +563,22 @@ h1 {
       font-size: 1.2em;
   }
   .betting-buttons button {
-      width: calc(50% - 5px); /* Two buttons per row, accounting for gap */
-      font-size: 0.85em;
+      width: calc(50% - 5px); /* Two buttons per row */
+      font-size: 0.9em; /* Slightly larger */
   }
-  .betting-buttons button:last-of-type:nth-child(odd) { /* If odd number of buttons, last one full width */
+  /* If you have an odd number of bet buttons, make the last one full width */
+  .betting-buttons button:last-child:nth-child(odd) { 
        width: 100%;
   }
   #continueDealingButton {
       width: 100%;
-      font-size: 0.9em;
+      font-size: 0.95em; /* Slightly larger */
   }
-
 
   /* Responsive Modal */
   .modal-content {
-    width: 95%; /* More width on small screens */
-    padding: 20px;
+    width: 95%; 
+    padding: 20px 15px; /* Adjusted padding */
   }
   .modal-content h2 {
     font-size: 1.5em;
@@ -549,4 +586,4 @@ h1 {
   .modal-content p, .modal-content ul li {
     font-size: 0.9em;
   }
-}
+                             }
