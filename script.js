@@ -88,11 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleUserChoice(choice) {
         if (!gameActive) {
             startNewGame();
-            // The first click starts the game but isn't processed as a guess.
-            // User needs to click again for the first card.
-            // Or, if we want the first click to count:
-            // processGuess(choice); // (but currentCard would be from dealNewCard in startNewGame)
-            // For simplicity, let's make the first click just start.
+            // The first click starts the game. Subsequent logic in processGuess handles guesses.
             return; 
         }
         processGuess(choice);
@@ -113,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function processGuess(userChoice) {
-        if (!currentCard) return;
+        if (!currentCard || !gameActive) return; // Added !gameActive check for safety
 
         let expectedValue;
         if (userChoice === 'plus') expectedValue = 1;
@@ -122,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (expectedValue === currentCard.hiLoVal) {
             score++;
-            runningCount += currentCard.hiLoVal; // Update running count based on the card's actual Hi-Lo value
+            runningCount += currentCard.hiLoVal; 
             playSound(correctSound);
             displayMessage("Correct!", "correct");
             
@@ -132,40 +128,72 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateScoreboardVisuals();
             updateRunningCountVisuals();
-            dealNewCard();
+            dealNewCard(); // Deal next card immediately on correct guess
         } else {
             playSound(wrongSound);
-            gameOver("Wrong guess!");
+            gameOver(`Wrong guess! Expected ${currentCard.hiLoVal > 0 ? '+' : ''}${currentCard.hiLoVal} for ${currentCard.label}${currentCard.suit}.`);
         }
     }
 
     function dealNewCard() {
+        if (!gameActive) return; // Don't deal if game is not active
         currentCard = fullDeck[Math.floor(Math.random() * fullDeck.length)];
         animateCardFlip();
     }
 
     function animateCardFlip() {
-        if (cardContainerEl.classList.contains('flipping')) { // If front is showing
-            cardContainerEl.classList.remove('flipping'); // Flip to back
-            setTimeout(updateCardFaceAndFlipToFront, 350); // Half of 0.7s transition
-        } else { // If back is showing (or initial)
+        if (!gameActive) return; // Safety check
+
+        if (cardContainerEl.classList.contains('flipping')) { // If front is showing (for subsequent cards after a correct guess)
+            cardContainerEl.classList.remove('flipping'); // Flip to back first
+            // Wait for the flip-to-back animation to mostly complete before updating content and flipping back to front
+            setTimeout(updateCardFaceAndFlipToFront, 350); // Assumes your CSS flip transition is around 0.6s-0.7s
+        } else { // If back is showing (or initial card of the game)
             updateCardFaceAndFlipToFront();
         }
     }
 
     function updateCardFaceAndFlipToFront() {
+        // --- START OF ADDED CONSOLE LOGS ---
+        console.log("SCRIPT DEBUG: updateCardFaceAndFlipToFront called"); 
+        if (!currentCard) {
+            console.error("SCRIPT DEBUG: currentCard is null or undefined in updateCardFaceAndFlipToFront. Aborting flip.");
+            return;
+        }
+        console.log("SCRIPT DEBUG: Current card:", JSON.parse(JSON.stringify(currentCard))); // Deep copy for logging
+        // --- END OF ADDED CONSOLE LOGS ---
+
         cardFrontEl.textContent = currentCard.label + currentCard.suit;
+        // --- ADDED CONSOLE LOG ---
+        console.log("SCRIPT DEBUG: Card front text set to:", cardFrontEl.textContent); 
+        // --- END OF ADDED CONSOLE LOG ---
+
         cardFrontEl.className = 'card-face card-front'; // Reset classes
         cardFrontEl.classList.add(currentCard.color);   // Add suit color
 
         // Short delay to ensure content is set before flip animation starts
         setTimeout(() => {
-            cardContainerEl.classList.add('flipping'); // Flip to show front
+            // --- ADDED CONSOLE LOGS ---
+            console.log("SCRIPT DEBUG: Attempting to add 'flipping' class to cardContainerEl"); 
+            if (!cardContainerEl) {
+                console.error("SCRIPT DEBUG: cardContainerEl is null! Cannot add class.");
+                return;
+            }
+            // --- END OF ADDED CONSOLE LOGS ---
+            cardContainerEl.classList.add('flipping'); 
+            // --- ADDED CONSOLE LOGS ---
+            if (cardContainerEl.classList.contains('flipping')) {
+                console.log("SCRIPT DEBUG: 'flipping' class successfully ADDED to cardContainerEl."); 
+            } else {
+                console.error("SCRIPT DEBUG: 'flipping' class FAILED to add to cardContainerEl.");
+            }
+            // --- END OF ADDED CONSOLE LOGS ---
             startRoundTimer();
-        }, 50);
+        }, 50); // 50ms delay
     }
 
     function startRoundTimer() {
+        if (!gameActive) return;
         clearInterval(gameTimer);
         const currentLevel = levelSelectEl.value;
 
@@ -190,9 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameOver(reason) {
         clearInterval(gameTimer);
-        gameActive = false;
+        gameActive = false; // Set game to inactive
         displayMessage(`${reason} Final Score: ${score}. Running Count: ${runningCount}. Click a value to play again.`, "wrong");
-        // Score and running count are kept for display until a new game starts.
+        // Do not flip card back here, let it show the card that caused the game over.
+        // setupInitialScreen() will be called if user starts a new game or changes level.
     }
 
     function updateScoreboardVisuals() {
@@ -206,20 +235,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayMessage(msg, typeClass) {
         messageDisplayEl.textContent = msg;
-        messageDisplayEl.className = `message-${typeClass}`;
+        messageDisplayEl.className = ''; // Clear existing classes
+        messageDisplayEl.classList.add('message-display'); // Base class if you have one
+        if (typeClass) {
+            messageDisplayEl.classList.add(`message-${typeClass}`);
+        }
     }
 
     function playSound(soundElement) {
-        soundElement.currentTime = 0; // Rewind to start
-        soundElement.play().catch(error => console.warn(`Sound play failed: ${error.message}`));
+        if (soundElement && typeof soundElement.play === 'function') { // Check if it's a valid audio element
+            soundElement.currentTime = 0; 
+            soundElement.play().catch(error => console.warn(`Sound play failed for ${soundElement.id || 'unknown sound'}: ${error.message}`));
+        } else {
+            console.warn("Attempted to play an invalid sound element.");
+        }
     }
 
     function toggleMusic() {
         musicOn = !musicOn;
         if (musicOn) {
-            bgMusic.play().catch(error => console.warn(`Music play failed: ${error.message}`));
+            if (bgMusic && typeof bgMusic.play === 'function') {
+                bgMusic.play().catch(error => console.warn(`Music play failed: ${error.message}`));
+            }
         } else {
-            bgMusic.pause();
+            if (bgMusic && typeof bgMusic.pause === 'function') {
+                bgMusic.pause();
+            }
         }
         updateMusicButtonVisuals();
     }
@@ -230,14 +271,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveHighScoreForCurrentLevel() {
-        const currentLevel = levelSelectEl.value;
-        localStorage.setItem(`cardCounterHighScore_${currentLevel}`, highScore.toString());
+        try {
+            const currentLevel = levelSelectEl.value;
+            localStorage.setItem(`cardCounterHighScore_${currentLevel}`, highScore.toString());
+        } catch (e) {
+            console.warn("Could not save high score to localStorage:", e.message);
+        }
     }
 
     function loadHighScoreForCurrentLevel() {
-        const currentLevel = levelSelectEl.value;
-        highScore = parseInt(localStorage.getItem(`cardCounterHighScore_${currentLevel}`)) || 0;
-        // Visual update is handled by updateScoreboardVisuals() after this call
+        try {
+            const currentLevel = levelSelectEl.value;
+            const savedScore = localStorage.getItem(`cardCounterHighScore_${currentLevel}`);
+            highScore = parseInt(savedScore) || 0;
+        } catch (e) {
+            console.warn("Could not load high score from localStorage:", e.message);
+            highScore = 0;
+        }
     }
 
     // Start the application
