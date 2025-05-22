@@ -1,38 +1,228 @@
 body {
-  background-color: #001f3f;
-  color: red;
-  font-family: Arial, sans-serif;
-  text-align: center;
+  background-color: #001f3f; /* Dark navy blue */
+  color: #f0f0f0; /* Light grey for text */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
   margin: 0;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .container {
-  max-width: 600px;
-  margin: auto;
-  background: #003366;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 10px white;
+  background: #003366; /* Medium blue */
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
 }
 
 h1 {
-  color: #00bfff;
+  color: #00bfff; /* Deep sky blue */
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 2.2em;
+  letter-spacing: 1px;
 }
 
-.key, .mode-selector, .status, .buttons, .ads {
-  margin: 20px 0;
+.game-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px; /* Spacing between items if they wrap */
 }
 
-button {
-  padding: 10px 20px;
-  margin: 5px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: none;
+#levelSelectContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing between label and select */
+}
+
+#levelSelectContainer label {
+  font-size: 1em;
+  color: #cceeff;
+}
+
+#levelSelectContainer select, 
+.game-controls button#musicToggle {
+  font-size: 0.9em;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #005f99;
+  background-color: #004c80;
+  color: #f0f0f0;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #ffcc00;
+.game-controls button#musicToggle:hover {
+  background-color: #006bb3;
 }
+.game-controls button#musicToggle.on {
+  background-color: #28a745; /* Green for ON */
+  border-color: #1e7e34;
+}
+.game-controls button#musicToggle.on:hover {
+  background-color: #218838;
+}
+
+
+#timerDisplay {
+  font-size: 1.6em;
+  color: #ffdd44; /* Bright yellow */
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.card-area {
+  perspective: 1000px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#cardContainer {
+  width: 110px;
+  height: 165px; 
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3.5em; /* Larger for better visibility */
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  border: 2px solid #fff; /* White border for definition */
+}
+
+.card-back {
+  background: linear-gradient(145deg, #4a5568, #2c3e50); /* Dark grey gradient */
+  color: #a0aec0; /* Lighter grey text for '?' */
+  border-color: #2d3748;
+}
+
+.card-front {
+  background: #ffffff; /* White card face */
+  color: #1a202c; /* Dark text for numbers/letters */
+  transform: rotateY(180deg);
+}
+.card-front.red { color: #e53e3e; } /* Red suit color */
+.card-front.black { color: #2d3748; } /* Black suit color */
+
+
+#runningCountDisplay {
+  font-size: 1.4em;
+  margin-bottom: 15px;
+  color: #63b3ed; /* Light blue */
+  font-weight: 500;
+}
+
+#instructions {
+  font-size: 1em;
+  margin-bottom: 15px;
+  color: #a0deff; /* Lighter blue for instructions */
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Space between buttons */
+  margin-bottom: 25px;
+}
+
+.action-buttons button {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 12px 0; /* Vertical padding, horizontal will be set by width */
+  width: 80px; /* Fixed width for uniform buttons */
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #007bff; /* Primary blue */
+  color: white;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.action-buttons button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+.action-buttons button:active {
+  background-color: #004085; /* Even darker blue on active */
+  transform: translateY(2px); /* Slight press effect */
+}
+
+#scoreboard {
+  margin-top: 20px;
+  font-size: 1.05em;
+  color: #bee3f8; /* Very light blue for score text */
+}
+#scoreboard p {
+  margin: 6px 0;
+}
+#scoreboard span {
+  font-weight: bold;
+  color: #f0f0f0; /* White for actual score numbers */
+}
+
+#messageDisplay {
+  margin-top: 20px;
+  font-size: 1.1em;
+  font-weight: 500;
+  min-height: 1.4em; 
+  padding: 5px;
+}
+.message-correct { color: #68d391; } /* Softer Green */
+.message-wrong { color: #fc8181; } /* Softer Red */
+.message-info { color: #90cdf4; } /* Softer Info Blue */
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+  h1 {
+    font-size: 1.8em;
+  }
+  .game-controls {
+    flex-direction: column;
+    align-items: stretch; /* Make items full width in column */
+  }
+  #levelSelectContainer {
+     justify-content: space-between; /* Better spacing for label and select */
+  }
+  #levelSelectContainer select {
+    flex-grow: 1; /* Allow select to take more space */
+  }
+  .card-area {
+    margin-bottom: 15px;
+  }
+  #cardContainer {
+    width: 90px;
+    height: 135px;
+  }
+  .card-face {
+    font-size: 2.8em;
+  }
+  .action-buttons button {
+    font-size: 1.1em;
+    padding: 10px 0;
+    width: 70px;
+  }
+  #runningCountDisplay, #timerDisplay {
+    font-size: 1.2em;
+  }
+  }
