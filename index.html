@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Card Counter Trainer</title>
   
-  <!-- ADDED GOOGLE FONT IMPORT FOR POPPINS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,6 +25,19 @@
           <option value="expert">Expert (5s)</option>
         </select>
       </div>
+      
+      <!-- NEW: DECK SIZE SELECTOR -->
+      <div id="deckSizeContainer">
+        <label for="deckSize">Decks:</label>
+        <select id="deckSize">
+          <option value="1">1 Deck</option>
+          <option value="2">2 Decks</option>
+          <option value="4" selected>4 Decks</option> <!-- Default to 4 -->
+          <option value="6">6 Decks</option>
+          <option value="8">8 Decks</option>
+        </select>
+      </div>
+
       <button id="musicToggle">Music OFF</button>
     </div>
 
@@ -38,8 +50,16 @@
       </div>
     </div>
 
-    <div id="runningCountDisplay">Running Count: 0</div>
-    
+    <!-- COUNT DISPLAYS AREA -->
+    <div class="count-displays">
+        <div id="runningCountDisplay">Running Count: 0</div>
+        <!-- NEW: TRUE COUNT DISPLAY -->
+        <div id="trueCountDisplay">True Count: 0</div>
+    </div>
+    <!-- NEW: DECK INFO DISPLAY -->
+    <div id="deckInfoDisplay">Shoe: 0/208 cards (4.0 decks left)</div>
+
+
     <div id="instructions">
         <p>Hi-Lo Values: <strong>+1</strong> (2-6), <strong>0</strong> (7-9), <strong>-1</strong> (10, J, Q, K, A)</p>
         <p>Identify the displayed card's value:</p>
@@ -55,15 +75,14 @@
       <p>Correct Guesses: <span id="score">0</span></p>
       <p>High Score: <span id="highscore">0</span> (current level)</p>
     </div>
-    <!-- Ensured message-display class is present for new CSS -->
-    <div id="messageDisplay" class="message-display message-info">Select a level. Click a value to start!</div>
+    <div id="messageDisplay" class="message-display message-info">Select settings. Click a value to start!</div>
 
-    <!-- Audio files - ensure these URLs are stable or host them yourself -->
-    <!-- It's recommended to move these to a local 'audio' folder in your project -->
-    <!-- e.g., <audio id="correctSound" src="audio/correct.ogg" preload="auto"></audio> -->
     <audio id="correctSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
     <audio id="wrongSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
     <audio id="bgMusic" src="https://files.catbox.moe/hnz1r2.mp3" loop preload="auto"></audio>
+    <!-- Optional: Shuffle Sound -->
+    <!-- <audio id="shuffleSound" src="audio/shuffle.mp3" preload="auto"></audio> -->
+
   </div>
   <script src="script.js"></script>
 </body>
