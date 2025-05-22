@@ -49,14 +49,14 @@ h1 {
 
 .game-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Will space out items including new deck selector */
   align-items: center;
   margin-bottom: 25px;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 15px; /* Gap between all items in game-controls */
 }
 
-#levelSelectContainer {
+#levelSelectContainer { /* This is an item within .game-controls */
   display: flex;
   align-items: center;
   gap: 10px;
@@ -67,6 +67,37 @@ h1 {
   color: var(--text-secondary);
   font-weight: 500;
 }
+
+/* NEW: Deck Size Selector Styling (within .game-controls) */
+#deckSizeContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#deckSizeContainer label {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+#deckSizeContainer select {
+  font-size: 0.9em;
+  font-family: var(--font-main);
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background-color: #334155;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+#deckSizeContainer select:hover {
+  background-color: #475569;
+  border-color: #525f74;
+}
+/* END NEW Deck Size Selector Styling */
 
 #levelSelectContainer select,
 .game-controls button#musicToggle {
@@ -154,12 +185,39 @@ h1 {
   transform: rotateY(-180deg);
 }
 
-#runningCountDisplay {
-  font-size: 1.5em; /* Larger running count */
-  margin-bottom: 20px;
-  color: var(--text-primary);
-  font-weight: 600;
+/* NEW: Styling for grouped count displays */
+.count-displays {
+  display: flex;
+  justify-content: space-around; 
+  align-items: center;
+  margin-bottom: 10px; 
+  flex-wrap: wrap; 
+  gap: 15px;
+  width: 100%; /* Take full width to allow space-around to work well */
 }
+
+#runningCountDisplay, 
+#trueCountDisplay { /* Styling for both count displays */
+  font-size: 1.5em; 
+  font-weight: 600;
+  color: var(--text-primary); 
+  padding: 5px 10px;
+  /* You might want to add flex-basis or min-width if they look too cramped */
+  /* flex-basis: 45%; */
+  text-align: center; /* Ensure text is centered within its own box */
+}
+/* END NEW Styling for grouped count displays */
+
+/* NEW: Deck Info Display */
+#deckInfoDisplay {
+  font-size: 0.95em; /* Slightly larger for better readability */
+  color: var(--text-secondary);
+  margin-top: 5px; /* Space after count displays */
+  margin-bottom: 20px; /* Space before instructions */
+  font-weight: 500;
+}
+/* END NEW Deck Info Display */
+
 
 #instructions {
   font-size: 0.95em;
@@ -256,14 +314,40 @@ h1 {
     font-size: 2em;
   }
   .game-controls {
-    flex-direction: column;
-    align-items: stretch; 
+    flex-direction: column; /* Stack game controls vertically */
+    align-items: stretch; /* Make them full width in column layout */
   }
-  #levelSelectContainer {
-     justify-content: space-between; 
+  /* Ensure DeckSizeContainer and LevelSelectContainer behave well in column */
+  #levelSelectContainer,
+  #deckSizeContainer {
+     width: 100%; /* Take full width */
+     justify-content: space-between; /* Space out label and select */
+     margin-bottom: 10px; /* Add some space between them when stacked */
   }
-  #levelSelectContainer select {
-    flex-grow: 1; 
+  #levelSelectContainer:last-child,
+  #deckSizeContainer:last-child {
+      margin-bottom: 0;
+  }
+  #levelSelectContainer select,
+  #deckSizeContainer select {
+    flex-grow: 1; /* Allow select to take available space */
+    max-width: 60%; /* Prevent select from becoming too wide */
+  }
+  .game-controls button#musicToggle {
+      width: 100%; /* Make music toggle full width when stacked */
+  }
+  .count-displays {
+      flex-direction: column; /* Stack counts on small screens */
+      gap: 5px;
+      margin-bottom: 15px;
+  }
+  #runningCountDisplay, 
+  #trueCountDisplay {
+      font-size: 1.3em; /* Adjust font size for stacked counts */
+      width: 100%; /* Make them take full width */
+  }
+  #deckInfoDisplay {
+      font-size: 0.9em;
   }
   #cardContainer {
     width: 100px; /* Adjust card size for smaller screens */
@@ -281,10 +365,11 @@ h1 {
     width: 75px; /* Adjust button size */
     border-radius: 20px;
   }
-  #runningCountDisplay, #timerDisplay {
+  #runningCountDisplay, /* This was duplicated, handled by .count-displays children now */
+  #timerDisplay { /* Only timer here now */
     font-size: 1.4em; /* Adjust text sizes */
   }
   #instructions {
     font-size: 0.9em;
   }
-}
+    }
