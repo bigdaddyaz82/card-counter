@@ -30,21 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeHowToPlayModalButtonEl = document.getElementById('closeHowToPlayModalButton');
 
     // Sounds
-    const correctSound = document.getElementById('correctSound');
+    const correctSound = document.getElementById('correctSound'); // Still defined, just not used for correct guess
     const wrongSound = document.getElementById('wrongSound');
     const bgMusic = document.getElementById('bgMusic');
 
-    // --- MODIFICATION START: Set sound volumes ---
+    // Set sound volumes (correctSound volume won't have an effect now unless used elsewhere)
     if (correctSound) {
-        correctSound.volume = 0.3; // 30% volume. Adjust 0.0 (silent) to 1.0 (full) as needed
+        correctSound.volume = 0.3; 
     }
     if (wrongSound) {
-        wrongSound.volume = 0.3;   // 30% volume. Adjust as needed for consistency.
+        wrongSound.volume = 0.3;   // Adjust as needed
     }
     if (bgMusic) {
-        bgMusic.volume = 0.15;  // Adjusted default background music volume slightly lower too
+        bgMusic.volume = 0.15;
     }
-    // --- MODIFICATION END ---
 
     // Card data (Hi-Lo system) - Blueprint for a single deck
     const singleMasterDeck = [];
@@ -102,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setupHowToPlayModal();
         setupBettingPracticeControls();
         
-        // bgMusic.volume = 0.2; // Moved this to the sound definition block earlier
         updateMusicButtonVisuals();
         setupInitialScreen();
     }
@@ -320,7 +318,9 @@ document.addEventListener('DOMContentLoaded', () => {
             score++;
             sessionCorrectGuesses++; 
             runningCount += currentCard.hiLoVal; 
-            playSound(correctSound);
+            
+            // playSound(correctSound); // <<<< CORRECT SOUND DISABLED HERE
+            
             displayMessage("Correct!", "correct");
             
             if (score > highScore) {
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 dealNewCard(); 
             }
         } else {
-            playSound(wrongSound);
+            playSound(wrongSound); // Incorrect guess sound remains
             updateAccuracyDisplay(); 
             gameOver(`Wrong guess! Expected ${currentCard.hiLoVal > 0 ? '+' : ''}${currentCard.hiLoVal} for ${currentCard.label}${currentCard.suit}. RC: ${runningCount}`);
         }
@@ -520,12 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             updateCardSpeedInputFromLevel(); 
         }
-        if (musicOn && bgMusic) {
-            // Attempt to play music only after user interaction might have occurred
-            // or rely on the toggle button if autoplay is blocked.
-            // For now, just setting the state, actual play is handled by toggle or initial interaction.
-        }
-        updateMusicButtonVisuals(); // Update button based on loaded state
+        updateMusicButtonVisuals(); 
     }
 
     // Start the application
