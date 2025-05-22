@@ -155,6 +155,16 @@ h1 {
   color: #a0deff; /* Lighter blue for instructions */
 }
 
+/* ADDED STYLES FOR THE INSTRUCTIONS PARAGRAPHS AND STRONG TAGS */
+#instructions p {
+  margin: 5px 0; /* Add a little space between the two instruction lines */
+}
+
+#instructions strong { /* Make the +1, 0, -1 stand out a bit more */
+    color: #f0f0f0; /* White, to match general text color */
+}
+/* END OF ADDED STYLES */
+
 .action-buttons {
   display: flex;
   justify-content: center;
@@ -205,9 +215,19 @@ h1 {
   /* Base class for message display, specific styles below */
   transition: color 0.3s ease-in-out; /* Smooth color transition */
 }
-.message-correct { color: #68d391 !important; } /* Softer Green, !important if needed */
-.message-wrong { color: #fc8181 !important; } /* Softer Red, !important if needed */
-.message-info { color: #90cdf4 !important; } /* Softer Info Blue, !important if needed */
+/* Ensure message-display class is on the element in HTML for these to apply consistently */
+.message-display.message-correct, /* More specific if needed */
+.message-correct { 
+  color: #68d391; 
+} 
+.message-display.message-wrong,
+.message-wrong { 
+  color: #fc8181; 
+} 
+.message-display.message-info,
+.message-info { 
+  color: #90cdf4; 
+}
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
