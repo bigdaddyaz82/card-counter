@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const highscoreEl = document.getElementById('highscore');
     const timerDisplayEl = document.getElementById('timerDisplay');
     const levelSelectEl = document.getElementById('level');
-    const musicToggleBtn = document.getElementById('musicToggle');
+    const musicToggleBtn = document.getElementById('musicToggle'); // Corrected ID
     const actionButtons = document.querySelectorAll('.action-buttons button');
     const messageDisplayEl = document.getElementById('messageDisplay');
     const runningCountDisplayEl = document.getElementById('runningCountDisplay');
@@ -42,10 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const basicStrategyModalEl = document.getElementById('basicStrategyModal');
     const closeBasicStrategyModalButtonEl = document.getElementById('closeBasicStrategyModalButton');
     const basicStrategyChartContainerEl = document.getElementById('basicStrategyChartContainer');
-    const howToPlayContentEl = document.getElementById('howToPlayContent'); // Wrapper for dynamic instructions
+    const howToPlayContentEl = document.getElementById('howToPlayContent');
     const currentSystemDisplayEl = document.getElementById('currentSystemDisplay');
     const currentSystemValuesDisplayEl = document.getElementById('currentSystemValuesDisplay');
-
 
     const gameModeSelectEl = document.getElementById('gameMode');
     const mainGameAreaEl = document.getElementById('mainGameArea');
@@ -53,12 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashDrillNumCardsInputEl = document.getElementById('flashDrillNumCards');
     const flashDrillSpeedInputEl = document.getElementById('flashDrillSpeed');
     const startFlashDrillButtonEl = document.getElementById('startFlashDrillButton');
-    const flashDrillCardDisplayAreaEl = document.getElementById('flashDrillCardDisplayArea'); // You'll need to decide how to display cards here
+    const flashDrillCardDisplayAreaEl = document.getElementById('flashDrillCardDisplayArea');
     const flashDrillInputAreaEl = document.getElementById('flashDrillInputArea');
     const flashDrillUserCountInputEl = document.getElementById('flashDrillUserCount');
     const submitFlashDrillCountButtonEl = document.getElementById('submitFlashDrillCountButton');
     const flashDrillFeedbackEl = document.getElementById('flashDrillFeedback');
-
 
     // =========================================================================
     // 1. SOUNDS & ASSETS
@@ -69,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (correctSound) correctSound.volume = 0.3;
     if (wrongSound) wrongSound.volume = 0.3;
-    if (bgMusic) bgMusic.volume = 0.15;
+    if (bgMusic) bgMusic.volume = 0.15; // Initial volume for background music
 
     const sunIcon = '☀️';
     const moonIcon = '🌙';
@@ -77,95 +75,67 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 2. CARD DATA & COUNTING SYSTEMS
     // =========================================================================
+    // (Your existing card data and counting systems - unchanged)
     const suits = ['♥', '♦', '♣', '♠'];
     const cardLabels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    // Map card label to a base value for easier lookup (e.g., J,Q,K are like '10' for some systems)
     const cardBaseValues = { '2':'2', '3':'3', '4':'4', '5':'5', '6':'6', '7':'7', '8':'8', '9':'9', '10':'10', 'J':'10', 'Q':'10', 'K':'10', 'A':'A'};
-
-
     const countingSystemsData = {
         'hi-lo': {
             name: 'Hi-Lo',
-            values: { '2':1, '3':1, '4':1, '5':1, '6':1, '7':0, '8':0, '9':0, '10':-1, 'A':-1 }, // J,Q,K implicitly -1 due to cardBaseValues
+            values: { '2':1, '3':1, '4':1, '5':1, '6':1, '7':0, '8':0, '9':0, '10':-1, 'A':-1 },
             description: "Cards 2-6 are +1. Cards 7-9 are 0. Cards 10, J, Q, K, A are -1.",
-            howToPlay: `
-                <p><strong>Hi-Lo Values:</strong></p>
-                <ul>
-                  <li>Cards 2-6: <strong>+1</strong></li>
-                  <li>Cards 7-9: <strong>0</strong></li>
-                  <li>Cards 10, Jack, Queen, King, Ace: <strong>-1</strong></li>
-                </ul>
-                <p><strong>Running Count (RC):</strong> Start at 0. For each card, add its Hi-Lo value to the RC.</p>
-                <p><strong>True Count (TC):</strong> RC ÷ Decks Remaining. This is a more accurate measure of advantage.</p>
-                <p><strong>Basic Betting Strategy (using True Count):</strong></p>
-                <ul>
-                  <li>TC < +1: Bet small (table minimum).</li>
-                  <li>TC +1 to +2: Consider a moderate bet.</li>
-                  <li>TC ≥ +3: Bet larger!</li>
-                </ul>`
+            howToPlay: `<p><strong>Hi-Lo Values:</strong></p><ul><li>Cards 2-6: <strong>+1</strong></li><li>Cards 7-9: <strong>0</strong></li><li>Cards 10, Jack, Queen, King, Ace: <strong>-1</strong></li></ul><p><strong>Running Count (RC):</strong> Start at 0. For each card, add its Hi-Lo value to the RC.</p><p><strong>True Count (TC):</strong> RC ÷ Decks Remaining. This is a more accurate measure of advantage.</p><p><strong>Basic Betting Strategy (using True Count):</strong></p><ul><li>TC < +1: Bet small (table minimum).</li><li>TC +1 to +2: Consider a moderate bet.</li><li>TC ≥ +3: Bet larger!</li></ul>`
         },
         'ko': {
             name: 'KO (Rookie)',
             values: { '2':1, '3':1, '4':1, '5':1, '6':1, '7':1, '8':0, '9':0, '10':-1, 'A':-1 },
             description: "Cards 2-7 are +1. Cards 8-9 are 0. Cards 10, J, Q, K, A are -1.",
-            howToPlay: `
-                <p><strong>KO (Knock-Out) Values:</strong></p>
-                <ul>
-                  <li>Cards 2, 3, 4, 5, 6, 7: <strong>+1</strong></li>
-                  <li>Cards 8, 9: <strong>0</strong></li>
-                  <li>Cards 10, Jack, Queen, King, Ace: <strong>-1</strong></li>
-                </ul>
-                <p>KO is an unbalanced system. The Running Count (RC) is the primary focus.</p>
-                <p><strong>Initial Running Count (IRC):</strong> Start at 0 for a single deck. For multiple decks, start at -4 * (Number of Decks - 1). Example: For 6 decks, IRC = -4 * 5 = -20. (This app starts RC at 0 for simplicity in training initial card values, adjust your mental IRC accordingly if simulating full KO strategy).</p>
-                <p><strong>Key Count / Pivot Point:</strong> A common pivot point for KO Rookie is +2. When the RC reaches or exceeds this key count, it's generally time to increase your bets.</p>
-                <p>True Count is not typically used with KO Rookie.</p>`
+            howToPlay: `<p><strong>KO (Knock-Out) Values:</strong></p><ul><li>Cards 2, 3, 4, 5, 6, 7: <strong>+1</strong></li><li>Cards 8, 9: <strong>0</strong></li><li>Cards 10, Jack, Queen, King, Ace: <strong>-1</strong></li></ul><p>KO is an unbalanced system. The Running Count (RC) is the primary focus.</p><p><strong>Initial Running Count (IRC):</strong> Start at 0 for a single deck. For multiple decks, start at -4 * (Number of Decks - 1). Example: For 6 decks, IRC = -4 * 5 = -20. (This app starts RC at 0 for simplicity in training initial card values, adjust your mental IRC accordingly if simulating full KO strategy).</p><p><strong>Key Count / Pivot Point:</strong> A common pivot point for KO Rookie is +2. When the RC reaches or exceeds this key count, it's generally time to increase your bets.</p><p>True Count is not typically used with KO Rookie.</p>`
         }
     };
-    let currentCountingSystem = 'hi-lo'; // Default
+    let currentCountingSystem = 'hi-lo';
 
     // =========================================================================
     // 3. GAME STATE VARIABLES
     // =========================================================================
-    let currentCard = null; // For "Guess Card Value" mode
+    // (Your existing game state variables - unchanged, except for musicOn initialization)
+    let currentCard = null;
     let score = 0;
     let runningCount = 0;
     let highScore = 0;
-    let gameTimer = null; // For "Guess Card Value" mode timer
+    let gameTimer = null;
     let timeLeft = 0;
-    let gameActive = false; // For "Guess Card Value" mode
-    let musicOn = false;
+    let gameActive = false;
+    let musicOn = false; // Will be set by loadInitialSettings
     let gameShoe = [];
     let cardsDealtInShoe = 0;
     let totalCardsInShoe = 0;
     let trueCount = 0;
     const SHUFFLE_PENETRATION = 0.75;
-    let currentCardSpeed = parseFloat(localStorage.getItem('cardCounterSpeed')) || 5;
+    let currentCardSpeed = 5; // Default, will be updated
     let sessionCorrectGuesses = 0;
     let sessionTotalCardsDealt = 0;
     let gamePausedForBetting = false;
     const CARDS_BETWEEN_BETS = 10;
     const levelDefaultTimes = { practice: 600, beginner: 15, advanced: 10, expert: 5 };
-    let currentGameMode = 'guessValue'; // 'guessValue' or 'flashDrill'
+    let currentGameMode = 'guessValue';
 
-    // Flash Drill State
     let drillActive = false;
     let drillCardSequence = [];
     let drillActualRunningCount = 0;
     let drillCurrentCardIdx = 0;
     let drillTimer = null;
 
-
     // =========================================================================
     // 4. INITIALIZATION & SETUP
     // =========================================================================
     function initializeApp() {
-        // Event Listeners for controls
         levelSelectEl.addEventListener('change', handleGameSettingChange);
         deckSizeEl.addEventListener('change', handleGameSettingChange);
         countingSystemSelectEl.addEventListener('change', handleGameSystemChange);
         gameModeSelectEl.addEventListener('change', handleGameModeChange);
 
-        musicToggleBtn.addEventListener('click', toggleMusic);
+        if (musicToggleBtn) musicToggleBtn.addEventListener('click', toggleMusic); // Ensure btn exists
         actionButtons.forEach(button => {
             button.addEventListener('click', () => handleUserChoice(button.dataset.choice));
         });
@@ -173,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             newShoeButtonEl.addEventListener('click', startNewGame);
         }
 
-        // Feature Setups
         setupThemeToggle();
         setupCardSpeedControl();
         setupHowToPlayModal();
@@ -181,13 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setupBettingPracticeControls();
         setupFlashDrillControls();
         
-        // Initial UI Updates
-        updateMusicButtonVisuals();
         updateCurrentSystemDisplay();
-        setupInitialScreen(); // This will also set up the initial game mode view
+        setupInitialScreen();
+        // updateMusicButtonVisuals(); // Called by loadInitialSettings and setupInitialScreen (if needed)
     }
 
-    function setupInitialScreen() {
+    function setupInitialScreen() { /* ... (your existing code, ensure it's fine) ... */
         console.log("SCRIPT DEBUG: setupInitialScreen called");
         clearInterval(gameTimer);
         clearInterval(drillTimer);
@@ -202,10 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionTotalCardsDealt = 0;
         
         updateCardSpeedInputFromLevel();
-        loadHighScoreForCurrentLevel(); // Considers current system for HS key
+        loadHighScoreForCurrentLevel();
         updateScoreboardVisuals();
         updateAllCountVisuals();
         updateAccuracyDisplay();
+        updateMusicButtonVisuals(); // Update music button based on current musicOn state
         
         displayMessage("Select settings and click 'New Shoe / Start Game' or a card value button to begin!", "info");
         
@@ -216,65 +185,53 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTimerDisplayVisuals();
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
         
-        // Set initial game mode view
         switchGameModeView(currentGameMode);
         if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none';
         if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = '';
-        if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = ''; // Clear drill card display
-
+        if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '';
     }
 
-    function handleGameSettingChange() { // For level, deck size
+    function handleGameSettingChange() { /* ... (your existing code) ... */
         console.log("SCRIPT DEBUG: Game setting changed (level or deck size)");
         updateCardSpeedInputFromLevel();
-        setupInitialScreen(); // Full reset as deck size or level impacts high score and game flow
+        setupInitialScreen();
     }
-
-    function handleGameSystemChange() {
+    function handleGameSystemChange() { /* ... (your existing code) ... */
         currentCountingSystem = countingSystemSelectEl.value;
         console.log("SCRIPT DEBUG: Counting system changed to:", currentCountingSystem);
         updateCurrentSystemDisplay();
-        updateHowToPlayModalContent(); // Update modal with new system info
-        // If a game is active, changing system should ideally reset it or at least counts.
-        // For now, let's do a full reset to keep things simple.
+        updateHowToPlayModalContent();
         setupInitialScreen();
     }
-
-    function handleGameModeChange() {
+    function handleGameModeChange() { /* ... (your existing code) ... */
         currentGameMode = gameModeSelectEl.value;
         console.log("SCRIPT DEBUG: Game mode changed to:", currentGameMode);
-        setupInitialScreen(); // Resets scores and UI for the new mode
+        setupInitialScreen();
     }
-    
-    function switchGameModeView(mode) {
+    function switchGameModeView(mode) { /* ... (your existing code) ... */
         if (mode === 'flashDrill') {
             if (mainGameAreaEl) mainGameAreaEl.style.display = 'none';
             if (flashDrillAreaEl) flashDrillAreaEl.style.display = 'block';
-            if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none'; // Hide betting for drill
+            if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
             displayMessage("Setup Flash Drill and click 'Start Drill'.", "info");
-        } else { // guessValue mode
+        } else { 
             if (mainGameAreaEl) mainGameAreaEl.style.display = 'block';
             if (flashDrillAreaEl) flashDrillAreaEl.style.display = 'none';
-            // Betting practice only for guessValue mode currently
-            // setupInitialScreen will hide betting if not active.
         }
     }
 
-
     // =========================================================================
-    // 5. THEME TOGGLE (Light/Dark Mode)
+    // 5. THEME TOGGLE (Light/Dark Mode) - Unchanged
     // =========================================================================
-    function setupThemeToggle() {
+    function setupThemeToggle() { /* ... (your existing code) ... */
         if (!themeToggleBtn || !themeIconEl) return;
-
         themeToggleBtn.addEventListener('click', () => {
             const currentTheme = bodyEl.classList.contains('light-mode') ? 'light' : 'dark';
             applyTheme(currentTheme === 'light' ? 'dark' : 'light');
         });
         loadInitialTheme();
     }
-
-    function applyTheme(theme) {
+    function applyTheme(theme) { /* ... (your existing code) ... */
         bodyEl.classList.remove('light-mode', 'dark-mode');
         if (theme === 'light') {
             bodyEl.classList.add('light-mode');
@@ -285,8 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem('theme', theme);
     }
-
-    function loadInitialTheme() {
+    function loadInitialTheme() { /* ... (your existing code) ... */
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (savedTheme) {
@@ -294,15 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (systemPrefersDark) {
             applyTheme('dark');
         } else {
-            applyTheme('light'); // Default to light if no preference
+            applyTheme('light'); 
         }
     }
 
     // =========================================================================
-    // 6. CARD SPEED & TIMER (for Guess Card Value mode)
+    // 6. CARD SPEED & TIMER - Unchanged
     // =========================================================================
-    function setupCardSpeedControl() {
-        // (Your existing code - seems fine)
+    function setupCardSpeedControl() { /* ... (your existing code) ... */
         if (!cardSpeedInputEl) return;
         cardSpeedInputEl.value = currentCardSpeed;
         cardSpeedInputEl.addEventListener('input', () => {
@@ -317,30 +272,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         updateCardSpeedInputFromLevel();
     }
-    
-    function updateCardSpeedInputFromLevel() {
-        // (Your existing code - seems fine)
+    function updateCardSpeedInputFromLevel() { /* ... (your existing code) ... */
         const currentLevel = levelSelectEl.value;
         currentCardSpeed = levelDefaultTimes[currentLevel] || 5; 
         if (cardSpeedInputEl) cardSpeedInputEl.value = currentCardSpeed;
         localStorage.setItem('cardCounterSpeed', currentCardSpeed.toString()); 
         if (!gameActive && currentGameMode === 'guessValue') updateTimerDisplayVisuals();
     }
-
-    function updateTimerDisplayVisuals() {
-        // (Your existing code - seems fine for guessValue mode)
+    function updateTimerDisplayVisuals() { /* ... (your existing code) ... */
         if (!timerDisplayEl || currentGameMode !== 'guessValue') return;
         const isPractice = levelSelectEl.value === "practice";
         if (isPractice || currentCardSpeed >= 600) {
             timerDisplayEl.textContent = "Time: ∞";
         } else {
-            timerDisplayEl.textContent = `Time: ${currentCardSpeed}s`; // Use currentCardSpeed, not input value directly
+            timerDisplayEl.textContent = `Time: ${currentCardSpeed}s`;
         }
     }
-
-    function startRoundTimer() { // For "Guess Card Value" mode
+    function startRoundTimer() { /* ... (your existing code, includes playSound(wrongSound)) ... */
         if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return;
-        // (Rest of your existing code for startRoundTimer - seems fine)
         clearInterval(gameTimer);
         const isPractice = levelSelectEl.value === "practice";
         if (isPractice || currentCardSpeed >= 600) { 
@@ -358,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (timerDisplayEl) timerDisplayEl.textContent = `Time: ${timeLeft}s`;
             if (timeLeft <= 0) {
                 clearInterval(gameTimer);
-                playSound(wrongSound);
+                playSound(wrongSound); // Uses updated playSound
                 sessionTotalCardsDealt++; 
                 updateAccuracyDisplay();
                 gameOver(`Time's up! RC: ${runningCount}`);
@@ -367,13 +316,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 7. HOW TO PLAY & BASIC STRATEGY MODALS
+    // 7. HOW TO PLAY & BASIC STRATEGY MODALS - Unchanged
     // =========================================================================
-    function setupHowToPlayModal() {
+    function setupHowToPlayModal() { /* ... (your existing code) ... */
         if (!howToPlayButtonEl || !howToPlayModalEl || !closeHowToPlayModalButtonEl) return;
-        updateHowToPlayModalContent(); // Initial content based on default system
+        updateHowToPlayModalContent();
         howToPlayButtonEl.addEventListener('click', () => {
-            updateHowToPlayModalContent(); // Ensure it's up-to-date
+            updateHowToPlayModalContent();
             howToPlayModalEl.style.display = 'flex';
         });
         closeHowToPlayModalButtonEl.addEventListener('click', () => {
@@ -385,8 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    function updateHowToPlayModalContent() {
+    function updateHowToPlayModalContent() { /* ... (your existing code) ... */
         if (!howToPlayContentEl) return;
         const systemData = countingSystemsData[currentCountingSystem];
         if (systemData) {
@@ -395,11 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
             howToPlayContentEl.innerHTML = `<p>Select a counting system to see instructions.</p>`;
         }
     }
-
-    function setupBasicStrategyModal() {
+    function setupBasicStrategyModal() { /* ... (your existing code) ... */
         if (!basicStrategyButtonEl || !basicStrategyModalEl || !closeBasicStrategyModalButtonEl) return;
         basicStrategyButtonEl.addEventListener('click', () => {
-            generateBasicStrategyChartHTML(); // Generate and inject chart
+            generateBasicStrategyChartHTML();
             basicStrategyModalEl.style.display = 'flex';
         });
         closeBasicStrategyModalButtonEl.addEventListener('click', () => {
@@ -411,60 +358,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // --- Basic Strategy Chart Data (PLACEHOLDER - YOU NEED TO FILL THIS) ---
-    const basicStrategyData = {
-        // Example structure - NEEDS COMPLETE DATA
-        // Dealer cards: 2, 3, 4, 5, 6, 7, 8, 9, T (10/J/Q/K), A
-        hardTotals: {
-            // Player Total: { Dealer_2: "Action", Dealer_3: "Action", ... }
-            "17+": { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "S", "8": "S", "9": "S", "T": "S", "A": "S"},
-            "16":  { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "15":  { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "14":  { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "13":  { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "12":  { "2": "H", "3": "H", "4": "S", "5": "S", "6": "S", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "11":  { "2": "D", "3": "D", "4": "D", "5": "D", "6": "D", "7": "D", "8": "D", "9": "D", "T": "D", "A": "H"}, // Or D if DAS
-            "10":  { "2": "D", "3": "D", "4": "D", "5": "D", "6": "D", "7": "D", "8": "D", "9": "D", "T": "H", "A": "H"},
-            "9":   { "2": "H", "3": "D", "4": "D", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"},
-            "5-8": { "2": "H", "3": "H", "4": "H", "5": "H", "6": "H", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H"}
-        },
-        softTotals: { // Player Ace + Other Card
-            "A,9": { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "S", "8": "S", "9": "S", "T": "S", "A": "S" }, // Soft 20
-            "A,8": { "2": "S", "3": "S", "4": "S", "5": "S", "6": "DS", "7": "S", "8": "S", "9": "S", "T": "S", "A": "S" },// Soft 19 (DS = Double if allowed, else Stand)
-            "A,7": { "2": "DS", "3": "DS", "4": "DS", "5": "DS", "6": "DS", "7": "S", "8": "S", "9": "H", "T": "H", "A": "H" },// Soft 18
-            "A,6": { "2": "H", "3": "D", "4": "D", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" }, // Soft 17
-            "A,5": { "2": "H", "3": "H", "4": "D", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" }, // Soft 16
-            "A,4": { "2": "H", "3": "H", "4": "D", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" }, // Soft 15
-            "A,3": { "2": "H", "3": "H", "4": "H", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" }, // Soft 14
-            "A,2": { "2": "H", "3": "H", "4": "H", "5": "D", "6": "D", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" }  // Soft 13
-        },
-        pairs: { // Player Pair
-            "A,A": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "P", "8": "P", "9": "P", "T": "P", "A": "P" },
-            "T,T": { "2": "S", "3": "S", "4": "S", "5": "S", "6": "S", "7": "S", "8": "S", "9": "S", "T": "S", "A": "S" }, // Tens
-            "9,9": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "S", "8": "P", "9": "P", "T": "S", "A": "S" },
-            "8,8": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "P", "8": "P", "9": "P", "T": "P", "A": "P" }, // Always split 8s
-            "7,7": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "P", "8": "H", "9": "H", "T": "H", "A": "H" },
-            "6,6": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" },
-            "5,5": { "2": "D", "3": "D", "4": "D", "5": "D", "6": "D", "7": "D", "8": "D", "9": "D", "T": "H", "A": "H" }, // Never split 5s, treat as 10
-            "4,4": { "2": "H", "3": "H", "4": "H", "5": "P", "6": "P", "7": "H", "8": "H", "9": "H", "T": "H", "A": "H" },
-            "3,3": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "P", "8": "H", "9": "H", "T": "H", "A": "H" },
-            "2,2": { "2": "P", "3": "P", "4": "P", "5": "P", "6": "P", "7": "P", "8": "H", "9": "H", "T": "H", "A": "H" }
-        },
-        legend: "H: Hit, S: Stand, D: Double (if not allowed, Hit), DS: Double (if not allowed, Stand), P: Split"
+    const basicStrategyData = { /* ... (your existing data) ... */
+        hardTotals:{"17+":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"16":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"15":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"14":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"13":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"12":{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"11":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"D",A:"H"},"10":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"H",A:"H"},"9":{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"5-8":{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",T:"H",A:"H"}},softTotals:{"A,9":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"A,8":{2:"S",3:"S",4:"S",5:"S",6:"DS",7:"S",8:"S",9:"S",T:"S",A:"S"},"A,7":{2:"DS",3:"DS",4:"DS",5:"DS",6:"DS",7:"S",8:"S",9:"H",T:"H",A:"H"},"A,6":{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,5":{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,4":{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,3":{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,2":{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"}},pairs:{"A,A":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"P",9:"P",T:"P",A:"P"},"T,T":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"9,9":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"S",8:"P",9:"P",T:"S",A:"S"},"8,8":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"P",9:"P",T:"P",A:"P"},"7,7":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"},"6,6":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"H",8:"H",9:"H",T:"H",A:"H"},"5,5":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"H",A:"H"},"4,4":{2:"H",3:"H",4:"H",5:"P",6:"P",7:"H",8:"H",9:"H",T:"H",A:"H"},"3,3":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"},"2,2":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"}},legend:"H: Hit, S: Stand, D: Double (if not allowed, Hit), DS: Double (if not allowed, Stand), P: Split"
     };
-
-    function generateBasicStrategyChartHTML() {
+    function generateBasicStrategyChartHTML() { /* ... (your existing code) ... */
         if (!basicStrategyChartContainerEl) return;
         let html = `<p><strong>Legend:</strong> ${basicStrategyData.legend}</p>`;
-        const dealerRow = "<th>Player</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10/A</th><th>Ace</th>"; // Simplified 10/A for T
-        
+        const dealerRow = "<th>Player</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10/A</th><th>Ace</th>";
         function createTable(title, data) {
             let tableHTML = `<h3>${title}</h3><table><thead><tr>${dealerRow}</tr></thead><tbody>`;
             for (const playerHand in data) {
                 tableHTML += `<tr><td><strong>${playerHand}</strong></td>`;
                 const decisions = data[playerHand];
-                // Order of dealer cards to match header
                 const dealerCardsOrder = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "A"];
                 dealerCardsOrder.forEach(dealerCard => {
                     tableHTML += `<td>${decisions[dealerCard] || '-'}</td>`;
@@ -474,38 +379,27 @@ document.addEventListener('DOMContentLoaded', () => {
             tableHTML += `</tbody></table>`;
             return tableHTML;
         }
-
         html += createTable("Hard Totals", basicStrategyData.hardTotals);
         html += createTable("Soft Totals", basicStrategyData.softTotals);
         html += createTable("Pairs", basicStrategyData.pairs);
-        
         basicStrategyChartContainerEl.innerHTML = html;
     }
 
+    // =========================================================================
+    // 8. BETTING PRACTICE - Unchanged (logic seems fine for its purpose)
+    // =========================================================================
+    function setupBettingPracticeControls() { /* ... (your existing code) ... */ }
+    function triggerBettingPractice() { /* ... (your existing code) ... */ }
+    function handleBetChoiceInput(betChoice) { /* ... (your existing code) ... */ }
+    function resumeAfterBettingPractice() { /* ... (your existing code) ... */ }
 
     // =========================================================================
-    // 8. BETTING PRACTICE (for Guess Card Value mode)
+    // 9. CORE GAME LOGIC ("Guess Card Value" mode) - Unchanged
     // =========================================================================
-    // (Your existing setupBettingPracticeControls, triggerBettingPractice, handleBetChoiceInput, resumeAfterBettingPractice)
-    // Ensure triggerBettingPractice is only called if currentGameMode === 'guessValue'
-    function setupBettingPracticeControls() { /* ... your existing code ... */ }
-    function triggerBettingPractice() {
-        if (currentGameMode !== 'guessValue' || levelSelectEl.value === "practice") { 
-            dealNewCard(); 
-            return;
-        }
-        /* ... rest of your existing code ... */
-    }
-    function handleBetChoiceInput(betChoice) { /* ... your existing code ... */ }
-    function resumeAfterBettingPractice() { /* ... your existing code ... */ }
-
-    // =========================================================================
-    // 9. CORE GAME LOGIC ("Guess Card Value" mode)
-    // =========================================================================
-    function updateAccuracyDisplay() { /* ... your existing code ... */ }
-    function resetSessionStats() { /* ... your existing code ... */ }
-    
-    function updateCurrentSystemDisplay() {
+    // (Your existing functions: updateAccuracyDisplay, resetSessionStats, updateCurrentSystemDisplay, buildShoe, handleUserChoice, startNewGame, processGuess, dealNewCard, updateAllCountVisuals, animateCardFlip, updateCardFaceAndFlipToFront, gameOver - ensure they work with other changes, especially `playSound` calls within them)
+    function updateAccuracyDisplay() { /* ... (your existing code) ... */ }
+    function resetSessionStats() { /* ... (your existing code) ... */ }
+    function updateCurrentSystemDisplay() { /* ... (your existing code) ... */
         if (!currentSystemDisplayEl || !currentSystemValuesDisplayEl) return;
         const systemData = countingSystemsData[currentCountingSystem];
         if (systemData) {
@@ -513,41 +407,30 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSystemValuesDisplayEl.textContent = systemData.description;
         }
     }
-
-    function buildShoe() {
+    function buildShoe() { /* ... (your existing code) ... */
         console.log("SCRIPT DEBUG: buildShoe for system:", currentCountingSystem);
         const numDecks = parseInt(deckSizeEl.value) || 1;
         gameShoe = [];
         const systemValues = countingSystemsData[currentCountingSystem].values;
-
         for (let i = 0; i < numDecks; i++) {
-            cardLabels.forEach(label => { // Iterate through defined card labels '2' through 'A'
-                const baseVal = cardBaseValues[label]; // Get '10' for J,Q,K or 'A' for Ace
-                const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; // Fallback to label if baseVal not in system (e.g. 7 for Hi-Lo)
-
+            cardLabels.forEach(label => {
+                const baseVal = cardBaseValues[label];
+                const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label];
                 suits.forEach(suit => {
-                    gameShoe.push({
-                        label: label, // e.g., 'K', '7', 'A'
-                        suit: suit,
-                        pointVal: pointVal, // This is the crucial value from the selected system
-                        color: (suit === '♥' || suit === '♦') ? 'red' : 'black'
-                    });
+                    gameShoe.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' });
                 });
             });
         }
         totalCardsInShoe = gameShoe.length;
         cardsDealtInShoe = 0;
-        // Fisher-Yates Shuffle
         for (let i = gameShoe.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [gameShoe[i], gameShoe[j]] = [gameShoe[j], gameShoe[i]];
         }
-        console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards. First card pointVal: ${gameShoe[gameShoe.length-1]?.pointVal}`);
+        console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards.`);
     }
-
-    function handleUserChoice(choice) { // For "Guess Card Value" mode
+    function handleUserChoice(choice) { /* ... (your existing code) ... */
         if (currentGameMode !== 'guessValue') return;
-        // (Rest of your existing code for handleUserChoice)
         if (!gameActive && !gamePausedForBetting) { 
             startNewGame(); 
             return; 
@@ -556,46 +439,42 @@ document.addEventListener('DOMContentLoaded', () => {
              processGuess(choice);
         }
     }
-    
-    function startNewGame() { // For "Guess Card Value" mode
+    function startNewGame() { /* ... (your existing code) ... */
         if (currentGameMode !== 'guessValue') {
             displayMessage("Switch to 'Guess Card Value' mode to start this game.", "info");
             return;
         }
         console.log("SCRIPT DEBUG: startNewGame (Guess Card Value mode)");
-        // (Rest of your existing code, ensure it sets up for guessValue mode)
         clearInterval(gameTimer);
         gameActive = true;
         gamePausedForBetting = false; 
         score = 0;
-        runningCount = 0; // KO might have a different IRC, but for training card values, 0 is fine.
+        runningCount = 0;
         trueCount = 0;
         resetSessionStats(); 
         buildShoe(); 
         loadHighScoreForCurrentLevel();
         updateScoreboardVisuals();
         updateAllCountVisuals(); 
-        updateCurrentSystemDisplay(); // Update display based on current system
+        updateCurrentSystemDisplay();
         displayMessage("Shoe ready. Good luck!", "info");
-        dealNewCard(); 
+        dealNewCard();
     }
-
-    function processGuess(userChoice) { // For "Guess Card Value" mode
+    function processGuess(userChoice) { /* ... (your existing code, includes playSound(wrongSound)) ... */
         if (!currentCard || !gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return;
         clearInterval(gameTimer);
         sessionTotalCardsDealt++;
-
         let expectedValue;
         if (userChoice === 'plus') expectedValue = 1;
         else if (userChoice === 'minus') expectedValue = -1;
         else expectedValue = 0;
 
-        // Compare with currentCard.pointVal (which is based on selected system)
         if (expectedValue === currentCard.pointVal) {
             score++;
             sessionCorrectGuesses++;
-            runningCount += currentCard.pointVal; // Use the card's actual point value
+            runningCount += currentCard.pointVal;
             displayMessage("Correct!", "correct");
+            playSound(correctSound); // Play correct sound
             if (score > highScore) {
                 highScore = score;
                 saveHighScoreForCurrentLevel();
@@ -609,17 +488,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 dealNewCard();
             }
         } else {
-            playSound(wrongSound);
+            playSound(wrongSound); // Uses updated playSound
             updateAccuracyDisplay();
             gameOver(`Wrong guess! Card ${currentCard.label}${currentCard.suit} is ${currentCard.pointVal > 0 ? '+' : ''}${currentCard.pointVal} for ${countingSystemsData[currentCountingSystem].name}. RC: ${runningCount}`);
         }
     }
-
-    function dealNewCard() { // For "Guess Card Value" mode
-        if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') {
-            return;
-        }
-        // (Rest of your existing code for dealNewCard)
+    function dealNewCard() { /* ... (your existing code) ... */
+        if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return;
         if (gameShoe.length === 0 || cardsDealtInShoe >= totalCardsInShoe * SHUFFLE_PENETRATION) {
             const penetrationPercent = totalCardsInShoe > 0 ? ((cardsDealtInShoe/totalCardsInShoe)*100).toFixed(0) : 0;
             displayMessage(`Shuffle time! Penetration: ${penetrationPercent}%. Starting new shoe.`, "info");
@@ -631,15 +506,11 @@ document.addEventListener('DOMContentLoaded', () => {
         currentCard = gameShoe.pop();
         cardsDealtInShoe++;
         updateAllCountVisuals(); 
-        animateCardFlip(); 
+        animateCardFlip();
     }
-    
-    function updateAllCountVisuals() { // For "Guess Card Value" mode
+    function updateAllCountVisuals() { /* ... (your existing code) ... */
         if (runningCountDisplayEl) runningCountDisplayEl.textContent = `Running Count: ${runningCount}`;
-        
         const decksRemaining = Math.max(0.01, (totalCardsInShoe - cardsDealtInShoe) / 52);
-        
-        // True count is mainly for Hi-Lo. For KO Rookie, it's less relevant or not used.
         if (currentCountingSystem === 'hi-lo' && totalCardsInShoe > 0) {
             trueCount = runningCount / decksRemaining;
             let trueCountText = "0.0";
@@ -648,38 +519,31 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (trueCount === -Infinity) trueCountText = "Very Low-";
             if (trueCountDisplayEl) {
                 trueCountDisplayEl.textContent = `True Count: ${trueCountText}`;
-                trueCountDisplayEl.style.display = 'block'; // Show for Hi-Lo
+                trueCountDisplayEl.style.display = 'block';
             }
         } else if (trueCountDisplayEl) {
-            trueCountDisplayEl.textContent = 'True Count: N/A'; // Or hide for KO
+            trueCountDisplayEl.textContent = 'True Count: N/A';
             trueCountDisplayEl.style.display = currentCountingSystem === 'ko' ? 'none' : 'block';
         }
-        
         if (deckInfoDisplayEl) deckInfoDisplayEl.textContent = `Shoe: ${cardsDealtInShoe}/${totalCardsInShoe} cards (${decksRemaining.toFixed(1)} decks left)`;
     }
-
-    function animateCardFlip() { /* ... your existing code ... */ }
-    function updateCardFaceAndFlipToFront() { /* ... your existing code, ensure it uses currentCard ... */ }
-
-    function gameOver(reason) { // For "Guess Card Value" mode
-        // (Your existing code - ensure it only proceeds if in guessValue mode)
+    function animateCardFlip() { /* ... (your existing code) ... */ }
+    function updateCardFaceAndFlipToFront() { /* ... (your existing code) ... */ }
+    function gameOver(reason) { /* ... (your existing code) ... */
         clearInterval(gameTimer);
         gameActive = false; 
         displayMessage(`${reason}. Score: ${score}. Click 'New Shoe / Start Game' or a value to play again.`, "wrong");
     }
 
-
     // =========================================================================
-    // 10. FLASHING CARDS DRILL LOGIC
+    // 10. FLASHING CARDS DRILL LOGIC - Unchanged
     // =========================================================================
-    function setupFlashDrillControls() {
+    function setupFlashDrillControls() { /* ... (your existing code) ... */
         if (!startFlashDrillButtonEl || !submitFlashDrillCountButtonEl) return;
-
         startFlashDrillButtonEl.addEventListener('click', startFlashDrill);
         submitFlashDrillCountButtonEl.addEventListener('click', evaluateFlashDrill);
     }
-
-    function startFlashDrill() {
+    function startFlashDrill() { /* ... (your existing code) ... */
         if (currentGameMode !== 'flashDrill') return;
         console.log("SCRIPT DEBUG: Starting Flash Drill");
         drillActive = true;
@@ -688,16 +552,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none';
         if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = '';
         if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.value = '';
-
         const numCards = parseInt(flashDrillNumCardsInputEl.value) || 10;
         const speedMs = (parseFloat(flashDrillSpeedInputEl.value) || 1) * 1000;
-
-        // Build a temporary shoe for the drill or use a portion of the main shoe
-        // For simplicity, let's build a small temporary sequence
         drillCardSequence = [];
-        drillActualRunningCount = 0; // KO might start differently, but for this drill, 0 is fine.
+        drillActualRunningCount = 0;
         const systemValues = countingSystemsData[currentCountingSystem].values;
-
         for (let i = 0; i < numCards; i++) {
             const randomLabelIdx = Math.floor(Math.random() * cardLabels.length);
             const randomSuitIdx = Math.floor(Math.random() * suits.length);
@@ -705,84 +564,114 @@ document.addEventListener('DOMContentLoaded', () => {
             const suit = suits[randomSuitIdx];
             const baseVal = cardBaseValues[label];
             const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label];
-            
             drillCardSequence.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' });
         }
-        
         drillCurrentCardIdx = 0;
         flashNextDrillCard(speedMs);
     }
-
-    function flashNextDrillCard(speedMs) {
+    function flashNextDrillCard(speedMs) { /* ... (your existing code) ... */
         if (!drillActive || drillCurrentCardIdx >= drillCardSequence.length) {
             endFlashDrillSequence();
             return;
         }
-
         const card = drillCardSequence[drillCurrentCardIdx];
-        // Display card - for now, just text in the drill display area
         if (flashDrillCardDisplayAreaEl) {
             flashDrillCardDisplayAreaEl.innerHTML = `<div class="card-face card-front ${card.color}" style="width:120px; height:180px; display:flex; justify-content:center; align-items:center; font-size:4em; border:1px solid #ccc; border-radius:10px; margin:auto;">${card.label}${card.suit}</div>`;
         }
-        
         drillActualRunningCount += card.pointVal;
         drillCurrentCardIdx++;
-
         drillTimer = setTimeout(() => {
-            if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = ''; // Clear card
+            if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '';
             flashNextDrillCard(speedMs);
         }, speedMs);
     }
-
-    function endFlashDrillSequence() {
+    function endFlashDrillSequence() { /* ... (your existing code) ... */
         console.log("SCRIPT DEBUG: Flash Drill sequence ended. Actual RC:", drillActualRunningCount);
         if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '<p style="text-align:center; padding-top:70px;">Sequence Complete!</p>';
         if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'block';
         if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.focus();
         if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false;
-        drillActive = false; // Drill sequence part is done
+        drillActive = false;
     }
-
-    function evaluateFlashDrill() {
-        if (flashDrillInputAreaEl.style.display === 'none') return; // Not expecting input yet
-
+    function evaluateFlashDrill() { /* ... (your existing code) ... */
+        if (flashDrillInputAreaEl.style.display === 'none') return;
         const userCount = parseInt(flashDrillUserCountInputEl.value);
         if (isNaN(userCount)) {
             if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = "Please enter a valid number.";
             flashDrillFeedbackEl.className = 'message-wrong';
             return;
         }
-
         if (userCount === drillActualRunningCount) {
             if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = `Correct! Running count was ${drillActualRunningCount}.`;
             flashDrillFeedbackEl.className = 'message-correct';
-            // You could add scoring for drills here if desired
         } else {
             if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = `Incorrect. Your count: ${userCount}. Actual count: ${drillActualRunningCount}.`;
             flashDrillFeedbackEl.className = 'message-wrong';
         }
         if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false;
-        // Keep input area visible for review, or hide it:
-        // if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none';
     }
 
-
     // =========================================================================
-    // 11. SCOREBOARD, MESSAGES, SOUNDS, LOCALSTORAGE (Mostly existing)
+    // 11. SCOREBOARD, MESSAGES, SOUNDS, LOCALSTORAGE
     // =========================================================================
-    function updateScoreboardVisuals() { /* ... your existing code ... */ }
-    function displayMessage(msg, typeClass) { /* ... your existing code ... */ }
-    function playSound(soundElement) { /* ... your existing code ... */ }
-    function toggleMusic() { /* ... your existing code ... */ }
-    function updateMusicButtonVisuals() { /* ... your existing code ... */ }
+    function updateScoreboardVisuals() { /* ... (your existing code) ... */
+        if (scoreEl) scoreEl.textContent = score;
+        if (highscoreEl) highscoreEl.textContent = highScore;
+    }
+    function displayMessage(msg, typeClass) { /* ... (your existing code) ... */
+        if (messageDisplayEl) {
+            messageDisplayEl.textContent = msg;
+            messageDisplayEl.className = `message-display message-${typeClass}`; // e.g. message-correct, message-wrong, message-info
+        }
+    }
 
-    function saveHighScoreForCurrentLevel() {
+    // --- UPDATED AUDIO FUNCTIONS ---
+    function playSound(soundElement) {
+        // Play sound effects only if musicOn is true (assuming musicOn mutes all sounds)
+        // If you want sound effects to play independently of background music,
+        // you might need a separate sfxOn flag or remove the musicOn check for non-bgMusic.
+        if (soundElement && musicOn) {
+            soundElement.currentTime = 0; // Rewind to start to play again quickly
+            soundElement.play().catch(error => {
+                console.warn(`Error playing sound ${soundElement.id}:`, error.message);
+            });
+        }
+    }
+
+    function toggleMusic() {
+        musicOn = !musicOn;
+        localStorage.setItem('cardCounterMusicOn', musicOn.toString());
+        updateMusicButtonVisuals();
+
+        if (bgMusic) { // Ensure bgMusic element exists
+            if (musicOn) {
+                const playPromise = bgMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.warn("Background music playback failed after toggle:", error.message);
+                        // Autoplay might be blocked by the browser. User might need further interaction.
+                    });
+                }
+            } else {
+                bgMusic.pause();
+                // bgMusic.currentTime = 0; // Optional: Rewind when paused
+            }
+        }
+    }
+
+    function updateMusicButtonVisuals() {
+        if (musicToggleBtn) {
+            musicToggleBtn.textContent = musicOn ? "Music ON" : "Music OFF";
+        }
+    }
+    // --- END OF UPDATED AUDIO FUNCTIONS ---
+
+    function saveHighScoreForCurrentLevel() { /* ... (your existing code) ... */
         try {
             const currentLevel = levelSelectEl.value;
             const currentDeckSize = deckSizeEl.value;
-            const system = currentCountingSystem; // Add system to high score key
-            const gameMode = currentGameMode; // Add gameMode to high score key if scores are separate
-            // Only save for 'guessValue' mode for now, or adapt for drill scores
+            const system = currentCountingSystem;
+            const gameMode = currentGameMode;
             if (gameMode === 'guessValue') {
                 localStorage.setItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`, highScore.toString());
             }
@@ -790,8 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("Could not save high score:", e.message);
         }
     }
-
-    function loadHighScoreForCurrentLevel() {
+    function loadHighScoreForCurrentLevel() { /* ... (your existing code) ... */
         try {
             const currentLevel = levelSelectEl.value;
             const currentDeckSize = deckSizeEl.value;
@@ -801,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const savedScore = localStorage.getItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`);
                 highScore = parseInt(savedScore) || 0;
             } else {
-                highScore = 0; // No separate high score for drill yet
+                highScore = 0;
             }
         } catch (e) {
             console.warn("Could not load high score:", e.message);
@@ -809,23 +697,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function loadInitialSettings() { // For music, speed
-        // (Your existing code for music and speed - seems fine)
-        musicOn = localStorage.getItem('cardCounterMusicOn') === 'true';
+    function loadInitialSettings() {
+        // Speed
         const savedSpeed = localStorage.getItem('cardCounterSpeed');
         if (savedSpeed !== null) {
             currentCardSpeed = parseFloat(savedSpeed);
             if (cardSpeedInputEl) cardSpeedInputEl.value = currentCardSpeed;
         } else {
-            updateCardSpeedInputFromLevel(); 
+            if (levelSelectEl) { // Ensure levelSelectEl is available
+                 updateCardSpeedInputFromLevel();
+            } else {
+                currentCardSpeed = 5; // Fallback if levelSelectEl not ready
+            }
         }
-        updateMusicButtonVisuals(); 
-        // High score load is now handled by setupInitialScreen -> loadHighScoreForCurrentLevel
+
+        // Music - This will also attempt to play bgMusic if it was on
+        musicOn = localStorage.getItem('cardCounterMusicOn') === 'true'; // Defaults to false if not 'true'
+        updateMusicButtonVisuals(); // Update button text based on loaded state
+
+        if (musicOn && bgMusic) {
+            const playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Background music started based on saved preference.");
+                }).catch(error => {
+                    console.warn("Initial background music autoplay was prevented by browser:", error.message);
+                    // musicOn remains true, but music isn't playing. User can toggle to re-attempt.
+                });
+            }
+        }
+        // Theme is handled by setupThemeToggle -> loadInitialTheme
+        // High score is handled by setupInitialScreen -> loadHighScoreForCurrentLevel
     }
 
     // =========================================================================
     // 12. START THE APPLICATION
     // =========================================================================
-    loadInitialSettings(); // Loads music, speed settings
-    initializeApp();       // Sets up event listeners and initial game state
+    loadInitialSettings(); // Loads speed, music state, and attempts initial music play
+    initializeApp();       // Sets up event listeners, further UI, and initial game state
 });
