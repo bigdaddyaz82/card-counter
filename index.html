@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Counting Trainer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Card Counting Trainer (Hi-Lo System)</h1>
+
+        <div id="instructions">
+            <h2>Hi-Lo System:</h2>
+            <p>Cards 2, 3, 4, 5, 6 = <strong>+1</strong></p>
+            <p>Cards 7, 8, 9 = <strong>0</strong> (Neutral)</p>
+            <p>Cards 10, J, Q, K, A = <strong>-1</strong></p>
+            <p><strong>Running Count:</strong> The sum of all card values seen so far.</p>
+            <p><strong>True Count:</strong> Running Count / Number of Decks Remaining.</p>
+        </div>
+
+        <div class="controls">
+            <label for="numDecks">Select Number of Decks:</label>
+            <select id="numDecks">
+                <option value="1">1 Deck</option>
+                <option value="2">2 Decks</option>
+                <option value="6" selected>6 Decks</option>
+                <option value="8">8 Decks</option>
+                <option value="10">10 Decks</option>
+            </select>
+            <button id="startGameBtn">Start New Shoe</button>
+        </div>
+
+        <div id="gameArea" class="hidden">
+            <div class="info-display">
+                <p>Running Count: <span id="runningCountDisplay">0</span></p>
+                <p>True Count: <span id="trueCountDisplay">0.0</span></p>
+                <p>Cards Remaining in Shoe: <span id="cardsRemainingDisplay">0</span></p>
+                <p>Decks Remaining: <span id="decksRemainingDisplay">0.0</span></p>
+            </div>
+
+            <div id="currentCardDisplay" class="card-display">
+                Waiting for game to start...
+            </div>
+
+            <div id="valueGuessSection">
+                <label for="cardValueGuess">What is this card's Hi-Lo Value? (-1, 0, or 1):</label>
+                <input type="number" id="cardValueGuess" min="-1" max="1" step="1">
+                <button id="submitValueGuessBtn">Submit Value</button>
+                <p id="valueFeedback" class="feedback"></p>
+            </div>
+
+            <div id="rcGuessSection" class="hidden"> <!-- Initially hidden -->
+                <label for="rcGuess">What is the NEW Running Count?:</label>
+                <input type="number" id="rcGuess">
+                <button id="submitRcGuessBtn">Submit RC</button>
+                <p id="rcFeedback" class="feedback"></p>
+            </div>
+
+            <p id="shoeEndMessage" class="feedback-message"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
