@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. DOM ELEMENTS
     // =========================================================================
     const cardContainerEl = document.getElementById('cardContainer');
-    const cardFrontEl = document.querySelector('#cardContainer .card-front'); // Ensure this path is correct
-    const cardBackEl = document.querySelector('#cardContainer .card-back');   // Ensure this path is correct
+    const cardFrontEl = document.querySelector('#cardContainer .card-front');
+    const cardBackEl = document.querySelector('#cardContainer .card-back');
     const scoreEl = document.getElementById('score');
     const highscoreEl = document.getElementById('highscore');
     const timerDisplayEl = document.getElementById('timerDisplay');
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const SHUFFLE_PENETRATION = 0.75;
     let currentCardSpeed = 5;
     let sessionCorrectGuesses = 0, sessionTotalCardsDealt = 0, gamePausedForBetting = false;
-    const CARDS_BETWEEN_BETS = 10;
+    const CARDS_BETWEEN_BETS = 10; // Number of correct guesses between betting practices
     const levelDefaultTimes = { practice: 600, beginner: 15, advanced: 10, expert: 5 };
     let currentGameMode = 'guessValue';
     let drillActive = false, drillCardSequence = [], drillActualRunningCount = 0, drillCurrentCardIdx = 0, drillTimer = null;
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCardSpeedControl();
         setupHowToPlayModal();
         setupBasicStrategyModal();
-        setupBettingPracticeControls();
+        setupBettingPracticeControls(); // Ensure this is called
         setupFlashDrillControls();
         
         updateCurrentSystemDisplay();
@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateTimerDisplayVisuals();
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
-        
+        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none'; // Hide continue button
+        if (bettingFeedbackEl) bettingFeedbackEl.classList.remove('visible'); // Hide feedback
+
         switchGameModeView(currentGameMode);
         if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none';
         if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = '';
@@ -227,72 +229,134 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. BETTING PRACTICE
     // =========================================================================
     function setupBettingPracticeControls() {
-        // Add event listeners to betMinButtonEl, betMidButtonEl, betMaxButtonEl if they exist
-        // to call handleBetChoiceInput with appropriate values.
-        // Add event listener to continueDealingButtonEl to call resumeAfterBettingPractice.
-        // Example: if (betMinButtonEl) betMinButtonEl.addEventListener('click', () => handleBetChoiceInput('min'));
+        if (betMinButtonEl) {
+            betMinButtonEl.addEventListener('click', () => handleBetChoiceInput('min'));
+        } else {
+            console.warn("Min Bet button not found");
+        }
+
+        if (betMidButtonEl) {
+            betMidButtonEl.addEventListener('click', () => handleBetChoiceInput('mid'));
+        } else {
+            console.warn("Mid Bet button not found");
+        }
+
+        if (betMaxButtonEl) {
+            betMaxButtonEl.addEventListener('click', () => handleBetChoiceInput('max'));
+        } else {
+            console.warn("Max Bet button not found");
+        }
+
+        if (continueDealingButtonEl) {
+            continueDealingButtonEl.addEventListener('click', resumeAfterBettingPractice);
+        } else {
+            console.warn("Continue Dealing button not found");
+        }
     }
 
     function triggerBettingPractice() {
         if (currentGameMode !== 'guessValue' || (levelSelectEl && levelSelectEl.value === "practice")) {
-            dealNewCard(); // Bypass betting for practice mode or non-guessValue modes
+            dealNewCard(); 
             return;
         }
 
-        // Actual betting practice logic would go here:
-        // 1. Pause the game timer and card dealing.
         gamePausedForBetting = true;
         clearInterval(gameTimer);
         if (timerDisplayEl) timerDisplayEl.textContent = `Time: PAUSED`;
         displayMessage("Betting Practice: What's your bet based on the True Count?", "info");
 
-        // 2. Show the betting UI.
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'block';
         if (bettingTrueCountDisplayEl) {
-            let tcText = (trueCountDisplayEl && trueCountDisplayEl.textContent) ? trueCountDisplayEl.textContent.replace('True Count: ', '') : 'N/A';
-            bettingTrueCountDisplayEl.textContent = `Current True Count: ${tcText}`;
+            let tcText = "N/A";
+            if (currentCountingSystem === 'hi-lo') { // Only show TC value for Hi-Lo, or if you adapt for other systems
+                 tcText = isFinite(trueCount) ? trueCount.toFixed(1) : (trueCount === Infinity ? "Very High+" : (trueCount === -Infinity ? "Very Low-" : "N/A"));
+            }
+            bettingTrueCountDisplayEl.innerHTML = `Current True Count: <strong>${tcText}</strong>`;
         }
-        if (bettingFeedbackEl) bettingFeedbackEl.textContent = ''; // Clear old feedback
-
-        // 3. Wait for user input (handleBetChoiceInput will be called by button clicks).
-        // For now, to make game flow, we'll just deal next card after a log.
-        // console.log("Betting practice triggered. Implement UI and handleBetChoiceInput logic. Dealing next card for now.");
-        // dealNewCard(); // Remove this line once betting UI is functional
+        
+        if (bettingFeedbackEl) {
+            bettingFeedbackEl.textContent = ''; 
+            bettingFeedbackEl.className = 'message-display'; // Reset classes, assuming CSS has .message-display base styles
+            bettingFeedbackEl.classList.remove('visible'); 
+        }
+        if (continueDealingButtonEl) {
+            continueDealingButtonEl.style.display = 'none'; 
+        }
     }
 
     function handleBetChoiceInput(betChoice) {
-        // This function would evaluate the user's betChoice against the current trueCount.
-        // Provide feedback in bettingFeedbackEl.
-        // Example:
-        // let feedback = "";
-        // const tc = trueCount; // Use the actual trueCount variable
-        // if (tc < 1) {
-        //     if (betChoice === 'min') feedback = "Correct! Low TC, minimum bet is wise.";
-        //     else feedback = "Consider a minimum bet with a low True Count.";
-        // } else if (tc >= 1 && tc < 3) {
-        //     if (betChoice === 'mid') feedback = "Good choice for a moderate True Count!";
-        //     else feedback = "A moderate bet might be suitable here.";
-        // } else { // tc >= 3
-        //     if (betChoice === 'max') feedback = "Excellent! High True Count, max bet!";
-        //     else feedback = "With a high True Count, a larger bet is usually best.";
-        // }
-        // if (bettingFeedbackEl) bettingFeedbackEl.textContent = feedback;
-        // if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'block'; // Show button to continue
-        console.log(`Bet choice: ${betChoice}. Implement evaluation logic.`);
-        if (bettingFeedbackEl) bettingFeedbackEl.textContent = `You chose ${betChoice}. Evaluation pending.`;
-        // For now, automatically resume or show a continue button.
-        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'inline-block';
+        if (!gamePausedForBetting) return; 
 
+        let feedbackText = "";
+        let feedbackClass = "message-info"; 
+        const tc = trueCount; 
+
+        // Example evaluation logic (can be expanded)
+        if (currentCountingSystem === 'hi-lo') { // Betting logic primarily for Hi-Lo's True Count
+            if (tc < 1) {
+                if (betChoice === 'min') {
+                    feedbackText = "Correct! With a True Count < +1, a minimum bet is generally advised.";
+                    feedbackClass = "message-correct";
+                } else {
+                    feedbackText = "Consider a minimum bet. The True Count is less than +1.";
+                    feedbackClass = "message-wrong";
+                }
+            } else if (tc >= 1 && tc < 3) {
+                if (betChoice === 'mid') {
+                    feedbackText = "Good choice! A moderate bet is often suitable for a True Count between +1 and +3.";
+                    feedbackClass = "message-correct";
+                } else if (betChoice === 'min') {
+                    feedbackText = "You could consider a slightly larger bet (mid), but min is a safe play.";
+                    feedbackClass = "message-info"; // More informational than outright wrong
+                } else { // max bet
+                    feedbackText = "A max bet might be a bit aggressive here. A moderate bet is often preferred for this True Count.";
+                    feedbackClass = "message-wrong";
+                }
+            } else { // tc >= 3
+                if (betChoice === 'max') {
+                    feedbackText = "Excellent! With a True Count >= +3, a larger bet is usually favorable.";
+                    feedbackClass = "message-correct";
+                } else {
+                    feedbackText = "With such a high True Count, consider a larger bet for maximum advantage!";
+                    feedbackClass = "message-wrong";
+                }
+            }
+        } else { // For other systems like KO, or if TC is not applicable
+            feedbackText = `Betting guidance for ${countingSystemsData[currentCountingSystem].name} might differ. You chose ${betChoice.toUpperCase()} Bet.`;
+            // You might add specific KO betting advice based on Running Count here
+        }
+       
+        feedbackText = `You chose: ${betChoice.toUpperCase()} Bet. ${feedbackText}`;
+
+        if (bettingFeedbackEl) {
+            bettingFeedbackEl.textContent = feedbackText;
+            // Ensure CSS for .message-display and .visible is in place
+            // And .message-correct, .message-wrong, .message-info
+            bettingFeedbackEl.className = `message-display ${feedbackClass} visible`; 
+        }
+
+        if (continueDealingButtonEl) {
+            continueDealingButtonEl.style.display = 'inline-block'; 
+        } else {
+            console.warn("Continue Dealing button not found. Game progression might be affected.");
+        }
     }
 
     function resumeAfterBettingPractice() {
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
         if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none';
+        if (bettingFeedbackEl) { 
+            bettingFeedbackEl.classList.remove('visible');
+            bettingFeedbackEl.textContent = '';
+        }
         gamePausedForBetting = false;
         displayMessage("Resuming game...", "info");
-        dealNewCard(); // Deal the next card to continue the game
+        if (gameActive && currentGameMode === 'guessValue') { 
+           dealNewCard();
+        } else if (!gameActive && currentGameMode === 'guessValue') {
+           displayMessage("Betting practice ended. Start a new shoe to continue.", "info");
+        }
     }
-
 
     // =========================================================================
     // 9. CORE GAME LOGIC ("Guess Card Value" mode)
@@ -324,29 +388,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function animateCardFlip() {
         if (!currentCard || !cardContainerEl || !cardFrontEl || !cardBackEl) {
             console.warn("animateCardFlip: Missing DOM elements or currentCard.");
-            if (gameActive) gameOver("Error displaying card."); // Prevent game from stalling
+            if (gameActive) gameOver("Error displaying card."); 
             return;
         }
 
-        // 1. Set the content for the front of the card
         cardFrontEl.textContent = `${currentCard.label}${currentCard.suit}`;
-        cardFrontEl.className = 'card-face card-front'; // Reset base classes
+        cardFrontEl.className = 'card-face card-front'; 
         if (currentCard.color === 'red') {
-            cardFrontEl.classList.add('red-card'); // Ensure CSS for .red-card (e.g., color: red;)
+            cardFrontEl.classList.add('red-card'); 
         } else {
-            cardFrontEl.classList.add('black-card'); // Ensure CSS for .black-card (e.g., color: black;)
+            cardFrontEl.classList.add('black-card'); 
         }
 
-        // Ensure card back is consistently styled (e.g., with a '?')
         cardBackEl.textContent = '?';
 
-        // 2. Trigger the flip animation
-        cardContainerEl.classList.remove('flipping'); // Reset if called multiple times
-        void cardContainerEl.offsetWidth; // Force reflow to allow re-triggering CSS animation
-        cardContainerEl.classList.add('flipping'); // Add class that CSS uses to animate the flip
+        cardContainerEl.classList.remove('flipping'); 
+        void cardContainerEl.offsetWidth; 
+        cardContainerEl.classList.add('flipping'); 
 
-        // 3. Start the round timer
-        // This starts timer as flip begins. Adjust with setTimeout if needed for animation duration.
         if (gameActive && !gamePausedForBetting && currentGameMode === 'guessValue') {
             startRoundTimer();
         }
@@ -361,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startFlashDrill() { if (currentGameMode !== 'flashDrill') return; console.log("SCRIPT DEBUG: Starting Flash Drill"); drillActive = true; clearInterval(drillTimer); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = true; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none'; if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = ''; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.value = ''; const numCards = (flashDrillNumCardsInputEl && parseInt(flashDrillNumCardsInputEl.value)) || 10; const speedMs = ((flashDrillSpeedInputEl && parseFloat(flashDrillSpeedInputEl.value)) || 1) * 1000; drillCardSequence = []; drillActualRunningCount = 0; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numCards; i++) { const randomLabelIdx = Math.floor(Math.random() * cardLabels.length); const randomSuitIdx = Math.floor(Math.random() * suits.length); const label = cardLabels[randomLabelIdx]; const suit = suits[randomSuitIdx]; const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; drillCardSequence.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); } drillCurrentCardIdx = 0; flashNextDrillCard(speedMs); }
     function flashNextDrillCard(speedMs) { if (!drillActive || drillCurrentCardIdx >= drillCardSequence.length) { endFlashDrillSequence(); return; } const card = drillCardSequence[drillCurrentCardIdx]; if (flashDrillCardDisplayAreaEl) { flashDrillCardDisplayAreaEl.innerHTML = `<div class="card-face card-front ${card.color}" style="width:120px; height:180px; display:flex; justify-content:center; align-items:center; font-size:4em; border:1px solid #ccc; border-radius:10px; margin:auto;">${card.label}${card.suit}</div>`; } drillActualRunningCount += card.pointVal; drillCurrentCardIdx++; drillTimer = setTimeout(() => { if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = ''; flashNextDrillCard(speedMs); }, speedMs); }
     function endFlashDrillSequence() { console.log("SCRIPT DEBUG: Flash Drill sequence ended. Actual RC:", drillActualRunningCount); if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '<p style="text-align:center; padding-top:70px;">Sequence Complete!</p>'; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'block'; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.focus(); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; drillActive = false; }
-    function evaluateFlashDrill() { if (!flashDrillInputAreaEl || flashDrillInputAreaEl.style.display === 'none') return; const userCount = (flashDrillUserCountInputEl && parseInt(flashDrillUserCountInputEl.value)); if (isNaN(userCount)) { if (flashDrillFeedbackEl) { flashDrillFeedbackEl.textContent = "Please enter a valid number."; flashDrillFeedbackEl.className = 'message-wrong visible';} return; } if (flashDrillFeedbackEl) { flashDrillFeedbackEl.classList.add('visible'); if (userCount === drillActualRunningCount) { flashDrillFeedbackEl.textContent = `Correct! Running count was ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-correct visible'; } else { flashDrillFeedbackEl.textContent = `Incorrect. Your count: ${userCount}. Actual count: ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-wrong visible'; } } if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; }
+    function evaluateFlashDrill() { if (!flashDrillInputAreaEl || flashDrillInputAreaEl.style.display === 'none') return; const userCount = (flashDrillUserCountInputEl && parseInt(flashDrillUserCountInputEl.value)); if (isNaN(userCount)) { if (flashDrillFeedbackEl) { flashDrillFeedbackEl.textContent = "Please enter a valid number."; flashDrillFeedbackEl.className = 'message-display message-wrong visible';} return; } if (flashDrillFeedbackEl) { flashDrillFeedbackEl.classList.add('visible'); if (userCount === drillActualRunningCount) { flashDrillFeedbackEl.textContent = `Correct! Running count was ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-correct visible'; } else { flashDrillFeedbackEl.textContent = `Incorrect. Your count: ${userCount}. Actual count: ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-wrong visible'; } } if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; }
 
     // =========================================================================
     // 11. SCOREBOARD, MESSAGES, SOUNDS, LOCALSTORAGE
