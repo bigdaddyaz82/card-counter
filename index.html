@@ -3,50 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blackjack Card Counter Trainer</title>
+    <title>Card Counting Trainer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Blackjack Trainer</h1>
+        <h1>Card Counting Trainer (Hi-Lo)</h1>
 
-        <div class="info-area">
-            <p>Chips: $<span id="chip-count">1000</span></p>
-            <p>Current Bet: $<span id="current-bet">0</span></p>
+        <div class="game-info">
             <p>Running Count: <span id="running-count">0</span></p>
-            <p>True Count: <span id="true-count">0</span></p>
-            <p>Cards in Shoe: <span id="cards-in-shoe">0</span></p>
+            <p>Decks Remaining: <span id="decks-remaining">0</span></p>
+            <p>True Count: <span id="true-count">0.00</span></p>
+            <p id="reshuffle-message" class="message"></p>
         </div>
 
-        <div class="game-area">
-            <div class="hand-area">
-                <h2>Dealer's Hand (<span id="dealer-score">0</span>)</h2>
-                <div id="dealer-cards" class="cards"></div>
-            </div>
-
-            <div class="hand-area">
-                <h2>Your Hand (<span id="player-score">0</span>)</h2>
-                <div id="player-cards" class="cards"></div>
+        <div class="dealer-area">
+            <h2>Dealer's Hand (<span id="dealer-score">0</span>)</h2>
+            <div id="dealer-cards" class="cards-area">
+                <!-- Dealer cards will be added here by JavaScript -->
             </div>
         </div>
 
-        <div class="message-area">
-            <p id="message">Place your bet to start.</p>
+        <div class="player-area">
+            <h2>Player's Hand (<span id="player-score">0</span>)</h2>
+            <div id="player-cards" class="cards-area">
+                <!-- Player cards will be added here by JavaScript -->
+            </div>
         </div>
 
-        <div class="controls-area">
-            <div id="betting-controls">
-                <label for="bet-amount">Bet Amount:</label>
-                <input type="number" id="bet-amount" value="10" min="5">
-                <button id="deal-button">Deal</button>
-            </div>
-            <div id="action-controls" style="display: none;">
-                <button id="hit-button">Hit</button>
-                <button id="stand-button">Stand</button>
-                <!-- <button id="double-button">Double Down</button> -->
-                <!-- <button id="split-button">Split</button> -->
-            </div>
+        <div class="actions">
+            <button id="hit-button">Hit</button>
+            <button id="stand-button">Stand</button>
+            <button id="deal-button">New Hand / Deal</button>
         </div>
+
+        <p id="game-message" class="message"></p>
+        <p id="last-card-info" class="message"></p>
+
     </div>
 
     <script src="script.js"></script>
