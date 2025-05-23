@@ -1,6 +1,11 @@
 /* --- Google Font Import --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* --- Global Box Sizing --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* --- Base & Variables (These are your DARK MODE DEFAULTS) --- */
 :root {
   --bg-color: #1a202c; /* Very Dark Slate/Blue */
@@ -90,7 +95,7 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
-  box-sizing: border-box;
+  /* box-sizing: border-box; // Moved to global */
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
 }
 
@@ -105,7 +110,7 @@ body {
   transition: background-color 0.3s ease; /* Smooth theme transition */
 }
 
-h1 {
+h1 { /* Main H1, possibly inside .app-header */
   color: var(--accent-primary);
   margin-top: 0;
   margin-bottom: 30px;
@@ -119,19 +124,19 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px; /* Adjust as needed */
+    margin-bottom: 20px; 
 }
 
-.app-header h1 {
-    margin-bottom: 0; /* h1 already has margin, remove if inside header */
-    font-size: 1.8em; /* Adjust if too big in header */
+.app-header h1 { /* If h1 is specifically inside app-header */
+    margin-bottom: 0; 
+    font-size: 1.8em; 
 }
 
 #themeToggle {
     background: none;
     border: none;
-    color: var(--text-secondary);
-    font-size: 1.8em; /* Adjust icon size */
+    color: var(--text-secondary); /* Uses theme-aware variable */
+    font-size: 1.8em; 
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
@@ -139,7 +144,7 @@ h1 {
 }
 #themeToggle:hover {
     color: var(--text-primary);
-    background-color: rgba(127,127,127,0.1); /* Subtle hover */
+    background-color: rgba(127,127,127,0.1); 
 }
 
 
@@ -154,7 +159,7 @@ h1 {
 }
 
 .game-controls select,
-.game-controls button, /* General button styling, specific buttons can override */
+.game-controls button, 
 .game-controls input[type="number"] {
   font-size: 0.9em;
   font-family: var(--font-main);
@@ -166,22 +171,21 @@ h1 {
   color: var(--text-primary);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease, color 0.2s ease;
-  box-sizing: border-box;
+  /* box-sizing: border-box; // Moved to global */
 }
 
 .game-controls select:focus,
 .game-controls input[type="number"]:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 30%, transparent); /* Adjusted shadow opacity */
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 30%, transparent); 
 }
 
-/* General hover for secondary-style buttons in game-controls */
-.game-controls button:not(#newShoeButton):not(#musicToggle.on):not([id*="Button"][class*="primary"]):hover, /* Avoid primary styled buttons */
+.game-controls button:not(#newShoeButton):not(#musicToggle.on):not([id*="Button"][class*="primary"]):hover, 
 .game-controls select:hover,
 .game-controls input[type="number"]:hover {
   background-color: var(--button-secondary-hover-bg);
-  border-color: color-mix(in srgb, var(--input-border) 70%, black); /* Slightly darker border */
+  border-color: color-mix(in srgb, var(--input-border) 70%, black); 
 }
 
 .game-controls button:active {
@@ -190,16 +194,16 @@ h1 {
 
 /* Music Toggle Specific */
 .game-controls button#musicToggle {
-  background-color: var(--button-secondary-bg); /* Default OFF state */
+  background-color: var(--button-secondary-bg); 
   border-color: var(--input-border);
 }
 .game-controls button#musicToggle.on {
   background-color: var(--accent-green);
-  border-color: color-mix(in srgb, var(--accent-green) 70%, black); /* Darker green border */
-  color: #ffffff; /* Ensure white text on green */
+  border-color: color-mix(in srgb, var(--accent-green) 70%, black); 
+  color: #ffffff; 
 }
 .game-controls button#musicToggle.on:hover {
-  background-color: color-mix(in srgb, var(--accent-green) 85%, white); /* Slightly lighter green for hover */
+  background-color: color-mix(in srgb, var(--accent-green) 85%, white); 
 }
 .game-controls button#musicToggle:not(.on):hover {
     background-color: var(--button-secondary-hover-bg);
@@ -221,7 +225,7 @@ h1 {
   white-space: nowrap;
 }
 
-#speedControlContainer input[type="number"] {
+#speedControlContainer input[type="number"] { /* Assuming this ID for the container of speed input */
   width: 60px;
   text-align: center;
 }
@@ -240,15 +244,15 @@ h1 {
 /* New Shoe Button (primary style) */
 #newShoeButton {
   background-color: var(--accent-primary);
-  color: var(--button-primary-text); /* Use variable for text on primary button */
+  color: var(--button-primary-text); 
   font-weight: 600;
   font-size: 1em;
   padding: 12px 20px;
   border: none;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05); /* Softer shadow */
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05); 
   width: 100%; 
   margin-top: 10px; 
-  order: 5; 
+  order: 5; /* Example if using flex order */
 }
 
 #newShoeButton:hover {
@@ -258,7 +262,7 @@ h1 {
 }
 
 #newShoeButton:active {
-  background-color: color-mix(in srgb, var(--accent-primary-darker) 80%, black); /* Even darker */
+  background-color: color-mix(in srgb, var(--accent-primary-darker) 80%, black); 
   transform: translateY(0px);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
@@ -267,13 +271,17 @@ h1 {
 .game-mode-selector {
     margin-top: 15px;
     margin-bottom: 15px;
-    justify-content: center; /* Center it if it's the only item in its row */
+    display: flex; /* Added to allow label and select alignment if needed */
+    align-items: center; /* Align label and select */
+    gap: 8px; /* Space between label and select */
+    justify-content: center; 
 }
 .game-mode-selector label {
     color: var(--text-secondary);
+    font-weight: 500; /* Consistent with other labels */
 }
 .game-mode-selector select {
-    min-width: 200px; /* Give it some decent width */
+    min-width: 200px; 
 }
 
 /* --- Timer & Card Display --- */
@@ -290,7 +298,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 185px;
+  min-height: 185px; /* Height of card + some padding */
 }
 
 #cardContainer {
@@ -311,7 +319,7 @@ h1 {
   align-items: center;
   font-size: 4em;
   font-weight: 700;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.08); /* Softer shadow */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.08); 
   border: none;
   transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, color 0.3s ease;
 }
@@ -325,17 +333,18 @@ h1 {
     content: "♦︎♣︎♥︎♠︎"; 
     font-size: 0.4em; 
     opacity: 0.1;
+    position: absolute; /* To center it better if needed */
     transform: rotate(45deg);
-    color: var(--card-back-text); /* Ensure pattern uses appropriate contrast */
+    color: var(--card-back-text); 
 }
 
 .card-front {
   background: var(--card-front-bg);
-  /* Color is set by .red or .black classes */
   transform: rotateY(180deg);
 }
-.card-front.red { color: var(--card-front-text-red); } 
-.card-front.black { color: var(--card-front-text-black); } 
+/* Updated selectors to match JS: .red-card and .black-card */
+.card-front.red-card { color: var(--card-front-text-red); } 
+.card-front.black-card { color: var(--card-front-text-black); } 
 
 #cardContainer.flipping .card-front { transform: rotateY(0deg); }
 #cardContainer.flipping .card-back { transform: rotateY(-180deg); }
@@ -359,10 +368,10 @@ h1 {
   padding: 5px 10px;
   background-color: color-mix(in srgb, var(--input-border) 30%, transparent);
   border-radius: 6px;
-  min-width: 120px;
+  min-width: 120px; /* Ensure some width */
   text-align: center;
 }
-#runningCountDisplay span,
+#runningCountDisplay span, /* If you wrap the number in a span for specific color */
 #trueCountDisplay span {
     color: var(--accent-secondary);
     margin-left: 5px;
@@ -378,8 +387,8 @@ h1 {
   text-align: center;
 }
 
-/* --- Instructions --- */
-#instructions {
+/* --- Current System Description (was #instructions) --- */
+#currentSystemValuesDisplay { /* Changed from #instructions to match JS ID */
   font-size: 0.95em;
   line-height: 1.6;
   margin-bottom: 25px;
@@ -389,16 +398,18 @@ h1 {
   padding: 15px;
   border-radius: 8px;
 }
-#instructions p { margin: 8px 0; }
-#instructions strong {
+/* These apply if the description textContent itself contains these HTML tags. */
+/* JS currently sets textContent, so these might not be used unless description string has HTML */
+#currentSystemValuesDisplay p { margin: 8px 0; }
+#currentSystemValuesDisplay strong {
   color: var(--text-primary);
   font-weight: 600;
 }
-#instructions ul {
+#currentSystemValuesDisplay ul {
     list-style-type: disc;
     margin-left: 20px;
 }
-#instructions ul li {
+#currentSystemValuesDisplay ul li {
     margin-bottom: 5px;
 }
 
@@ -414,13 +425,13 @@ h1 {
   font-family: var(--font-main);
   font-size: 1.2em;
   font-weight: 600;
-  padding: 15px 0;
-  width: 90px;
-  border-radius: 25px;
+  padding: 15px 0; /* Vertical padding, width controls horizontal */
+  width: 90px; /* Fixed width for circle-like buttons */
+  border-radius: 25px; /* More rounded for these specific buttons */
   border: none;
   cursor: pointer;
-  background-color: var(--accent-primary); /* Using primary accent */
-  color: var(--button-primary-text);     /* Text on primary button */
+  background-color: var(--accent-primary); 
+  color: var(--button-primary-text);     
   box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
   transition: all 0.2s ease-out;
 }
@@ -447,7 +458,7 @@ h1 {
   border-radius: 8px;
 }
 #scoreboard p { margin: 8px 0; }
-#scoreboard span {
+#scoreboard span { /* For the score/highscore numbers */
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -457,32 +468,31 @@ h1 {
   margin-top: 25px;
   font-size: 1.15em;
   font-weight: 500;
-  min-height: 1.5em;
+  min-height: 1.5em; /* To prevent layout jump */
   padding: 8px 12px;
   border-radius: 6px;
   text-align: center;
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
+  opacity: 0; /* Hidden by default, JS adds .visible */
 }
 #messageDisplay.visible {
     opacity: 1;
 }
-.message-display.message-correct {
+.message-display.message-correct { /* Class added by JS */
   background-color: var(--message-correct-bg-alpha);
   color: var(--accent-green);
 }
-.message-display.message-wrong {
+.message-display.message-wrong { /* Class added by JS */
   background-color: var(--message-wrong-bg-alpha);
   color: var(--accent-red);
 }
-.message-display.message-info {
+.message-display.message-info { /* Class added by JS */
   background-color: var(--message-info-bg-alpha);
   color: var(--message-info-text);
 }
 
 /* --- Flashing Cards Drill Area --- */
 #flashDrillArea {
-  /* Styles for the drill area if needed beyond display:none/block */
   padding: 15px;
   border: 1px dashed var(--input-border);
   border-radius: 8px;
@@ -500,16 +510,19 @@ h1 {
   margin-bottom: 20px;
 }
 .drill-controls .control-group {
-  min-width: 200px; /* Give them some space */
+  min-width: 200px; 
 }
-#startFlashDrillButton { /* Style as a primary button */
+#startFlashDrillButton { 
   background-color: var(--accent-primary);
   color: var(--button-primary-text);
-  border: none;
+  border: none; /* Consistent with other primary buttons */
 }
 #startFlashDrillButton:hover {
   background-color: var(--accent-primary-darker);
 }
+#flashDrillCardDisplayArea .card-front.red { color: var(--card-front-text-red); }
+#flashDrillCardDisplayArea .card-front.black { color: var(--card-front-text-black); }
+
 #flashDrillInputArea {
   margin-top: 20px;
   text-align: center;
@@ -524,14 +537,14 @@ h1 {
   margin-right: 10px;
   text-align: center;
 }
-#submitFlashDrillCountButton { /* Style as a secondary button */
+#submitFlashDrillCountButton { 
   background-color: var(--button-secondary-bg);
+  /* color is var(--text-primary) by default for .game-controls button */
 }
 #submitFlashDrillCountButton:hover {
   background-color: var(--button-secondary-hover-bg);
 }
 #flashDrillFeedback {
-    /* Uses .message-correct, .message-wrong classes from #messageDisplay */
     font-weight: 600;
     min-height: 1.5em;
     padding: 8px 12px;
@@ -540,15 +553,28 @@ h1 {
     margin-top: 15px;
     opacity: 0;
     transition: opacity 0.3s ease;
+    /* Uses .message-correct, .message-wrong, .message-info classes if JS adds them like #messageDisplay */
 }
 #flashDrillFeedback.visible {
     opacity: 1;
+}
+#flashDrillFeedback.message-correct {
+  background-color: var(--message-correct-bg-alpha);
+  color: var(--accent-green);
+}
+#flashDrillFeedback.message-wrong {
+  background-color: var(--message-wrong-bg-alpha);
+  color: var(--accent-red);
+}
+#flashDrillFeedback.message-info {
+  background-color: var(--message-info-bg-alpha);
+  color: var(--message-info-text);
 }
 
 
 /* --- Betting Practice Section --- */
 #bettingPracticeSection {
-  background-color: color-mix(in srgb, var(--bg-color) 80%, var(--container-bg)); /* Blend of page and container bg */
+  background-color: color-mix(in srgb, var(--bg-color) 80%, var(--container-bg)); 
   padding: 20px;
   margin-top: 25px;
   border-radius: 10px;
@@ -583,13 +609,13 @@ h1 {
   padding: 10px 15px;
   border-radius: 8px;
   border: 1px solid var(--input-border);
-  background-color: var(--input-bg);
+  background-color: var(--input-bg); /* Default button style in this section */
   color: var(--text-primary);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, transform 0.1s ease;
 }
 .betting-buttons button:hover,
-#continueDealingButton:hover {
+#continueDealingButton:hover { /* Generic hover for buttons in this section */
   background-color: var(--button-secondary-hover-bg);
 }
 .betting-buttons button:active,
@@ -597,18 +623,18 @@ h1 {
   transform: scale(0.98) translateY(1px);
 }
 
-#continueDealingButton {
+#continueDealingButton { /* Specific style for continue button */
     background-color: var(--accent-green);
-    color: #ffffff; /* Ensure white text */
+    color: #ffffff; 
     border-color: color-mix(in srgb, var(--accent-green) 70%, black);
 }
-#continueDealingButton:hover {
+#continueDealingButton:hover { /* Override generic hover */
     background-color: color-mix(in srgb, var(--accent-green) 85%, white);
 }
 
 #bettingFeedback {
   font-weight: 600;
-  min-height: 1.5em; /* Consistent with messageDisplay */
+  min-height: 1.5em; 
   padding: 8px 12px;
   border-radius: 6px;
   text-align: center;
@@ -618,12 +644,12 @@ h1 {
 #bettingFeedback.visible {
     opacity: 1;
 }
-#bettingFeedback.message-correct { /* Reusing classes from #messageDisplay for consistency */
+#bettingFeedback.message-correct { 
   color: var(--accent-green);
   background-color: var(--betting-feedback-correct-bg-alpha);
 }
 #bettingFeedback.message-info {
-  color: var(--message-info-text); /* Use the info text color from main messages */
+  color: var(--message-info-text); 
   background-color: var(--betting-feedback-info-bg-alpha);
 }
 #bettingFeedback.message-wrong {
@@ -641,17 +667,16 @@ h1 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.6); /* Slightly less opaque backdrop for better contrast */
+  background-color: rgba(0, 0, 0, 0.6); 
   align-items: center;
   justify-content: center;
 }
-/* JS will add/remove .active to show/hide */
-.modal.active { 
+.modal.active { /* JS will add/remove .active to show/hide */
     display: flex;
 }
 
 .modal-content {
-  background-color: var(--container-bg); /* Use container bg for modals */
+  background-color: var(--container-bg); 
   color: var(--text-primary);
   margin: auto;
   padding: 25px 30px;
@@ -659,10 +684,12 @@ h1 {
   border-radius: 12px;
   width: 90%;
   max-width: 600px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Consistent shadow */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
   position: relative;
   text-align: left;
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+  max-height: 85vh; /* Allow scrolling within modal */
+  overflow-y: auto; /* Add scroll for content longer than max-height */
+  transition: background-color 0.3s ease, color 0.3s ease; 
 }
 .modal-content h2 {
   color: var(--accent-primary);
@@ -682,7 +709,7 @@ h1 {
 .modal-content ul {
   list-style-position: inside;
   list-style-type: disc;
-  padding-left: 0;
+  padding-left: 0; /* If list-style-position is inside */
   margin-bottom: 15px;
 }
 .modal-content ul li {
@@ -707,11 +734,11 @@ h1 {
     text-align: center;
 }
 #basicStrategyChartContainer th {
-    background-color: var(--input-bg); /* Header row background */
+    background-color: var(--input-bg); 
     color: var(--text-primary);
     font-weight: 600;
 }
-#basicStrategyChartContainer td strong { /* For player hand like "A,7" */
+#basicStrategyChartContainer td strong { 
     color: var(--accent-secondary);
 }
 
@@ -724,55 +751,55 @@ h1 {
   font-size: 28px;
   font-weight: bold;
   transition: color 0.2s ease;
+  cursor: pointer; /* Ensure cursor changes */
 }
 
 .close-button:hover,
 .close-button:focus {
   color: var(--text-primary);
   text-decoration: none;
-  cursor: pointer;
 }
 
 /* --- Responsive adjustments --- */
 @media (max-width: 480px) {
   body {
     padding: 10px;
-    align-items: flex-start;
+    align-items: flex-start; /* Allow container to not be fully centered vertically if content is short */
   }
   .container {
     padding: 20px 15px;
-    max-width: 100%;
+    max-width: 100%; /* Take full width on small screens */
   }
   
   .app-header h1 {
-      font-size: 1.5em; /* Adjust header h1 for mobile */
+      font-size: 1.5em; 
   }
   #themeToggle {
-      font-size: 1.5em; /* Adjust theme icon size for mobile */
+      font-size: 1.5em; 
   }
 
-  h1 { /* General h1 in container */
+  h1 { /* General h1 if not in app-header */
     font-size: 1.8em; 
     margin-bottom: 20px;
   }
   .game-controls {
     flex-direction: column;
-    align-items: stretch;
+    align-items: stretch; /* Make controls take full width */
     gap: 12px;
   }
   .control-group {
      width: 100%;
-     justify-content: space-between;
+     justify-content: space-between; /* Distribute label and input */
      min-width: unset;
   }
 
   #speedControlContainer input[type="number"] {
-      width: 80px;
-      flex-grow: 0;
+      width: 80px; /* Allow a bit more space */
+      flex-grow: 0; /* Don't let it grow excessively */
   }
   #newShoeButton {
-      margin-top: 5px;
-      width: 100%;
+      margin-top: 5px; /* Less margin if stacked */
+      width: 100%; /* Full width when stacked */
   }
 
   .count-displays {
@@ -784,7 +811,7 @@ h1 {
   #trueCountDisplay {
       font-size: 1.3em;
       width: 100%;
-      box-sizing: border-box;
+      /* box-sizing: border-box; // Handled globally */
   }
   #deckInfoDisplay {
       font-size: 0.85em;
@@ -801,7 +828,7 @@ h1 {
 
   .action-buttons {
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow wrapping if screen is too narrow */
   }
   .action-buttons button {
     font-size: 1em;
@@ -813,7 +840,7 @@ h1 {
   #timerDisplay {
     font-size: 1.4em;
   }
-  #instructions {
+  #currentSystemValuesDisplay { /* was #instructions */
     font-size: 0.9em;
     padding: 10px;
     margin-bottom: 20px;
@@ -849,11 +876,11 @@ h1 {
       font-size: 1.2em;
   }
   .betting-buttons button {
-      width: 100%;
+      width: 100%; /* Stack betting choice buttons */
       font-size: 0.9em;
   }
   #continueDealingButton {
-      width: 100%;
+      width: 100%; /* Stack continue button */
       font-size: 0.95em;
   }
 
@@ -868,10 +895,10 @@ h1 {
     font-size: 0.9em;
   }
   #basicStrategyChartContainer table {
-    font-size: 0.75em; /* Smaller table font on mobile */
+    font-size: 0.75em; 
   }
   #basicStrategyChartContainer th, 
   #basicStrategyChartContainer td {
     padding: 4px 5px;
   }
-  }
+                             }
