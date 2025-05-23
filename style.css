@@ -1,843 +1,235 @@
-/* --- Google Font Import --- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-/* --- Global Box Sizing --- */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-/* --- Base & Variables (These are your DARK MODE DEFAULTS) --- */
-:root {
-  --bg-color: #1a202c; /* Very Dark Slate/Blue */
-  --container-bg: #2d3748; /* Darker Slate */
-  --text-primary: #e2e8f0; /* Light Grey/Off-White */
-  --text-secondary: #94a3b8; /* Muted Grey */
-  --accent-primary: #22d3ee; /* Vibrant Cyan/Teal */
-  --accent-primary-darker: #06b6d4;
-  --accent-secondary: #facc15; /* Bright Yellow */
-  --accent-green: #34d399; /* For Music ON & Correct */
-  --accent-red: #f87171;   /* For Wrong */
-  --font-main: 'Poppins', sans-serif;
-  --input-bg: #334155; /* Slate 700 for input backgrounds */
-  --input-border: #475569; /* Slate 600 for input borders */
-  --button-secondary-bg: #4b5563; /* Grey for less prominent buttons */
-  --button-secondary-hover-bg: #525f74;
-  --button-primary-text: #111827; /* Dark text for primary buttons (like New Shoe) */
-
-  /* Card Specifics for Dark Mode */
-  --card-back-gradient-start: #4b5563;
-  --card-back-gradient-end: #374151;
-  --card-back-text: #9ca3af;
-  --card-front-bg: #f9fafb; 
-  --card-front-text-black: #1f2937; 
-  --card-front-text-red: #ef4444;   
-
-  /* Message Specifics for Dark Mode */
-  --message-correct-bg-alpha: rgba(52, 211, 153, 0.15);
-  --message-wrong-bg-alpha: rgba(248, 113, 113, 0.15);
-  --message-info-bg-alpha: rgba(56, 189, 248, 0.1);
-  --message-info-text: #38bdf8;
-
-  /* Betting Feedback Specifics for Dark Mode */
-  --betting-feedback-correct-bg-alpha: rgba(52, 211, 153, 0.1);
-  --betting-feedback-info-bg-alpha: rgba(56, 189, 248, 0.08);
-  --betting-feedback-wrong-bg-alpha: rgba(248, 113, 113, 0.1);
-}
-
-/* --- LIGHT MODE OVERRIDES --- */
-body.light-mode {
-  --bg-color: #f8f9fa;                     
-  --container-bg: #ffffff;                 
-  --text-primary: #212529;                 
-  --text-secondary: #6c757d;               
-  
-  --accent-primary: #007bff;               
-  --accent-primary-darker: #0056b3;
-  --accent-secondary: #ffc107;             
-  --accent-green: #28a745;                 
-  --accent-red: #dc3545;                   
-  
-  --input-bg: #ffffff;                     
-  --input-border: #ced4da;                 
-  --button-secondary-bg: #e9ecef;         
-  --button-secondary-hover-bg: #d6dade;
-  --button-primary-text: #ffffff;          
-
-  /* Card Specifics for Light Mode */
-  --card-back-gradient-start: #e9ecef;    
-  --card-back-gradient-end: #dee2e6;
-  --card-back-text: #495057;               
-  --card-front-bg: #ffffff;                
-  --card-front-text-black: #212529;        
-  --card-front-text-red: #dc3545;          
-
-  /* Message Specifics for Light Mode */
-  --message-correct-bg-alpha: rgba(40, 167, 69, 0.15); 
-  --message-wrong-bg-alpha: rgba(220, 53, 69, 0.15);  
-  --message-info-bg-alpha: rgba(23, 162, 184, 0.1);   
-  --message-info-text: #117a8b;                       
-
-  /* Betting Feedback Specifics for Light Mode */
-  --betting-feedback-correct-bg-alpha: rgba(40, 167, 69, 0.1);
-  --betting-feedback-info-bg-alpha: rgba(23, 162, 184, 0.08);
-  --betting-feedback-wrong-bg-alpha: rgba(220, 53, 69, 0.1);
-}
-
-
-/* --- General Body & Container --- */
 body {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  font-family: var(--font-main);
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-  transition: background-color 0.3s ease, color 0.3s ease; 
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top for longer content */
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    color: #333;
+    padding-top: 20px; /* Add some padding at the top */
 }
 
 .container {
-  background: var(--container-bg);
-  padding: 25px 30px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0,0,0,0.1); 
-  width: 100%;
-  max-width: 480px;
-  text-align: center;
-  transition: background-color 0.3s ease; 
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 700px;
 }
 
-h1 { 
-  color: var(--accent-primary);
-  margin-top: 0;
-  margin-bottom: 30px;
-  font-size: 2.3em;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+h1 {
+    color: #333;
+    margin-bottom: 20px;
 }
 
-/* --- Header (For Title and Theme Toggle) --- */
-.app-header {
+.game-info, .count-info, .settings {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: space-around;
     align-items: center;
-    margin-bottom: 20px; 
-}
-
-.app-header h1 { 
-    margin-bottom: 0; 
-    font-size: 1.8em; 
-}
-
-#themeToggle {
-    background: none;
-    border: none;
-    color: var(--text-secondary); 
-    font-size: 1.8em; 
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-#themeToggle:hover {
-    color: var(--text-primary);
-    background-color: rgba(127,127,127,0.1); 
-}
-
-
-/* --- Game Controls --- */
-.game-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.game-controls select,
-.game-controls button, 
-.game-controls input[type="number"] {
-  font-size: 0.9em;
-  font-family: var(--font-main);
-  font-weight: 500;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--input-border);
-  background-color: var(--input-bg);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease, color 0.2s ease;
-}
-
-.game-controls select:focus,
-.game-controls input[type="number"]:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 30%, transparent); 
-}
-
-.game-controls button:not(#newShoeButton):not(#musicToggle.on):not([id*="Button"][class*="primary"]):hover, 
-.game-controls select:hover,
-.game-controls input[type="number"]:hover {
-  background-color: var(--button-secondary-hover-bg);
-  border-color: color-mix(in srgb, var(--input-border) 70%, black); 
-}
-
-.game-controls button:active {
-    transform: translateY(1px);
-}
-
-/* Music Toggle Specific */
-.game-controls button#musicToggle {
-  background-color: var(--button-secondary-bg); 
-  border-color: var(--input-border);
-}
-.game-controls button#musicToggle.on {
-  background-color: var(--accent-green);
-  border-color: color-mix(in srgb, var(--accent-green) 70%, black); 
-  color: #ffffff; 
-}
-.game-controls button#musicToggle.on:hover {
-  background-color: color-mix(in srgb, var(--accent-green) 85%, white); 
-}
-.game-controls button#musicToggle:not(.on):hover {
-    background-color: var(--button-secondary-hover-bg);
-}
-
-
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-grow: 1;
-  min-width: 180px;
-}
-
-.control-group label {
-  font-size: 0.9em;
-  color: var(--text-secondary);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-#speedControlContainer input[type="number"] { 
-  width: 60px;
-  text-align: center;
-}
-
-/* How to Play & Basic Strategy Buttons (secondary style) */
-.game-controls button#howToPlayButton,
-.game-controls button#basicStrategyButton {
-  background-color: var(--button-secondary-bg);
-  border-color: var(--input-border);
-}
-.game-controls button#howToPlayButton:hover,
-.game-controls button#basicStrategyButton:hover {
-  background-color: var(--button-secondary-hover-bg);
-}
-
-/* New Shoe Button (primary style) */
-#newShoeButton {
-  background-color: var(--accent-primary);
-  color: var(--button-primary-text); 
-  font-weight: 600;
-  font-size: 1em;
-  padding: 12px 20px;
-  border: none;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05); 
-  width: 100%; 
-  margin-top: 10px; 
-  order: 5; 
-}
-
-#newShoeButton:hover {
-  background-color: var(--accent-primary-darker);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#newShoeButton:active {
-  background-color: color-mix(in srgb, var(--accent-primary-darker) 80%, black); 
-  transform: translateY(0px);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* --- Game Mode Selector - COMMENTED OUT as feature is removed --- */
-/*
-.game-mode-selector {
-    margin-top: 15px;
     margin-bottom: 15px;
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    justify-content: center; 
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
-.game-mode-selector label {
-    color: var(--text-secondary);
-    font-weight: 500; 
+.game-info div, .count-info div {
+    margin: 5px 10px;
 }
-.game-mode-selector select {
-    min-width: 200px; 
+.settings label, .settings select, .settings input, .settings button {
+    margin: 5px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
 }
-*/
-
-/* --- Timer & Card Display --- */
-#timerDisplay {
-  font-size: 1.8em;
-  color: var(--accent-secondary);
-  margin-bottom: 25px;
-  font-weight: 600;
+.settings button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
 }
-
-.card-area {
-  perspective: 1200px;
-  margin-bottom: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 185px; 
+.settings button:hover {
+    background-color: #0056b3;
+}
+#musicToggle.on {
+    background-color: #28a745;
+}
+#musicToggle.on:hover {
+    background-color: #1e7e34;
 }
 
-#cardContainer {
-  width: 120px;
-  height: 180px;
-  position: relative;
-  transform-style: preserve-3d;
+
+.card-container {
+    width: 120px; /* Card width */
+    height: 180px; /* Card height */
+    margin: 20px auto;
+    position: relative;
+    perspective: 1000px; /* For 3D flip effect */
+    border: 1px solid #ccc;
+    border-radius: 10px;
 }
 
 .card-face {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4em;
-  font-weight: 700;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.08); 
-  border: none;
-  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, color 0.3s ease;
-}
-
-.card-back {
-  background: linear-gradient(145deg, var(--card-back-gradient-start), var(--card-back-gradient-end));
-  color: var(--card-back-text);
-  transform: rotateY(0deg);
-}
-.card-back::before {
-    content: "♦︎♣︎♥︎♠︎"; 
-    font-size: 0.4em; 
-    opacity: 0.1;
-    position: absolute; 
-    transform: rotate(45deg);
-    color: var(--card-back-text); 
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden; /* Hides the back of the element when flipped */
+    transition: transform 0.6s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .card-front {
-  background: var(--card-front-bg);
-  transform: rotateY(180deg);
+    background-color: white;
+    color: #333;
+    transform: rotateY(180deg); /* Initially hidden */
 }
-.card-front.red-card { color: var(--card-front-text-red); } 
-.card-front.black-card { color: var(--card-front-text-black); } 
+.card-front.red { color: red; }
+.card-front.black { color: black; }
 
-#cardContainer.flipping .card-front { transform: rotateY(0deg); }
-#cardContainer.flipping .card-back { transform: rotateY(-180deg); }
-
-/* --- Counts & Deck Info --- */
-.count-displays {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-  gap: 15px;
-  width: 100%;
+.card-back {
+    background-color: #6c757d;
+    color: white;
+    /* No rotation needed, initially visible */
 }
 
-#runningCountDisplay,
-#trueCountDisplay {
-  font-size: 1.5em;
-  font-weight: 600;
-  color: var(--text-primary);
-  padding: 5px 10px;
-  background-color: color-mix(in srgb, var(--input-border) 30%, transparent);
-  border-radius: 6px;
-  min-width: 120px; 
-  text-align: center;
-}
-#runningCountDisplay span, 
-#trueCountDisplay span {
-    color: var(--accent-secondary);
-    margin-left: 5px;
+.card-container.flipping .card-front {
+    transform: rotateY(0deg); /* Show front */
 }
 
-#deckInfoDisplay {
-  font-size: 0.95em;
-  color: var(--text-secondary);
-  margin-top: 5px;
-  margin-bottom: 20px;
-  font-weight: 500;
-  width: 100%;
-  text-align: center;
-}
-
-/* --- Current System Description / Instructions --- */
-#currentSystemValuesDisplay { 
-  display: block; 
-  font-size: 0.95em;
-  line-height: 1.6;
-  margin-top: 5px; 
-  margin-bottom: 10px; 
-  color: var(--text-secondary);
-  text-align: left;
-  background-color: color-mix(in srgb, var(--input-border) 15%, transparent);
-  padding: 10px 15px; 
-  border-radius: 8px;
-}
-#instructions p { 
-    margin: 8px 0;
-    text-align: left; 
-}
-#instructions p:last-child { 
-    margin-top: 15px; 
-}
-#currentSystemValuesDisplay p, 
-#currentSystemValuesDisplay strong, 
-#currentSystemValuesDisplay ul, 
-#currentSystemValuesDisplay ul li {
-    color: inherit; 
-}
-#currentSystemValuesDisplay strong {
-  color: var(--text-primary); 
-  font-weight: 600;
-}
-
-
-/* --- Action Buttons (+1, 0, -1) --- */
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
+.card-container.flipping .card-back {
+    transform: rotateY(-180deg); /* Hide back */
 }
 
 .action-buttons button {
-  font-family: var(--font-main);
-  font-size: 1.2em;
-  font-weight: 600;
-  padding: 15px 0; 
-  width: 90px; 
-  border-radius: 25px; 
-  border: none;
-  cursor: pointer;
-  background-color: var(--accent-primary); 
-  color: var(--button-primary-text);     
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
-  transition: all 0.2s ease-out;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #17a2b8;
+    color: white;
 }
-
 .action-buttons button:hover {
-  background-color: var(--accent-primary-darker);
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #138496;
 }
-.action-buttons button:active {
-  background-color: color-mix(in srgb, var(--accent-primary-darker) 80%, black);
-  transform: translateY(-1px) scale(0.98);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.action-buttons button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
-/* --- Scoreboard --- */
-#scoreboard {
-  margin-top: 25px;
-  font-size: 1.1em;
-  color: var(--text-secondary);
-  text-align: left;
-  background-color: color-mix(in srgb, var(--input-border) 15%, transparent);
-  padding: 15px;
-  border-radius: 8px;
+.message-display {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
 }
-#scoreboard p { margin: 8px 0; }
-#scoreboard span { 
-  font-weight: 700;
-  color: var(--text-primary);
+.message-info {
+    background-color: #e2f3fe;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
 }
-
-/* --- Message Display --- */
-#messageDisplay {
-  margin-top: 25px;
-  font-size: 1.15em;
-  font-weight: 500;
-  min-height: 1.5em; 
-  padding: 8px 12px;
-  border-radius: 6px;
-  text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-  opacity: 0; 
+.message-correct {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
-#messageDisplay.visible {
-    opacity: 1;
-}
-.message-display.message-correct { 
-  background-color: var(--message-correct-bg-alpha);
-  color: var(--accent-green);
-}
-.message-display.message-wrong { 
-  background-color: var(--message-wrong-bg-alpha);
-  color: var(--accent-red);
-}
-.message-display.message-info { 
-  background-color: var(--message-info-bg-alpha);
-  color: var(--message-info-text);
+.message-wrong {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
-/* --- Flashing Cards Drill Area - STYLES COMMENTED OUT --- */
-/*
-#flashDrillArea { ... }
-#flashDrillArea h3 { ... }
-.drill-controls { ... }
-.drill-controls .control-group { ... }
-#startFlashDrillButton { ... }
-#startFlashDrillButton:hover { ... }
-#flashDrillCardDisplayArea .card-front.red { ... }
-#flashDrillCardDisplayArea .card-front.black { ... }
-#flashDrillInputArea { ... }
-#flashDrillInputArea label { ... }
-#flashDrillInputArea input[type="number"] { ... }
-#submitFlashDrillCountButton { ... }
-#submitFlashDrillCountButton:hover { ... }
-#flashDrillFeedback { ... }
-#flashDrillFeedback.visible { ... }
-#flashDrillFeedback.message-correct { ... }
-#flashDrillFeedback.message-wrong { ... }
-#flashDrillFeedback.message-info { ... }
-*/
-
-/* --- Betting Practice Section --- */
+/* Betting Practice Section */
 #bettingPracticeSection {
-  background-color: color-mix(in srgb, var(--bg-color) 80%, var(--container-bg)); 
-  padding: 20px;
-  margin-top: 25px;
-  border-radius: 10px;
-  border: 1px solid var(--input-border);
-  text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    background-color: #f8f9fa;
 }
-#bettingPracticeSection h3 {
-  color: var(--accent-secondary);
-  margin-top: 0;
-  margin-bottom: 15px;
-  font-size: 1.3em;
+#bettingPracticeSection h2 {
+    margin-top: 0;
+    color: #007bff;
 }
-#bettingPracticeSection p {
-  margin-bottom: 10px;
-  color: var(--text-secondary);
+#bettingPracticeSection button {
+    margin: 5px;
+    padding: 8px 15px;
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
-#bettingPracticeSection p strong {
-  color: var(--text-primary);
+#bettingPracticeSection button:hover {
+    background-color: #e0a800;
 }
-.betting-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
+#bettingPracticeSection button:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
 }
-.betting-buttons button,
-#continueDealingButton {  
-  font-family: var(--font-main);
-  font-size: 0.95em;
-  font-weight: 500;
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid var(--input-border);
-  background-color: var(--input-bg); 
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
-}
-.betting-buttons button:hover,
-#continueDealingButton:hover { 
-  background-color: var(--button-secondary-hover-bg);
-}
-.betting-buttons button:active,
-#continueDealingButton:active {
-  transform: scale(0.98) translateY(1px);
-}
-
-#continueDealingButton { 
-    background-color: var(--accent-green);
-    color: #ffffff; 
-    border-color: color-mix(in srgb, var(--accent-green) 70%, black);
-}
-#continueDealingButton:hover { 
-    background-color: color-mix(in srgb, var(--accent-green) 85%, white);
-}
-
 #bettingFeedback {
-  font-weight: 600;
-  min-height: 1.5em; 
-  padding: 8px 12px;
-  border-radius: 6px;
-  text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
+    margin-top: 10px;
+    font-weight: bold;
 }
-#bettingFeedback.visible {
-    opacity: 1;
-}
-#bettingFeedback.message-correct { 
-  color: var(--accent-green);
-  background-color: var(--betting-feedback-correct-bg-alpha);
-}
-#bettingFeedback.message-info {
-  color: var(--message-info-text); 
-  background-color: var(--betting-feedback-info-bg-alpha);
-}
-#bettingFeedback.message-wrong {
-   color: var(--accent-red);
-   background-color: var(--betting-feedback-wrong-bg-alpha);
+#continueDealingButton {
+    background-color: #28a745 !important; /* Ensure it stands out */
+    color: white !important;
 }
 
-/* --- Modals (How to Play & Basic Strategy) --- */
+/* How to Play Modal */
 .modal {
-  display: none; 
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.6); 
-  align-items: center;
-  justify-content: center;
-}
-.modal.active { 
-    display: flex;
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Dim background */
+    align-items: center; /* For vertical centering */
+    justify-content: center; /* For horizontal centering */
 }
 
 .modal-content {
-  background-color: var(--container-bg); 
-  color: var(--text-primary);
-  margin: auto;
-  padding: 25px 30px;
-  border: 1px solid var(--input-border);
-  border-radius: 12px;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
-  position: relative;
-  text-align: left;
-  max-height: 85vh; 
-  overflow-y: auto; 
-  transition: background-color 0.3s ease, color 0.3s ease; 
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    text-align: left;
+    max-height: 80vh; /* Max height */
+    overflow-y: auto; /* Scroll if content is too long */
 }
-.modal-content h2 {
-  color: var(--accent-primary);
-  margin-top: 0;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.modal-content p {
-  margin-bottom: 12px;
-  line-height: 1.7;
-  color: var(--text-secondary);
-}
-.modal-content strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-.modal-content ul {
-  list-style-position: inside;
-  list-style-type: disc;
-  padding-left: 0; 
-  margin-bottom: 15px;
-}
-.modal-content ul li {
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-}
-.modal-content ul li strong {
-    color: var(--text-primary);
-}
-
-/* Basic Strategy Chart Table Specifics */
-#basicStrategyChartContainer table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.85em;
-}
-#basicStrategyChartContainer th, 
-#basicStrategyChartContainer td {
-    border: 1px solid var(--input-border);
-    padding: 6px 8px;
-    text-align: center;
-}
-#basicStrategyChartContainer th {
-    background-color: var(--input-bg); 
-    color: var(--text-primary);
-    font-weight: 600;
-}
-#basicStrategyChartContainer td strong { 
-    color: var(--accent-secondary);
-}
-
 
 .close-button {
-  color: var(--text-secondary);
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  font-weight: bold;
-  transition: color 0.2s ease;
-  cursor: pointer; 
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
 .close-button:hover,
 .close-button:focus {
-  color: var(--text-primary);
-  text-decoration: none;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
-
-/* --- Responsive adjustments --- */
-@media (max-width: 480px) {
-  body {
-    padding: 10px;
-    align-items: flex-start; 
-  }
-  .container {
-    padding: 20px 15px;
-    max-width: 100%; 
-  }
-  
-  .app-header h1 {
-      font-size: 1.5em; 
-  }
-  #themeToggle {
-      font-size: 1.5em; 
-  }
-
-  h1 { 
-    font-size: 1.8em; 
-    margin-bottom: 20px;
-  }
-  .game-controls {
-    flex-direction: column;
-    align-items: stretch; 
-    gap: 12px;
-  }
-  .control-group {
-     width: 100%;
-     justify-content: space-between; 
-     min-width: unset;
-  }
-
-  #speedControlContainer input[type="number"] {
-      width: 80px; 
-      flex-grow: 0; 
-  }
-  #newShoeButton {
-      margin-top: 5px; 
-      width: 100%; 
-  }
-
-  .count-displays {
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 15px;
-  }
-  #runningCountDisplay,
-  #trueCountDisplay {
-      font-size: 1.3em;
-      width: 100%;
-  }
-  #deckInfoDisplay {
-      font-size: 0.85em;
-      margin-bottom: 15px;
-  }
-
-  #cardContainer {
-    width: 100px;
-    height: 150px;
-  }
-  .card-face {
-    font-size: 3em;
-  }
-
-  .action-buttons {
-    gap: 10px;
-    flex-wrap: wrap; 
-  }
-  .action-buttons button {
-    font-size: 1em;
-    padding: 12px 0;
-    width: 80px;
-    border-radius: 20px;
-  }
-
-  #timerDisplay {
-    font-size: 1.4em;
-  }
-  #currentSystemValuesDisplay { 
-    font-size: 0.9em;
-    padding: 10px;
-    margin-bottom: 20px;
-  }
-  #scoreboard {
-      font-size: 1em;
-      padding: 10px;
-      margin-top: 20px;
-  }
-  #messageDisplay {
-      font-size: 1em;
-      margin-top: 20px;
-  }
-  
-  /* Flash Drill Responsive rules are not needed as feature is removed */
-  /*
-  #flashDrillArea { ... }
-  .drill-controls { ... }
-  .drill-controls .control-group { ... }
-  #flashDrillInputArea input[type="number"] { ... }
-  */
-
-  #bettingPracticeSection {
-      padding: 15px;
-  }
-  #bettingPracticeSection h3 {
-      font-size: 1.2em;
-  }
-  .betting-buttons button {
-      width: 100%; 
-      font-size: 0.9em;
-  }
-  #continueDealingButton {
-      width: 100%; 
-      font-size: 0.95em;
-  }
-
-  .modal-content {
-    width: 95%;
-    padding: 20px 15px;
-  }
-  .modal-content h2 {
-    font-size: 1.5em;
-  }
-  .modal-content p, .modal-content ul li {
-    font-size: 0.9em;
-  }
-  #basicStrategyChartContainer table {
-    font-size: 0.75em; 
-  }
-  #basicStrategyChartContainer th, 
-  #basicStrategyChartContainer td {
-    padding: 4px 5px;
-  }
+.modal-content h2 {
+    margin-top: 0;
+    color: #333;
+}
+.modal-content ul, .modal-content ol {
+    margin-left: 20px;
+    line-height: 1.6;
 }
