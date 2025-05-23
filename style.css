@@ -130,58 +130,106 @@ h2 {
 /* .card-display.black-card { color: #333; border-color: #333; } */
 
 
-#valueGuessSection, #rcGuessSection {
+/* Add these new styles or modify existing ones as needed */
+
+#valueGuessSection .question-label { /* Style for the question text */
+    display: block;
+    margin-bottom: 15px; /* Increased margin */
+    font-weight: 500;
+    color: #555;
+    text-align: center; /* Center the question */
+    font-size: 1.1em; /* Slightly larger */
+}
+
+.value-guess-buttons {
+    display: flex;
+    justify-content: center; /* Center buttons */
+    gap: 15px; /* Space between buttons */
+    margin-bottom: 10px;
+}
+
+.value-btn {
+    padding: 12px 25px; /* Generous padding */
+    font-size: 1.1em;   /* Larger font */
+    font-weight: bold;
+    border: 2px solid transparent; /* Start with transparent border */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    min-width: 70px; /* Ensure buttons have a decent width */
+    text-align: center;
+}
+
+.value-btn[data-value="-1"] {
+    background-color: #ffebee; /* Light red */
+    color: #c62828; /* Dark red */
+    border-color: #ef9a9a; /* Softer red border */
+}
+.value-btn[data-value="-1"]:hover {
+    background-color: #ffcdd2; /* Lighter red on hover */
+    border-color: #c62828;
+}
+
+.value-btn[data-value="0"] {
+    background-color: #e3f2fd; /* Light blue */
+    color: #1565c0; /* Dark blue */
+    border-color: #90caf9; /* Softer blue border */
+}
+.value-btn[data-value="0"]:hover {
+    background-color: #bbdefb; /* Lighter blue on hover */
+    border-color: #1565c0;
+}
+
+.value-btn[data-value="1"] {
+    background-color: #e8f5e9; /* Light green */
+    color: #2e7d32; /* Dark green */
+    border-color: #a5d6a7; /* Softer green border */
+}
+.value-btn[data-value="1"]:hover {
+    background-color: #c8e6c9; /* Lighter green on hover */
+    border-color: #2e7d32;
+}
+
+.value-btn:active {
+    transform: translateY(1px); /* Slight press effect */
+}
+
+/* Ensure #valueGuessSection still has some padding */
+#valueGuessSection {
     margin-bottom: 20px;
-    padding: 15px;
+    padding: 20px 15px; /* Adjusted padding */
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     background-color: #ffffff;
 }
 
-#valueGuessSection label, #rcGuessSection label {
+/* Remove old input styling if it was very specific to cardValueGuessInput */
+/* For example, if you had:
+#valueGuessSection input { ... }
+#valueGuessSection button { ... }
+You might want to remove or adjust them if they conflict or are no longer needed.
+The general button styling for rcGuessSection button should remain.
+*/
+
+/* Adjust label for rcGuessSection for consistency if needed */
+#rcGuessSection label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px; /* Consistent margin */
     font-weight: 500;
     color: #555;
+    text-align: center; /* Center if you prefer */
+    font-size: 1.1em;
 }
-
-#valueGuessSection input, #rcGuessSection input {
-    padding: 10px;
-    width: calc(60% - 22px); /* Adjust input width, account for padding and border */
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1em;
+#rcGuessSection input {
+    display: block; /* Make input take full width in its container */
+    margin: 0 auto 10px auto; /* Center input */
+    max-width: 200px; /* Control max width */
 }
-
-#valueGuessSection button, #rcGuessSection button {
-    padding: 11px 20px;
-    background-color: #007bff; /* Standard blue */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
+#rcGuessSection button {
+    display: block; /* Make button take full width in its container */
+    margin: 0 auto; /* Center button */
+    max-width: 220px; /* Control max width */
 }
-
-#valueGuessSection button:hover, #rcGuessSection button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-.feedback {
-    margin-top: 10px;
-    font-style: italic;
-    min-height: 1.3em; /* Reserve space for feedback */
-    font-size: 0.9em;
-    padding: 5px;
-    border-radius: 4px;
-}
-
-.feedback.correct {
-    color: #2e7d32; /* Darker green */
-    font-weight: bold;
-    background-color: #e8f5e9; /* Light green background */
     border-left: 3px solid #2e7d32;
 }
 
