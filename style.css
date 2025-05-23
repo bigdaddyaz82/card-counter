@@ -28,9 +28,9 @@
   --card-back-gradient-start: #4b5563;
   --card-back-gradient-end: #374151;
   --card-back-text: #9ca3af;
-  --card-front-bg: #f9fafb; /* This was light in your dark mode, might want to make it darker like #1F2937 or #2D3748 */
-  --card-front-text-black: #1f2937; /* For black suits on light card front */
-  --card-front-text-red: #ef4444;   /* For red suits on light card front */
+  --card-front-bg: #f9fafb; 
+  --card-front-text-black: #1f2937; 
+  --card-front-text-red: #ef4444;   
 
   /* Message Specifics for Dark Mode */
   --message-correct-bg-alpha: rgba(52, 211, 153, 0.15);
@@ -46,36 +46,36 @@
 
 /* --- LIGHT MODE OVERRIDES --- */
 body.light-mode {
-  --bg-color: #f8f9fa;                     /* Light Grey Page Background */
-  --container-bg: #ffffff;                 /* White Container Background */
-  --text-primary: #212529;                 /* Dark Grey Text */
-  --text-secondary: #6c757d;               /* Muted Grey Text */
+  --bg-color: #f8f9fa;                     
+  --container-bg: #ffffff;                 
+  --text-primary: #212529;                 
+  --text-secondary: #6c757d;               
   
-  --accent-primary: #007bff;               /* Standard Blue Accent */
+  --accent-primary: #007bff;               
   --accent-primary-darker: #0056b3;
-  --accent-secondary: #ffc107;             /* Standard Amber/Yellow */
-  --accent-green: #28a745;                 /* Standard Green */
-  --accent-red: #dc3545;                   /* Standard Red */
+  --accent-secondary: #ffc107;             
+  --accent-green: #28a745;                 
+  --accent-red: #dc3545;                   
   
-  --input-bg: #ffffff;                     /* White Input Background */
-  --input-border: #ced4da;                 /* Light Grey Input Border */
-  --button-secondary-bg: #e9ecef;         /* Very Light Grey Button */
+  --input-bg: #ffffff;                     
+  --input-border: #ced4da;                 
+  --button-secondary-bg: #e9ecef;         
   --button-secondary-hover-bg: #d6dade;
-  --button-primary-text: #ffffff;          /* White text for primary buttons (like New Shoe) */
+  --button-primary-text: #ffffff;          
 
   /* Card Specifics for Light Mode */
-  --card-back-gradient-start: #e9ecef;    /* Light grey gradient for card back */
+  --card-back-gradient-start: #e9ecef;    
   --card-back-gradient-end: #dee2e6;
-  --card-back-text: #495057;               /* Darker text for card back */
-  --card-front-bg: #ffffff;                /* White card front */
-  --card-front-text-black: #212529;        /* Black suits on white card */
-  --card-front-text-red: #dc3545;          /* Red suits on white card */
+  --card-back-text: #495057;               
+  --card-front-bg: #ffffff;                
+  --card-front-text-black: #212529;        
+  --card-front-text-red: #dc3545;          
 
   /* Message Specifics for Light Mode */
-  --message-correct-bg-alpha: rgba(40, 167, 69, 0.15); /* Lighter green bg */
-  --message-wrong-bg-alpha: rgba(220, 53, 69, 0.15);  /* Lighter red bg */
-  --message-info-bg-alpha: rgba(23, 162, 184, 0.1);   /* Lighter info blue bg */
-  --message-info-text: #117a8b;                       /* Darker info blue text */
+  --message-correct-bg-alpha: rgba(40, 167, 69, 0.15); 
+  --message-wrong-bg-alpha: rgba(220, 53, 69, 0.15);  
+  --message-info-bg-alpha: rgba(23, 162, 184, 0.1);   
+  --message-info-text: #117a8b;                       
 
   /* Betting Feedback Specifics for Light Mode */
   --betting-feedback-correct-bg-alpha: rgba(40, 167, 69, 0.1);
@@ -95,22 +95,21 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
-  /* box-sizing: border-box; // Moved to global */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+  transition: background-color 0.3s ease, color 0.3s ease; 
 }
 
 .container {
   background: var(--container-bg);
   padding: 25px 30px;
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0,0,0,0.1); /* Adjusted shadow for better visibility on light/dark */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0,0,0,0.1); 
   width: 100%;
   max-width: 480px;
   text-align: center;
-  transition: background-color 0.3s ease; /* Smooth theme transition */
+  transition: background-color 0.3s ease; 
 }
 
-h1 { /* Main H1, possibly inside .app-header */
+h1 { 
   color: var(--accent-primary);
   margin-top: 0;
   margin-bottom: 30px;
@@ -127,7 +126,7 @@ h1 { /* Main H1, possibly inside .app-header */
     margin-bottom: 20px; 
 }
 
-.app-header h1 { /* If h1 is specifically inside app-header */
+.app-header h1 { 
     margin-bottom: 0; 
     font-size: 1.8em; 
 }
@@ -135,7 +134,7 @@ h1 { /* Main H1, possibly inside .app-header */
 #themeToggle {
     background: none;
     border: none;
-    color: var(--text-secondary); /* Uses theme-aware variable */
+    color: var(--text-secondary); 
     font-size: 1.8em; 
     cursor: pointer;
     padding: 5px;
@@ -171,7 +170,6 @@ h1 { /* Main H1, possibly inside .app-header */
   color: var(--text-primary);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease, color 0.2s ease;
-  /* box-sizing: border-box; // Moved to global */
 }
 
 .game-controls select:focus,
@@ -225,7 +223,7 @@ h1 { /* Main H1, possibly inside .app-header */
   white-space: nowrap;
 }
 
-#speedControlContainer input[type="number"] { /* Assuming this ID for the container of speed input */
+#speedControlContainer input[type="number"] { 
   width: 60px;
   text-align: center;
 }
@@ -252,7 +250,7 @@ h1 { /* Main H1, possibly inside .app-header */
   box-shadow: 0 3px 6px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05); 
   width: 100%; 
   margin-top: 10px; 
-  order: 5; /* Example if using flex order */
+  order: 5; 
 }
 
 #newShoeButton:hover {
@@ -271,14 +269,14 @@ h1 { /* Main H1, possibly inside .app-header */
 .game-mode-selector {
     margin-top: 15px;
     margin-bottom: 15px;
-    display: flex; /* Added to allow label and select alignment if needed */
-    align-items: center; /* Align label and select */
-    gap: 8px; /* Space between label and select */
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
     justify-content: center; 
 }
 .game-mode-selector label {
     color: var(--text-secondary);
-    font-weight: 500; /* Consistent with other labels */
+    font-weight: 500; 
 }
 .game-mode-selector select {
     min-width: 200px; 
@@ -298,7 +296,7 @@ h1 { /* Main H1, possibly inside .app-header */
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 185px; /* Height of card + some padding */
+  min-height: 185px; 
 }
 
 #cardContainer {
@@ -333,7 +331,7 @@ h1 { /* Main H1, possibly inside .app-header */
     content: "♦︎♣︎♥︎♠︎"; 
     font-size: 0.4em; 
     opacity: 0.1;
-    position: absolute; /* To center it better if needed */
+    position: absolute; 
     transform: rotate(45deg);
     color: var(--card-back-text); 
 }
@@ -342,7 +340,6 @@ h1 { /* Main H1, possibly inside .app-header */
   background: var(--card-front-bg);
   transform: rotateY(180deg);
 }
-/* Updated selectors to match JS: .red-card and .black-card */
 .card-front.red-card { color: var(--card-front-text-red); } 
 .card-front.black-card { color: var(--card-front-text-black); } 
 
@@ -368,10 +365,10 @@ h1 { /* Main H1, possibly inside .app-header */
   padding: 5px 10px;
   background-color: color-mix(in srgb, var(--input-border) 30%, transparent);
   border-radius: 6px;
-  min-width: 120px; /* Ensure some width */
+  min-width: 120px; 
   text-align: center;
 }
-#runningCountDisplay span, /* If you wrap the number in a span for specific color */
+#runningCountDisplay span, 
 #trueCountDisplay span {
     color: var(--accent-secondary);
     margin-left: 5px;
@@ -387,31 +384,42 @@ h1 { /* Main H1, possibly inside .app-header */
   text-align: center;
 }
 
-/* --- Current System Description (was #instructions) --- */
-#currentSystemValuesDisplay { /* Changed from #instructions to match JS ID */
+/* --- Current System Description / Instructions --- */
+/* The #instructions div in HTML now primarily acts as a wrapper. */
+/* The #currentSystemValuesDisplay span inside it will show the description and get these styles. */
+#currentSystemValuesDisplay { 
+  display: block; /* Make the span behave like a block for padding/bg */
   font-size: 0.95em;
   line-height: 1.6;
-  margin-bottom: 25px;
+  margin-top: 5px; /* Adjust spacing relative to "System: Hi-Lo." */
+  margin-bottom: 10px; /* Adjust spacing before "Identify the card's value:" */
   color: var(--text-secondary);
   text-align: left;
   background-color: color-mix(in srgb, var(--input-border) 15%, transparent);
-  padding: 15px;
+  padding: 10px 15px; /* Slightly less padding than the original #instructions block */
   border-radius: 8px;
 }
-/* These apply if the description textContent itself contains these HTML tags. */
-/* JS currently sets textContent, so these might not be used unless description string has HTML */
-#currentSystemValuesDisplay p { margin: 8px 0; }
+#instructions p { /* General styling for paragraphs within #instructions if needed */
+    margin: 8px 0;
+    text-align: left; /* Ensure text alignment if needed */
+}
+#instructions p:last-child { /* "Identify the card's value:" */
+    margin-top: 15px; /* Add some space above this line */
+}
+#currentSystemValuesDisplay p, 
+#currentSystemValuesDisplay strong, 
+#currentSystemValuesDisplay ul, 
+#currentSystemValuesDisplay ul li {
+    /* These styles apply IF the description string set by JS contains HTML elements */
+    /* Currently, description is plain text, so these might not be directly used by it. */
+    /* But they are good if you ever add HTML to the description strings. */
+    color: inherit; /* Inherit from parent span/div */
+}
 #currentSystemValuesDisplay strong {
-  color: var(--text-primary);
+  color: var(--text-primary); /* Override inherited if needed for strong tags within */
   font-weight: 600;
 }
-#currentSystemValuesDisplay ul {
-    list-style-type: disc;
-    margin-left: 20px;
-}
-#currentSystemValuesDisplay ul li {
-    margin-bottom: 5px;
-}
+
 
 /* --- Action Buttons (+1, 0, -1) --- */
 .action-buttons {
@@ -425,9 +433,9 @@ h1 { /* Main H1, possibly inside .app-header */
   font-family: var(--font-main);
   font-size: 1.2em;
   font-weight: 600;
-  padding: 15px 0; /* Vertical padding, width controls horizontal */
-  width: 90px; /* Fixed width for circle-like buttons */
-  border-radius: 25px; /* More rounded for these specific buttons */
+  padding: 15px 0; 
+  width: 90px; 
+  border-radius: 25px; 
   border: none;
   cursor: pointer;
   background-color: var(--accent-primary); 
@@ -458,7 +466,7 @@ h1 { /* Main H1, possibly inside .app-header */
   border-radius: 8px;
 }
 #scoreboard p { margin: 8px 0; }
-#scoreboard span { /* For the score/highscore numbers */
+#scoreboard span { 
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -468,30 +476,31 @@ h1 { /* Main H1, possibly inside .app-header */
   margin-top: 25px;
   font-size: 1.15em;
   font-weight: 500;
-  min-height: 1.5em; /* To prevent layout jump */
+  min-height: 1.5em; 
   padding: 8px 12px;
   border-radius: 6px;
   text-align: center;
   transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
-  opacity: 0; /* Hidden by default, JS adds .visible */
+  opacity: 0; 
 }
 #messageDisplay.visible {
     opacity: 1;
 }
-.message-display.message-correct { /* Class added by JS */
+.message-display.message-correct { 
   background-color: var(--message-correct-bg-alpha);
   color: var(--accent-green);
 }
-.message-display.message-wrong { /* Class added by JS */
+.message-display.message-wrong { 
   background-color: var(--message-wrong-bg-alpha);
   color: var(--accent-red);
 }
-.message-display.message-info { /* Class added by JS */
+.message-display.message-info { 
   background-color: var(--message-info-bg-alpha);
   color: var(--message-info-text);
 }
 
-/* --- Flashing Cards Drill Area --- */
+/* --- Flashing Cards Drill Area - STYLES COMMENTED OUT as feature is removed --- */
+/*
 #flashDrillArea {
   padding: 15px;
   border: 1px dashed var(--input-border);
@@ -515,7 +524,7 @@ h1 { /* Main H1, possibly inside .app-header */
 #startFlashDrillButton { 
   background-color: var(--accent-primary);
   color: var(--button-primary-text);
-  border: none; /* Consistent with other primary buttons */
+  border: none; 
 }
 #startFlashDrillButton:hover {
   background-color: var(--accent-primary-darker);
@@ -539,7 +548,6 @@ h1 { /* Main H1, possibly inside .app-header */
 }
 #submitFlashDrillCountButton { 
   background-color: var(--button-secondary-bg);
-  /* color is var(--text-primary) by default for .game-controls button */
 }
 #submitFlashDrillCountButton:hover {
   background-color: var(--button-secondary-hover-bg);
@@ -553,7 +561,6 @@ h1 { /* Main H1, possibly inside .app-header */
     margin-top: 15px;
     opacity: 0;
     transition: opacity 0.3s ease;
-    /* Uses .message-correct, .message-wrong, .message-info classes if JS adds them like #messageDisplay */
 }
 #flashDrillFeedback.visible {
     opacity: 1;
@@ -570,7 +577,7 @@ h1 { /* Main H1, possibly inside .app-header */
   background-color: var(--message-info-bg-alpha);
   color: var(--message-info-text);
 }
-
+*/
 
 /* --- Betting Practice Section --- */
 #bettingPracticeSection {
@@ -601,21 +608,21 @@ h1 { /* Main H1, possibly inside .app-header */
   margin-bottom: 15px;
   flex-wrap: wrap;
 }
-.betting-buttons button,
-#continueDealingButton {
+.betting-buttons button, /* General style for Min, Mid, Max bet buttons */
+#continueDealingButton {  /* Style for Continue button */
   font-family: var(--font-main);
   font-size: 0.95em;
   font-weight: 500;
   padding: 10px 15px;
   border-radius: 8px;
   border: 1px solid var(--input-border);
-  background-color: var(--input-bg); /* Default button style in this section */
+  background-color: var(--input-bg); 
   color: var(--text-primary);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, transform 0.1s ease;
 }
 .betting-buttons button:hover,
-#continueDealingButton:hover { /* Generic hover for buttons in this section */
+#continueDealingButton:hover { 
   background-color: var(--button-secondary-hover-bg);
 }
 .betting-buttons button:active,
@@ -623,12 +630,12 @@ h1 { /* Main H1, possibly inside .app-header */
   transform: scale(0.98) translateY(1px);
 }
 
-#continueDealingButton { /* Specific style for continue button */
+#continueDealingButton { 
     background-color: var(--accent-green);
     color: #ffffff; 
     border-color: color-mix(in srgb, var(--accent-green) 70%, black);
 }
-#continueDealingButton:hover { /* Override generic hover */
+#continueDealingButton:hover { 
     background-color: color-mix(in srgb, var(--accent-green) 85%, white);
 }
 
@@ -644,6 +651,7 @@ h1 { /* Main H1, possibly inside .app-header */
 #bettingFeedback.visible {
     opacity: 1;
 }
+/* Using generic message classes for betting feedback for consistency if JS sets them */
 #bettingFeedback.message-correct { 
   color: var(--accent-green);
   background-color: var(--betting-feedback-correct-bg-alpha);
@@ -671,7 +679,7 @@ h1 { /* Main H1, possibly inside .app-header */
   align-items: center;
   justify-content: center;
 }
-.modal.active { /* JS will add/remove .active to show/hide */
+.modal.active { 
     display: flex;
 }
 
@@ -687,8 +695,8 @@ h1 { /* Main H1, possibly inside .app-header */
   box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
   position: relative;
   text-align: left;
-  max-height: 85vh; /* Allow scrolling within modal */
-  overflow-y: auto; /* Add scroll for content longer than max-height */
+  max-height: 85vh; 
+  overflow-y: auto; 
   transition: background-color 0.3s ease, color 0.3s ease; 
 }
 .modal-content h2 {
@@ -709,7 +717,7 @@ h1 { /* Main H1, possibly inside .app-header */
 .modal-content ul {
   list-style-position: inside;
   list-style-type: disc;
-  padding-left: 0; /* If list-style-position is inside */
+  padding-left: 0; 
   margin-bottom: 15px;
 }
 .modal-content ul li {
@@ -751,7 +759,7 @@ h1 { /* Main H1, possibly inside .app-header */
   font-size: 28px;
   font-weight: bold;
   transition: color 0.2s ease;
-  cursor: pointer; /* Ensure cursor changes */
+  cursor: pointer; 
 }
 
 .close-button:hover,
@@ -764,11 +772,11 @@ h1 { /* Main H1, possibly inside .app-header */
 @media (max-width: 480px) {
   body {
     padding: 10px;
-    align-items: flex-start; /* Allow container to not be fully centered vertically if content is short */
+    align-items: flex-start; 
   }
   .container {
     padding: 20px 15px;
-    max-width: 100%; /* Take full width on small screens */
+    max-width: 100%; 
   }
   
   .app-header h1 {
@@ -778,28 +786,28 @@ h1 { /* Main H1, possibly inside .app-header */
       font-size: 1.5em; 
   }
 
-  h1 { /* General h1 if not in app-header */
+  h1 { 
     font-size: 1.8em; 
     margin-bottom: 20px;
   }
   .game-controls {
     flex-direction: column;
-    align-items: stretch; /* Make controls take full width */
+    align-items: stretch; 
     gap: 12px;
   }
   .control-group {
      width: 100%;
-     justify-content: space-between; /* Distribute label and input */
+     justify-content: space-between; 
      min-width: unset;
   }
 
   #speedControlContainer input[type="number"] {
-      width: 80px; /* Allow a bit more space */
-      flex-grow: 0; /* Don't let it grow excessively */
+      width: 80px; 
+      flex-grow: 0; 
   }
   #newShoeButton {
-      margin-top: 5px; /* Less margin if stacked */
-      width: 100%; /* Full width when stacked */
+      margin-top: 5px; 
+      width: 100%; 
   }
 
   .count-displays {
@@ -811,7 +819,6 @@ h1 { /* Main H1, possibly inside .app-header */
   #trueCountDisplay {
       font-size: 1.3em;
       width: 100%;
-      /* box-sizing: border-box; // Handled globally */
   }
   #deckInfoDisplay {
       font-size: 0.85em;
@@ -828,7 +835,7 @@ h1 { /* Main H1, possibly inside .app-header */
 
   .action-buttons {
     gap: 10px;
-    flex-wrap: wrap; /* Allow wrapping if screen is too narrow */
+    flex-wrap: wrap; 
   }
   .action-buttons button {
     font-size: 1em;
@@ -840,7 +847,7 @@ h1 { /* Main H1, possibly inside .app-header */
   #timerDisplay {
     font-size: 1.4em;
   }
-  #currentSystemValuesDisplay { /* was #instructions */
+  #currentSystemValuesDisplay { 
     font-size: 0.9em;
     padding: 10px;
     margin-bottom: 20px;
@@ -855,6 +862,8 @@ h1 { /* Main H1, possibly inside .app-header */
       margin-top: 20px;
   }
   
+  /* Flash Drill Responsive rules are not needed as feature is removed */
+  /*
   #flashDrillArea {
       padding: 10px;
   }
@@ -867,6 +876,7 @@ h1 { /* Main H1, possibly inside .app-header */
   #flashDrillInputArea input[type="number"] {
       width: 80px;
   }
+  */
 
 
   #bettingPracticeSection {
@@ -876,11 +886,11 @@ h1 { /* Main H1, possibly inside .app-header */
       font-size: 1.2em;
   }
   .betting-buttons button {
-      width: 100%; /* Stack betting choice buttons */
+      width: 100%; 
       font-size: 0.9em;
   }
   #continueDealingButton {
-      width: 100%; /* Stack continue button */
+      width: 100%; 
       font-size: 0.95em;
   }
 
@@ -901,4 +911,4 @@ h1 { /* Main H1, possibly inside .app-header */
   #basicStrategyChartContainer td {
     padding: 4px 5px;
   }
-                             }
+  }
