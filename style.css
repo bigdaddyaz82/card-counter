@@ -1,0 +1,235 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5; /* Light gray background */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+}
+
+.container {
+    background-color: #ffffff; /* White container */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Softer shadow */
+    width: 100%;
+    max-width: 700px; /* Slightly wider for better layout */
+}
+
+h1, h2 {
+    color: #1d3557; /* Dark blue for headings */
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#instructions {
+    background-color: #e6f7ff; /* Light blue background for instructions */
+    border-left: 5px solid #1890ff; /* Blue accent */
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+}
+
+#instructions p {
+    margin: 8px 0;
+}
+
+.controls {
+    margin-bottom: 25px;
+    text-align: center;
+    padding: 15px;
+    background-color: #f9f9f9; /* Light gray for controls section */
+    border-radius: 8px;
+}
+
+.controls label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.controls select, .controls button {
+    padding: 12px 18px; /* More padding */
+    margin: 5px;
+    border-radius: 6px;
+    border: 1px solid #d9d9d9; /* Standard border */
+    font-size: 1em;
+}
+
+.controls select {
+    min-width: 120px;
+}
+
+.controls button {
+    background-color: #2a9d8f; /* Teal button */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #21867a; /* Darker teal */
+}
+
+#gameArea {
+    border: 1px solid #e0e0e0; /* Lighter border */
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fdfdfd; /* Off-white for game area */
+}
+
+.info-display {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+    gap: 15px;
+    margin-bottom: 25px;
+    background-color: #f7f9fc; /* Very light blue */
+    padding: 15px;
+    border-radius: 6px;
+}
+
+.info-display p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    color: #455a64; /* Darker text for info */
+}
+
+.info-display span {
+    font-weight: bold;
+    color: #0077b6; /* Blue for dynamic values */
+}
+
+.card-display {
+    font-size: 2.5em; /* Larger card text */
+    font-weight: bold;
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 25px;
+    border: 2px solid #0077b6; /* Blue border */
+    border-radius: 10px;
+    background-color: #ffffff;
+    min-height: 70px; 
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+/* Optional: Suit colors */
+/* .card-display.red-card { color: #d90429; border-color: #d90429; } */
+/* .card-display.black-card { color: #333; border-color: #333; } */
+
+
+#valueGuessSection, #rcGuessSection {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+#valueGuessSection label, #rcGuessSection label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+#valueGuessSection input, #rcGuessSection input {
+    padding: 10px;
+    width: calc(60% - 22px); /* Adjust input width, account for padding and border */
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+#valueGuessSection button, #rcGuessSection button {
+    padding: 11px 20px;
+    background-color: #007bff; /* Standard blue */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+#valueGuessSection button:hover, #rcGuessSection button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.feedback {
+    margin-top: 10px;
+    font-style: italic;
+    min-height: 1.3em; /* Reserve space for feedback */
+    font-size: 0.9em;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.feedback.correct {
+    color: #2e7d32; /* Darker green */
+    font-weight: bold;
+    background-color: #e8f5e9; /* Light green background */
+    border-left: 3px solid #2e7d32;
+}
+
+.feedback.error {
+    color: #c62828; /* Darker red */
+    font-weight: bold;
+    background-color: #ffebee; /* Light red background */
+    border-left: 3px solid #c62828;
+}
+
+.feedback-message { /* For general messages like shoe end */
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 6px;
+}
+.feedback-message.correct {
+    color: #2e7d32; background-color: #e8f5e9;
+}
+.feedback-message.error {
+    color: #c62828; background-color: #ffebee;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+    .controls select, .controls button, 
+    #valueGuessSection input, #rcGuessSection input, 
+    #valueGuessSection button, #rcGuessSection button {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    #valueGuessSection input, #rcGuessSection input {
+         width: calc(100% - 22px); /* Full width minus padding/border */
+    }
+    .info-display {
+        grid-template-columns: 1fr; /* Stack info on small screens */
+    }
+}
