@@ -1,4 +1,62 @@
-// script.js
+// Card data - images must be in /cards/ folder named like "2H.png", "KD.png" etc.
+const suits = ['C', 'D', 'H', 'S']; // Clubs, Diamonds, Hearts, Spades
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+// Hi-Lo counting values
+const countValues = {
+  '2': 1, '3': 1, '4': 1, '5': 1, '6': 1,
+  '7': 0, '8': 0, '9': 0,
+  '10': -1, 'J': -1, 'Q': -1, 'K': -1, 'A': -1
+};
+
+let deck = [];
+let runningCount = 0;
+let cardsDealt = 0;
+const totalDecks = 4; // standard shoe
+let isPlaying = false;
+let correctAnswers = 0;
+let totalAnswers = 0;
+
+const cardImage = document.getElementById('cardImage');
+const runningCountEl = document.getElementById('runningCount');
+const trueCountEl = document.getElementById('trueCount');
+const accuracyEl = document.getElementById('accuracy');
+const messageEl = document.getElementById('message');
+const startGameBtn = document.getElementById('startGameBtn');
+const countButtons = document.querySelectorAll('.count-btn');
+const musicToggleBtn = document.getElementById('musicToggle');
+const bgMusic = document.getElementById('bgMusic');
+const correctSound = document.getElementById('correctSound');
+const wrongSound = document.getElementById('wrongSound');
+const howToPlayBtn = document.getElementById('howToPlayBtn');
+const howToPlayModal = document.getElementById('howToPlayModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+function createDeck(decks = 1) {
+  let newDeck = [];
+  for (let d = 0; d < decks; d++) {
+    for (const suit of suits) {
+      for (const rank of ranks) {
+        newDeck.push({rank, suit});
+      }
+    }
+  }
+  return newDeck;
+}
+
+function shuffleDeck(deckArray) {
+  for (let i = deckArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deckArray[i], deckArray[j]] = [deckArray[j], deckArray[i]];
+  }
+  return deckArray;
+}
+
+function updateScoreboard() {
+  runningCountEl.textContent = runningCount;
+  const decksLeft = (deck.length - cardsDealt) / 52;
+  const trueCount = decksLeft > 0 ? runningCount / decksLeft : runningCount;
+  trueCountEl.textContent = trueCount// script.js
 
 // State Variables let currentCount = 0; let deck = []; let score = 0; let currentCard = null; let gameMode = 'hi-lo'; let isFlashDrill = false; let flashDrillInterval; let flashDrillSpeed = 1000;
 
