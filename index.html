@@ -10,6 +10,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css"> <!-- Ensure this points to your updated CSS file -->
+  <style>
+    /* Optional: Basic styling for the new footer */
+    #page-footer {
+      text-align: center; /* Centers the text in the footer */
+      padding: 20px 0;    /* Adds some space above and below the footer text */
+      margin-top: 30px;   /* Adds some space between the last content element and the footer */
+      border-top: 1px solid #444; /* Optional: a line to separate footer in dark mode */
+      font-size: 0.9em;
+      color: #ccc; /* Lighter text color for dark mode, adjust as needed */
+    }
+
+    /* Example for light mode if you have a toggle */
+    body:not(.dark-mode) #page-footer {
+        color: #333; /* Darker text for light mode */
+        border-top: 1px solid #ddd; /* Lighter line for light mode */
+    }
+  </style>
 </head>
 <body class="dark-mode"> <!-- Default to dark-mode, JS will handle toggling -->
   <div class="container">
@@ -175,6 +192,12 @@
             </div>
         </div>
     </div>
+
+    <!-- NEW FOOTER START -->
+    <footer id="page-footer">
+        <p>This app was created by BigDaddyAZ82. © 2025 All Rights Reserved.</p>
+    </footer>
+    <!-- NEW FOOTER END -->
 
   </div> <!-- End of .container -->
   
