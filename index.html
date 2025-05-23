@@ -4,62 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Counting Trainer (Hi-Lo)</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Card Counting Trainer (Hi-Lo)</h1>
+    <style>
+        /* --- CRITICAL EMBEDDED STYLES --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #004d26; /* Dark green like your preferred screenshot */
+            color: #fff; /* Default white text */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
 
-        <div class="game-stats">
-            <p>Chips: $<span id="chips-amount">1000</span></p>
-            <p>Current Bet: $<span id="current-bet-amount">0</span></p>
-            <hr>
-            <p>Running Count: <span id="running-count">0</span></p>
-            <p>Decks Remaining: <span id="decks-remaining">0.0</span></p> <!-- Matched screenshot format -->
-            <p>True Count: <span id="true-count">0.00</span></p>
-            <p id="reshuffle-message" class="message"></p>
-            <!-- Cards in Shoe can be derived from Decks Remaining, or shoe.length if preferred -->
-        </div>
+        .container {
+            background-color: #006633; /* Slightly lighter green for the main box */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 95%;
+            max-width: 500px;
+        }
 
-        <div class="dealer-area">
-            <h2>Dealer's Hand (<span id="dealer-score">0</span>)</h2>
-            <div id="dealer-cards" class="cards-area">
-                <!-- Dealer cards will be added here -->
-            </div>
-        </div>
+        h1, h2 {
+            color: #FFD700; /* Gold color for headings */
+        }
+        h1 { font-size: 1.8em; margin-bottom: 10px; }
+        h2 { font-size: 1.3em; margin-top: 15px; margin-bottom: 10px; }
 
-        <div class="player-area">
-            <h2>Player's Hand (<span id="player-score">0</span>)</h2>
-            <div id="player-cards" class="cards-area">
-                <!-- Player cards will be added here -->
-            </div>
-        </div>
+        /* Game Stats & Info */
+        .game-stats {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.15);
+            border-radius: 8px;
+            font-size: 0.95em;
+        }
+        .game-stats p { margin: 6px 0; }
+        .game-stats hr {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin: 8px 0;
+        }
 
-        <div class="betting-area">
-            <label for="bet-amount">Bet Amount:</label>
-            <input type="number" id="bet-amount" value="10" min="5" step="5">
-            <!-- This button's text will be handled by JS or can be static if preferred -->
-            <button id="deal-button">Place Bet & Deal</button>
-        </div>
-
-        <div class="actions">
-            <button id="hit-button" disabled>Hit</button>
-            <button id="stand-button" disabled>Stand</button>
-        </div>
-
-        <p id="game-message" class="message"></p>
-        <p id="last-card-info" class="message"></p> <!-- Shows last card dealt and its count -->
-
-        <div class="strategy-guide">
-            <h2>Hi-Lo Card Counting Strategy</h2>
-            <p><strong>Low Cards (2, 3, 4, 5, 6):</strong> Value = +1</p>
-            <p><strong>Neutral Cards (7, 8, 9):</strong> Value = 0</p>
-            <p><strong>High Cards (10, J, Q, K, Ace):</strong> Value = -1</p>
-            <p><strong>Running Count:</strong> Sum of values of all cards dealt.</p>
-            <p><strong>True Count:</strong> Running Count / Decks Remaining.</p>
-        </div>
-
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+        /* Card Area (empty for now, we'll fix card styling next if this works) */
+        .cards-area {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+            border: 1px dashed yellow; /* TEMPORARY: to see if card area is styled */
+        }
+        
+        /* --- Basic Card Box (to test if any card styling is applied) --- */
+        .card-display {
+            background-color: #fff; /* White background for the card */
+            color: #000;           /* Black text for card content */
+            border: 2px solid #FFD700; /* Gold border to make it very visible */
+            border-radius: 7px;
+            width: 65px;
+            height: 90px;
+            padding: 5px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            font-family: Arial, Helvetica, sans-serif;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.25);
+            margin: 5px; /* Make sure cards have some margin */
+        }
+        .card-rank { font-size: 1.8em; font-weight: bold; margin-top: 5px; }
+        .card-bottom-info { display: flex; align-items: center; justify-content: flex-end; width: 100%; margin-bottom: 2px; padding-right: 2px; }
+        .card-suit-symbol { font-size: 1.1em;
