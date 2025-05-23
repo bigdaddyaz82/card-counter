@@ -1,223 +1,94 @@
-/* General body, container, headings */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #004d26; /* Darker green like screenshot */
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    margin: 0;
-    padding: 15px; /* Reduced padding slightly */
-    box-sizing: border-box;
-}
+/* ... (Keep your existing styles for body, .container, h1, h2, .game-stats, .betting-area, .actions, .message, .strategy-guide etc.) ... */
 
-.container {
-    background-color: #006633; /* Slightly lighter green than body for contrast */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    text-align: center;
-    width: 95%;
-    max-width: 500px; /* Adjusted for a more compact mobile view */
-}
-
-h1 {
-    color: #FFD700; /* Gold color */
-    font-size: 1.8em; /* Adjusted title size */
-    margin-bottom: 10px;
-}
-h2 {
-    color: #FFD700;
-    font-size: 1.3em; /* Adjusted subtitle size */
-    margin-top: 15px;
-    margin-bottom: 10px;
-}
-
-/* Game Stats & Info */
-.game-stats {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.15);
-    border-radius: 8px;
-    font-size: 0.95em; /* Slightly smaller font for stats */
-}
-.game-stats p {
-    margin: 6px 0;
-}
-.game-stats hr {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    margin: 8px 0;
-}
-
-
-/* Card Areas and Individual Card Styling (Text-Based) */
 .cards-area {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align top for cards of different heights if ever */
-    min-height: 95px; /* Adjusted based on screenshot card size */
+    align-items: flex-start; /* Align cards at their top edge */
+    min-height: 100px; /* Ensure enough space for cards */
     margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+    gap: 8px; /* Space between cards */
 }
 
-.card-display { /* For text-based cards */
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #bbb;
-    border-radius: 6px; /* Slightly smaller radius */
-    width: 60px;   /* Card width from screenshot */
-    height: 85px; /* Card height from screenshot */
-    padding: 4px;
-    box-sizing: border-box;
+/* --- Revised Card Styling --- */
+.card-display {
+    background-color: #fff; /* CRITICAL: White background for the card */
+    color: #000;           /* Default text color for card content */
+    border: 1px solid #999; /* A clear border for the card */
+    border-radius: 7px;     /* Rounded corners */
+    width: 65px;            /* Card width */
+    height: 90px;           /* Card height */
+    padding: 5px;           /* Inner spacing */
+    box-sizing: border-box; /* Includes padding and border in width/height */
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    font-family: 'Arial Black', Gadget, sans-serif; /* Bolder font for cards */
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    font-weight: bold;
+    flex-direction: column;    /* Stack rank and bottom-info vertically */
+    justify-content: space-between; /* Pushes rank towards top, bottom-info towards bottom */
+    align-items: center;       /* Centers rank horizontally by default */
+    position: relative;        /* For fine-tuning children if needed */
+    font-family: Arial, Helvetica, sans-serif; /* Clear, readable font */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.25); /* Subtle shadow for depth */
 }
+
 .card-rank {
-    font-size: 1.7em; /* Rank size e.g., A, K, 10 */
-    margin-top: 5px; /* Space from top */
-}
-.card-suit {
-    font-size: 1.3em; /* Suit symbol size */
-    line-height: 1;
-    /* Positioned by flexbox in rank or on its own line if too big */
-}
-/* Centered main suit and rank, smaller suit at bottom corners */
-.card-display .suit-top-left { /* Not used in current simple text card, but for reference */
-    position: absolute; top: 4px; left: 4px; font-size: 0.8em;
-}
-.card-display .suit-bottom-right { /* This is where the count value + suit is */
-    position: absolute; bottom: 3px; right: 4px; font-size: 0.8em;
-    display: flex;
-    align-items: center;
-}
-.card-display .suit-bottom-right .card-suit-symbol {
-    margin-right: 2px; /* Space between suit and count */
+    font-size: 1.8em; /* Prominent rank size */
+    font-weight: bold;
+    text-align: center; /* Ensure rank is centered if it's a block or full width */
+    line-height: 1.2;   /* Adjust vertical alignment of rank text */
+    width: 100%;      /* Make rank span full width for text-align:center to work well */
+    margin-top: 5px;  /* Some space from the top of the card */
 }
 
-/* Suit Colors */
-.card-display.suit-H .card-suit, .card-display.suit-H .card-suit-symbol,
-.card-display.suit-D .card-suit, .card-display.suit-D .card-suit-symbol {
-    color: #D00000; /* Red */
+/* NEW container for suit and count at the bottom, for better layout control */
+.card-bottom-info {
+    display: flex;         /* Arrange suit and count side-by-side */
+    align-items: center;   /* Vertically align suit and count */
+    justify-content: flex-end; /* Push them to the right side of this container */
+    width: 100%;           /* Make this container take full width of card padding area */
+    margin-bottom: 2px;  /* Small space from the bottom of the card */
+    padding-right: 2px;    /* Small space from the right edge of the card */
 }
-.card-display.suit-C .card-suit, .card-display.suit-C .card-suit-symbol,
-.card-display.suit-S .card-suit, .card-display.suit-S .card-suit-symbol {
-    color: #000000; /* Black */
+
+.card-suit-symbol {
+    font-size: 1.1em;  /* Size of the suit symbol (♥, ♦, ♣, ♠) */
+    font-weight: normal; /* Suits are often not as bold as the rank */
+    line-height: 1;    /* Keep it compact */
+    margin-right: 3px; /* Space between the suit symbol and the count value */
 }
 
 .card-count-value-text {
-    font-size: 0.9em; /* Size of the count value text (+1, -1, 0) */
+    font-size: 0.9em;  /* Size of the Hi-Lo count value (+1, -1, 0) */
     font-weight: bold;
-    /* color set by suit color if next to suit, or blue if standalone */
+    line-height: 1;
+    /* Color can be set here explicitly, or inherit from .card-display */
+    /* Example: color: #0000FF; (blue) */
 }
 
+/* Suit Colors - applied to the suit symbol elements */
+.card-display.suit-H .card-suit-symbol,
+.card-display.suit-D .card-suit-symbol {
+    color: #D00000; /* Red for Hearts and Diamonds */
+}
+.card-display.suit-C .card-suit-symbol,
+.card-display.suit-S .card-suit-symbol {
+    color: #000000; /* Black for Clubs and Spades */
+}
+
+
+/* Card Back Styling */
 .card-back {
-    background-color: #1E90FF; /* Dodger blue */
-    border: 1px solid #1c7ed6;
-}
-.card-back::after { /* Simple pattern for card back */
-    content: '';
-    display: block;
-    width: 80%;
-    height: 80%;
-    border: 2px dashed rgba(255,255,255,0.3);
-    border-radius: 4px;
-}
-
-
-/* Betting Area */
-.betting-area {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: rgba(0,0,0,0.15);
-    border-radius: 8px;
-    display: flex;
+    background-color: #2a52be; /* A nice royal blue for card back */
+    border: 1px solid #1a3a8a;
+    display: flex; /* For centering pattern if any */
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    /* Clear any accidental text if structure is reused */
+    color: transparent;
 }
-.betting-area label {
-    margin-right: 8px;
-    font-size: 0.95em;
-}
-.betting-area input[type="number"] {
-    width: 70px;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 8px;
-    font-size: 0.95em;
-    text-align: center;
-}
-
-/* Action Buttons */
-.actions, .betting-area button { /* Combined for similar button styling */
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Space between hit/stand */
-    margin-bottom: 10px;
-}
-.actions button, .betting-area button {
-    background-color: #FFD700; /* Gold */
-    color: #004d26; /* Dark green text */
-    border: none;
-    padding: 10px 15px; /* Adjusted padding */
+.card-back::after { /* Optional: simple pattern for card back */
+    content: '';
+    display: block;
+    width: 75%;
+    height: 75%;
+    border: 2px dashed rgba(255,255,255,0.25);
     border-radius: 5px;
-    font-size: 0.95em; /* Adjusted button font size */
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    min-width: 70px; /* Minimum button width */
 }
-.actions button:hover, .betting-area button:hover {
-    background-color: #e6c300; /* Darker gold */
-}
-.actions button:disabled {
-    background-color: #555; /* Darker grey for disabled */
-    color: #999;
-    cursor: not-allowed;
-}
-
-/* Messages and Strategy Guide */
-.message {
-    margin-top: 10px;
-    font-size: 1.05em; /* Adjusted message font size */
-    font-weight: bold;
-    min-height: 1.4em;
-    line-height: 1.3;
-}
-#reshuffle-message { color: #FFA500; /* Orange */ }
-#last-card-info { color: #ADD8E6; /* Light Blue */ font-size: 0.9em;}
-#game-message { color: #FFFF00; /* Yellow */ }
-#game-message.win { color: #7FFF00; /* Chartreuse Green */ }
-#game-message.loss { color: #FF4500; /* OrangeRed */ }
-#game-message.push { color: #F0E68C; /* Khaki */ }
-
-.strategy-guide {
-    text-align: left;
-    padding: 12px;
-    background-color: rgba(0,0,0,0.1);
-    border-radius: 8px;
-    font-size: 0.85em; /* Smaller font for strategy */
-    margin-top: 15px;
-}
-.strategy-guide h2 {
-    text-align: center;
-    font-size: 1.1em; /* Adjusted strategy title size */
-    margin-bottom: 8px;
-}
-.strategy-guide p {
-    margin: 5px 0;
-    line-height: 1.4;
-}
-.strategy-guide strong {
-    color: #FFD700;
-    }
