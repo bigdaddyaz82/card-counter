@@ -1,115 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card Counting Trainer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Card Counter Trainer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css"> <!-- This will be the new CSS -->
 </head>
-<body>
-    <div class="container">
-        <h1>Card Counting Trainer</h1>
+<body class="dark-mode"> <!-- Default to dark-mode, JS will handle toggling -->
+  <div class="container"> <!-- Single column container -->
+    <header class="app-header">
+        <h1>Card Counter Trainer</h1>
+        <button id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+            <span id="themeIcon">☀️</span>
+        </button>
+    </header>
 
-        <div class="game-info">
-            <div>Score: <span id="score">0</span></div>
-            <div>High Score: <span id="highscore">0</span></div>
-            <div><span id="timerDisplay">Time: 5s</span></div>
-            <div>Accuracy: <span id="accuracyDisplay">N/A</span></div>
-        </div>
+    <div class="game-controls">
+      <div class="control-group" id="levelSelectContainer">
+        <label for="level">Level:</label>
+        <select id="level">
+          <option value="practice">Practice (∞ time)</option>
+          <option value="beginner" selected>Beginner (15s)</option>
+          <option value="advanced">Advanced (10s)</option>
+          <option value="expert">Expert (5s)</option>
+        </select>
+      </div>
+      
+      <div class="control-group" id="deckSizeContainer">
+        <label for="deckSize">Decks:</label>
+        <select id="deckSize">
+          <option value="1">1 Deck</option>
+          <option value="2">2 Decks</option>
+          <option value="4" selected>4 Decks</option>
+          <option value="6">6 Decks</option>
+          <option value="8">8 Decks</option>
+        </select>
+      </div>
 
-        <div class="count-info">
-            <div id="runningCountDisplay">Running Count: 0</div>
-            <div id="trueCountDisplay">True Count: 0.0</div>
-            <div id="deckInfoDisplay">Shoe: 0/0 cards (0.0 decks left)</div>
-        </div>
+      <div class="control-group" id="speedControlContainer">
+        <label for="cardSpeed">Card Speed (s):</label>
+        <input type="number" id="cardSpeed" min="0.5" max="600" step="0.1" value="1.5"> <!-- Value from first screenshot -->
+      </div>
 
-        <div class="settings">
-            <label for="level">Level:</label>
-            <select id="level">
-                <option value="practice">Practice (No Timer)</option>
-                <option value="beginner" selected>Beginner (15s)</option>
-                <option value="advanced">Advanced (10s)</option>
-                <option value="expert">Expert (5s)</option>
-            </select>
+      <div class="control-group" id="systemSelectContainer">
+        <label for="countingSystem">System:</label>
+        <select id="countingSystem">
+            <option value="hi-lo" selected>Hi-Lo</option>
+            <option value="ko">KO (Rookie)</option>
+        </select>
+      </div>
+      
+      <button id="howToPlayButton">How to Play</button>
+      <button id="basicStrategyButton">Basic Strategy</button>
+      <button id="musicToggle">Music OFF</button>
+      <button id="newShoeButton" class="primary-action-button">New Shoe / Start Game</button>
+    </div>
 
-            <label for="deckSize">Decks in Shoe:</label>
-            <select id="deckSize">
-                <option value="1">1 Deck</option>
-                <option value="2">2 Decks</option>
-                <option value="4">4 Decks</option>
-                <option value="6" selected>6 Decks</option>
-                <option value="8">8 Decks</option>
-            </select>
+    <div class="game-mode-selector control-group">
+        <label for="gameMode">Game Mode:</label>
+        <select id="gameMode">
+            <option value="guessValue" selected>Guess Card Value</option>
+            <option value="flashDrill">Flashing Cards Drill</option>
+        </select>
+    </div>
 
-            <label for="cardSpeed">Card Speed (s):</label>
-            <input type="number" id="cardSpeed" value="5" min="0.5" max="600" step="0.1">
-
-            <button id="musicToggle">Music OFF</button>
-            <button id="howToPlayButton">How to Play</button>
-        </div>
-
-        <div id="cardContainer" class="card-container">
-            <div class="card-face card-back">?</div>
+    <div id="mainGameArea">
+        <div id="timerDisplay">Time: 15s</div> <!-- Initial value from first screenshot -->
+        <div class="card-area">
+          <div id="cardContainer">
+            <div class="card-face card-back">
+                <!-- Card back pattern/symbol will be handled by CSS -->
+            </div>
             <div class="card-face card-front"></div>
+          </div>
         </div>
-
+        <div class="count-displays">
+            <div id="runningCountDisplay">Running Count: 0</div>
+            <div id="trueCountDisplay">True Count: N/A</div>
+        </div>
+        <div id="deckInfoDisplay">Shoe: 0/0 cards (0.0 decks left)</div>
+        <div id="instructions">
+            <p>System: <strong id="currentSystemDisplay">Hi-Lo</strong>. Values: <strong id="currentSystemValuesDisplay">Cards 2-6 are +1. Cards 7-9 are 0. Cards 10, J, Q, K, A are -1.</strong></p> <!-- Text from screenshot -->
+            <p>Identify the card's value:</p>
+        </div>
         <div class="action-buttons">
-            <button data-choice="plus">Low Card (+1)</button>
-            <button data-choice="zero">Neutral Card (0)</button>
-            <button data-choice="minus">High Card (-1)</button>
-        </div>
-
-        <div id="messageDisplay" class="message-display">Select settings. Click a value to start!</div>
-
-        <div id="bettingPracticeSection" style="display: none;">
-            <h2>Betting Practice!</h2>
-            <p>True Count: <span id="bettingTrueCountDisplay">0.0</span></p>
-            <p>What's your bet spread?</p>
-            <button id="betMinButton">Min Bet</button>
-            <button id="betMidButton">Mid Bet</button>
-            <button id="betMaxButton">Max Bet</button>
-            <div id="bettingFeedback"></div>
-            <button id="continueDealingButton" style="display: none;">Continue Dealing</button>
-        </div>
-
-    </div>
-
-    <div id="howToPlayModal" class="modal">
-        <div class="modal-content">
-            <span id="closeHowToPlayModalButton" class="close-button">×</span>
-            <h2>How to Play Card Counting Trainer</h2>
-            <p>The goal is to correctly identify the Hi-Lo value of each card shown.</p>
-            <h3>Card Values (Hi-Lo System):</h3>
-            <ul>
-                <li><strong>Cards 2, 3, 4, 5, 6:</strong> Value +1 (Low Cards)</li>
-                <li><strong>Cards 7, 8, 9:</strong> Value 0 (Neutral Cards)</li>
-                <li><strong>Cards 10, J, Q, K, A:</strong> Value -1 (High Cards)</li>
-            </ul>
-            <h3>Gameplay:</h3>
-            <ol>
-                <li>Select your desired Level, Decks in Shoe, and Card Speed.</li>
-                <li>Click one of the action buttons (+1, 0, -1) to start the game or make your guess for the current card.</li>
-                <li>If your guess is correct, your score increases, and the running count is updated.</li>
-                <li>If your guess is wrong, or time runs out, the game is over.</li>
-                <li><strong>Running Count:</strong> The sum of all card values seen so far.</li>
-                <li><strong>True Count:</strong> Running Count divided by the number of decks remaining in the shoe. This gives a more accurate measure of player advantage.</li>
-                <li><strong>Shuffle:</strong> The shoe is reshuffled when about 75% of the cards have been dealt.</li>
-            </ol>
-            <h3>Betting Practice:</h3>
-            <p>Periodically, the game will pause to ask you for an optimal bet based on the True Count:</p>
-            <ul>
-                <li><strong>True Count < 1:</strong> Min Bet</li>
-                <li><strong>True Count >= 1 and < 3:</strong> Mid Bet</li>
-                <li><strong>True Count >= 3:</strong> Max Bet</li>
-            </ul>
-            <p>Good luck!</p>
+          <button data-choice="plus" title="Cards: 2, 3, 4, 5, 6">+1</button>
+          <button data-choice="zero" title="Cards: 7, 8, 9">0</button>
+          <button data-choice="minus" title="Cards: 10, J, Q, K, A">-1</button>
         </div>
     </div>
 
-    <audio id="correctSound" src="sounds/correct.mp3" preload="auto"></audio>
-    <audio id="wrongSound" src="sounds/wrong.mp3" preload="auto"></audio>
-    <audio id="bgMusic" src="sounds/music.mp3" loop preload="auto"></audio>
+    <div id="flashDrillArea" style="display:none;">
+        <h3>Flashing Cards Drill</h3>
+        <div class="drill-controls">
+            <div class="control-group">
+                <label for="flashDrillNumCards">Number of Cards:</label>
+                <input type="number" id="flashDrillNumCards" value="10" min="5" max="52">
+            </div>
+            <div class="control-group">
+                <label for="flashDrillSpeed">Speed per Card (s):</label>
+                <input type="number" id="flashDrillSpeed" value="1" min="0.2" max="5" step="0.1">
+            </div>
+            <button id="startFlashDrillButton" class="primary-action-button">Start Drill</button>
+        </div>
+        <div id="flashDrillCardDisplayArea" class="card-area" style="min-height: 190px;">
+        </div>
+        <div id="flashDrillInputArea" style="display:none; margin-top:15px;">
+            <label for="flashDrillUserCount">Enter Final Running Count:</label>
+            <input type="number" id="flashDrillUserCount">
+            <button id="submitFlashDrillCountButton" class="primary-action-button">Submit Count</button>
+        </div>
+        <p id="flashDrillFeedback" style="margin-top:10px;"></p>
+    </div>
 
-    <script src="script.js"></script>
+    <div id="scoreboard">
+      <p>Score: <span id="score">0</span></p>
+      <p>High Score: <span id="highscore">0</span></p>
+      <p>Accuracy: <span id="accuracyDisplay">N/A</span></p>
+    </div>
+
+    <div id="bettingPracticeSection" style="display:none;">
+      <h3>Betting Practice</h3>
+      <p>Current True Count: <strong id="bettingTrueCountDisplay">0.0</strong></p>
+      <p>How would you bet?</p>
+      <div class="betting-buttons">
+        <button id="betMinButton" class="bet-button">Min Bet</button>
+        <button id="betMidButton" class="bet-button">Mid Bet</button>
+        <button id="betMaxButton" class="bet-button">Max Bet</button>
+      </div>
+      <p id="bettingFeedback"></p>
+      <button id="continueDealingButton" style="display:none;">Continue Dealing</button>
+    </div>
+
+    <div id="messageDisplay" class="message-display message-info">Select settings and click 'New Shoe / Start Game' or a card value button to begin!</div>
+
+    <footer class="app-footer">
+        <p>This app was created by <a href="https://github.com/bigdaddyaz82" target="_blank" rel="noopener noreferrer">bigdaddyaz82</a>.</p>
+        <p>© <span id="currentYearJs"></span> All Rights Reserved.</p>
+    </footer>
+
+  </div> <!-- End of .container -->
+
+  <!-- Modals -->
+  <div id="howToPlayModal" class="modal">
+    <div class="modal-content">
+      <span id="closeHowToPlayModalButton" class="close-button">×</span>
+      <div id="howToPlayContent">
+          <h2>How to Play Card Counting</h2>
+          <p>Select a counting system (Hi-Lo or KO) from the controls to see specific instructions.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="basicStrategyModal" class="modal">
+      <div class="modal-content">
+          <span id="closeBasicStrategyModalButton" class="close-button">×</span>
+          <h2>Basic Strategy Chart</h2>
+          <p>(Assumes H17, DAS, No Surrender - common rules. Specify if different)</p>
+          <div id="basicStrategyChartContainer">
+              <p>Loading chart...</p>
+          </div>
+      </div>
+  </div>
+
+  <!-- Audio Files (root directory) -->
+  <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+  <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="lofi-chill-background.mp3" loop preload="auto"></audio>
+
+  <script src="script.js"></script>
+  <script>
+    document.getElementById('currentYearJs').textContent = new Date().getFullYear();
+  </script>
 </body>
-</html>
+                                                                                                                                       </html>
