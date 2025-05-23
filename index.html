@@ -77,16 +77,9 @@
       <button id="newShoeButton">New Shoe / Start Game</button>
     </div>
 
-    <!-- Game Mode Selector (Only one option left, could be removed if desired) -->
-    <div class="game-mode-selector control-group">
-        <label for="gameMode">Game Mode:</label>
-        <select id="gameMode">
-            <option value="guessValue" selected>Guess Card Value</option>
-            <!-- <option value="flashDrill">Flashing Cards Drill</option> -->
-        </select>
-    </div>
+    <!-- Game Mode Selector has been REMOVED -->
 
-    <!-- Main Game Area (for Guess Card Value mode) -->
+    <!-- Main Game Area -->
     <div id="mainGameArea">
         <div id="timerDisplay">Time: 5s</div>
         <div class="card-area">
@@ -100,7 +93,7 @@
             <div id="trueCountDisplay">True Count: 0.0</div>
         </div>
         <div id="deckInfoDisplay">Shoe: 0/208 cards (4.0 decks left)</div>
-        <div id="instructions"> <!-- This ID is used in CSS, ensure JS updates correct elements like currentSystemValuesDisplayEl -->
+        <div id="instructions">
             <p>System: <strong id="currentSystemDisplay">Hi-Lo</strong>. Values: <span id="currentSystemValuesDisplay">Cards 2-6 are +1. Cards 7-9 are 0. Cards 10, J, Q, K, A are -1.</span></p>
             <p>Identify the card's value:</p>
         </div>
@@ -110,8 +103,6 @@
           <button data-choice="minus" title="Cards: 10, J, Q, K, A">-1</button>
         </div>
     </div>
-
-    <!-- Flash Drill Area has been REMOVED -->
 
     <div id="scoreboard">
       <p>Score: <span id="score">0</span></p>
