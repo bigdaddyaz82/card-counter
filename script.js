@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("SCRIPT DEBUG: DOMContentLoaded event fired. Initializing script.");
     // =========================================================================
     // 0. DOM ELEMENTS
     // =========================================================================
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const SHUFFLE_PENETRATION = 0.75;
     let currentCardSpeed = 5;
     let sessionCorrectGuesses = 0, sessionTotalCardsDealt = 0, gamePausedForBetting = false;
-    const CARDS_BETWEEN_BETS = 10; // Number of correct guesses between betting practices
+    const CARDS_BETWEEN_BETS = 10; 
     const levelDefaultTimes = { practice: 600, beginner: 15, advanced: 10, expert: 5 };
     let currentGameMode = 'guessValue';
     let drillActive = false, drillCardSequence = [], drillActualRunningCount = 0, drillCurrentCardIdx = 0, drillTimer = null;
@@ -100,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. INITIALIZATION & SETUP
     // =========================================================================
     function initializeApp() {
+        console.log("SCRIPT DEBUG: initializeApp() called.");
         if (levelSelectEl) levelSelectEl.addEventListener('change', handleGameSettingChange);
         if (deckSizeEl) deckSizeEl.addEventListener('change', handleGameSettingChange);
         if (countingSystemSelectEl) countingSystemSelectEl.addEventListener('change', handleGameSystemChange);
@@ -122,11 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCardSpeedControl();
         setupHowToPlayModal();
         setupBasicStrategyModal();
-        setupBettingPracticeControls(); // Ensure this is called
+        setupBettingPracticeControls(); 
         setupFlashDrillControls();
         
         updateCurrentSystemDisplay();
         setupInitialScreen();
+        console.log("SCRIPT DEBUG: initializeApp() finished.");
     }
 
     function setupInitialScreen() {
@@ -151,8 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateTimerDisplayVisuals();
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
-        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none'; // Hide continue button
-        if (bettingFeedbackEl) bettingFeedbackEl.classList.remove('visible'); // Hide feedback
+        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none'; 
+        if (bettingFeedbackEl) bettingFeedbackEl.classList.remove('visible'); 
 
         switchGameModeView(currentGameMode);
         if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none';
@@ -168,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 5. THEME TOGGLE (Light/Dark Mode)
     // =========================================================================
-    function applyTheme(theme) {
+    function applyTheme(theme) { /* ... (no changes in this function) ... */
         bodyEl.classList.remove('light-mode', 'dark-mode');
         if (theme === 'light') {
             bodyEl.classList.add('light-mode');
@@ -178,14 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (themeIconEl) themeIconEl.textContent = sunIcon;
         }
         localStorage.setItem('theme', theme);
-        console.log("Theme applied:", theme);
     }
-
-    function loadInitialTheme() {
+    function loadInitialTheme() { /* ... (no changes in this function) ... */
         const savedTheme = localStorage.getItem('theme');
         const bodyIsDarkByDefault = bodyEl.classList.contains('dark-mode');
-        console.log("loadInitialTheme: savedTheme =", savedTheme, ", bodyIsDarkByDefault =", bodyIsDarkByDefault);
-
         if (savedTheme) {
             applyTheme(savedTheme);
         } else if (bodyIsDarkByDefault) {
@@ -195,8 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTheme(systemPrefersDark ? 'dark' : 'light');
         }
     }
-
-    function setupThemeToggle() {
+    function setupThemeToggle() { /* ... (no changes in this function) ... */
         if (!themeToggleBtn || !themeIconEl) {
             console.warn("Theme toggle button or icon not found!");
             return;
@@ -211,50 +209,69 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 6. CARD SPEED & TIMER
     // =========================================================================
-    function setupCardSpeedControl() { if (!cardSpeedInputEl) return; cardSpeedInputEl.value = currentCardSpeed; cardSpeedInputEl.addEventListener('input', () => { let speedVal = parseFloat(cardSpeedInputEl.value); if (isNaN(speedVal) || speedVal < 0.5) speedVal = 0.5; if (speedVal > 600) speedVal = 600; currentCardSpeed = speedVal; localStorage.setItem('cardCounterSpeed', currentCardSpeed.toString()); if (!gameActive && currentGameMode === 'guessValue') { updateTimerDisplayVisuals(); } }); if (levelSelectEl) updateCardSpeedInputFromLevel(); }
-    function updateCardSpeedInputFromLevel() { if(!levelSelectEl) return; const currentLevel = levelSelectEl.value; currentCardSpeed = levelDefaultTimes[currentLevel] || 5; if (cardSpeedInputEl) cardSpeedInputEl.value = currentCardSpeed; localStorage.setItem('cardCounterSpeed', currentCardSpeed.toString()); if (!gameActive && currentGameMode === 'guessValue') updateTimerDisplayVisuals(); }
-    function updateTimerDisplayVisuals() { if (!timerDisplayEl || currentGameMode !== 'guessValue') return; const isPractice = levelSelectEl && levelSelectEl.value === "practice"; if (isPractice || currentCardSpeed >= 600) { timerDisplayEl.textContent = "Time: ∞"; } else { timerDisplayEl.textContent = `Time: ${currentCardSpeed}s`; } }
-    function startRoundTimer() { if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); const isPractice = levelSelectEl && levelSelectEl.value === "practice"; if (isPractice || currentCardSpeed >= 600) { if (timerDisplayEl) timerDisplayEl.textContent = "Time: ∞"; return; } timeLeft = currentCardSpeed; if (timerDisplayEl) timerDisplayEl.textContent = `Time: ${timeLeft}s`; gameTimer = setInterval(() => { if (gamePausedForBetting) { clearInterval(gameTimer); return; } timeLeft--; if (timerDisplayEl) timerDisplayEl.textContent = `Time: ${timeLeft}s`; if (timeLeft <= 0) { clearInterval(gameTimer); playSound(wrongSound); sessionTotalCardsDealt++; updateAccuracyDisplay(); gameOver(`Time's up! RC: ${runningCount}`); } }, 1000); }
+    function setupCardSpeedControl() { /* ... (no changes in this function) ... */ if (!cardSpeedInputEl) return; cardSpeedInputEl.value = currentCardSpeed; cardSpeedInputEl.addEventListener('input', () => { let speedVal = parseFloat(cardSpeedInputEl.value); if (isNaN(speedVal) || speedVal < 0.5) speedVal = 0.5; if (speedVal > 600) speedVal = 600; currentCardSpeed = speedVal; localStorage.setItem('cardCounterSpeed', currentCardSpeed.toString()); if (!gameActive && currentGameMode === 'guessValue') { updateTimerDisplayVisuals(); } }); if (levelSelectEl) updateCardSpeedInputFromLevel(); }
+    function updateCardSpeedInputFromLevel() { /* ... (no changes in this function) ... */ if(!levelSelectEl) return; const currentLevel = levelSelectEl.value; currentCardSpeed = levelDefaultTimes[currentLevel] || 5; if (cardSpeedInputEl) cardSpeedInputEl.value = currentCardSpeed; localStorage.setItem('cardCounterSpeed', currentCardSpeed.toString()); if (!gameActive && currentGameMode === 'guessValue') updateTimerDisplayVisuals(); }
+    function updateTimerDisplayVisuals() { /* ... (no changes in this function) ... */ if (!timerDisplayEl || currentGameMode !== 'guessValue') return; const isPractice = levelSelectEl && levelSelectEl.value === "practice"; if (isPractice || currentCardSpeed >= 600) { timerDisplayEl.textContent = "Time: ∞"; } else { timerDisplayEl.textContent = `Time: ${currentCardSpeed}s`; } }
+    function startRoundTimer() { /* ... (no changes in this function) ... */ if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); const isPractice = levelSelectEl && levelSelectEl.value === "practice"; if (isPractice || currentCardSpeed >= 600) { if (timerDisplayEl) timerDisplayEl.textContent = "Time: ∞"; return; } timeLeft = currentCardSpeed; if (timerDisplayEl) timerDisplayEl.textContent = `Time: ${timeLeft}s`; gameTimer = setInterval(() => { if (gamePausedForBetting) { clearInterval(gameTimer); return; } timeLeft--; if (timerDisplayEl) timerDisplayEl.textContent = `Time: ${timeLeft}s`; if (timeLeft <= 0) { clearInterval(gameTimer); playSound(wrongSound); sessionTotalCardsDealt++; updateAccuracyDisplay(); gameOver(`Time's up! RC: ${runningCount}`); } }, 1000); }
 
     // =========================================================================
     // 7. HOW TO PLAY & BASIC STRATEGY MODALS
     // =========================================================================
-    function setupHowToPlayModal() { if (!howToPlayButtonEl || !howToPlayModalEl || !closeHowToPlayModalButtonEl) return; updateHowToPlayModalContent(); howToPlayButtonEl.addEventListener('click', () => { updateHowToPlayModalContent(); if (howToPlayModalEl) howToPlayModalEl.style.display = 'flex'; if(howToPlayModalEl) howToPlayModalEl.classList.add('active'); }); closeHowToPlayModalButtonEl.addEventListener('click', () => { if (howToPlayModalEl) howToPlayModalEl.style.display = 'none'; if(howToPlayModalEl) howToPlayModalEl.classList.remove('active'); }); window.addEventListener('click', (event) => { if (event.target === howToPlayModalEl) { if (howToPlayModalEl) howToPlayModalEl.style.display = 'none'; if(howToPlayModalEl) howToPlayModalEl.classList.remove('active');} }); }
-    function updateHowToPlayModalContent() { if (!howToPlayContentEl) return; const systemData = countingSystemsData[currentCountingSystem]; if (systemData) { howToPlayContentEl.innerHTML = `<h2>How to Play: ${systemData.name}</h2>${systemData.howToPlay}`; } else { howToPlayContentEl.innerHTML = `<p>Select a counting system to see instructions.</p>`; } }
-    function setupBasicStrategyModal() { if (!basicStrategyButtonEl || !basicStrategyModalEl || !closeBasicStrategyModalButtonEl) return; basicStrategyButtonEl.addEventListener('click', () => { generateBasicStrategyChartHTML(); if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'flex'; if(basicStrategyModalEl) basicStrategyModalEl.classList.add('active'); }); closeBasicStrategyModalButtonEl.addEventListener('click', () => { if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'none'; if(basicStrategyModalEl) basicStrategyModalEl.classList.remove('active'); }); window.addEventListener('click', (event) => { if (event.target === basicStrategyModalEl) { if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'none'; if(basicStrategyModalEl) basicStrategyModalEl.classList.remove('active'); } }); }
+    function setupHowToPlayModal() { /* ... (no changes in this function) ... */ if (!howToPlayButtonEl || !howToPlayModalEl || !closeHowToPlayModalButtonEl) return; updateHowToPlayModalContent(); howToPlayButtonEl.addEventListener('click', () => { updateHowToPlayModalContent(); if (howToPlayModalEl) howToPlayModalEl.style.display = 'flex'; if(howToPlayModalEl) howToPlayModalEl.classList.add('active'); }); closeHowToPlayModalButtonEl.addEventListener('click', () => { if (howToPlayModalEl) howToPlayModalEl.style.display = 'none'; if(howToPlayModalEl) howToPlayModalEl.classList.remove('active'); }); window.addEventListener('click', (event) => { if (event.target === howToPlayModalEl) { if (howToPlayModalEl) howToPlayModalEl.style.display = 'none'; if(howToPlayModalEl) howToPlayModalEl.classList.remove('active');} }); }
+    function updateHowToPlayModalContent() { /* ... (no changes in this function) ... */ if (!howToPlayContentEl) return; const systemData = countingSystemsData[currentCountingSystem]; if (systemData) { howToPlayContentEl.innerHTML = `<h2>How to Play: ${systemData.name}</h2>${systemData.howToPlay}`; } else { howToPlayContentEl.innerHTML = `<p>Select a counting system to see instructions.</p>`; } }
+    function setupBasicStrategyModal() { /* ... (no changes in this function) ... */ if (!basicStrategyButtonEl || !basicStrategyModalEl || !closeBasicStrategyModalButtonEl) return; basicStrategyButtonEl.addEventListener('click', () => { generateBasicStrategyChartHTML(); if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'flex'; if(basicStrategyModalEl) basicStrategyModalEl.classList.add('active'); }); closeBasicStrategyModalButtonEl.addEventListener('click', () => { if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'none'; if(basicStrategyModalEl) basicStrategyModalEl.classList.remove('active'); }); window.addEventListener('click', (event) => { if (event.target === basicStrategyModalEl) { if (basicStrategyModalEl) basicStrategyModalEl.style.display = 'none'; if(basicStrategyModalEl) basicStrategyModalEl.classList.remove('active'); } }); }
     const basicStrategyData = { hardTotals:{"17+":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"16":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"15":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"14":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"13":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"12":{2:"H",3:"H",4:"S",5:"S",6:"S",7:"H",8:"H",9:"H",T:"H",A:"H"},"11":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"D",A:"H"},"10":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"H",A:"H"},"9":{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"5-8":{2:"H",3:"H",4:"H",5:"H",6:"H",7:"H",8:"H",9:"H",T:"H",A:"H"}},softTotals:{"A,9":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"A,8":{2:"S",3:"S",4:"S",5:"S",6:"DS",7:"S",8:"S",9:"S",T:"S",A:"S"},"A,7":{2:"DS",3:"DS",4:"DS",5:"DS",6:"DS",7:"S",8:"S",9:"H",T:"H",A:"H"},"A,6":{2:"H",3:"D",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,5":{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,4":{2:"H",3:"H",4:"D",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,3":{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"},"A,2":{2:"H",3:"H",4:"H",5:"D",6:"D",7:"H",8:"H",9:"H",T:"H",A:"H"}},pairs:{"A,A":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"P",9:"P",T:"P",A:"P"},"T,T":{2:"S",3:"S",4:"S",5:"S",6:"S",7:"S",8:"S",9:"S",T:"S",A:"S"},"9,9":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"S",8:"P",9:"P",T:"S",A:"S"},"8,8":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"P",9:"P",T:"P",A:"P"},"7,7":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"},"6,6":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"H",8:"H",9:"H",T:"H",A:"H"},"5,5":{2:"D",3:"D",4:"D",5:"D",6:"D",7:"D",8:"D",9:"D",T:"H",A:"H"},"4,4":{2:"H",3:"H",4:"H",5:"P",6:"P",7:"H",8:"H",9:"H",T:"H",A:"H"},"3,3":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"},"2,2":{2:"P",3:"P",4:"P",5:"P",6:"P",7:"P",8:"H",9:"H",T:"H",A:"H"}},legend:"H: Hit, S: Stand, D: Double (if not allowed, Hit), DS: Double (if not allowed, Stand), P: Split" };
-    function generateBasicStrategyChartHTML() { if (!basicStrategyChartContainerEl) return; let html = `<p><strong>Legend:</strong> ${basicStrategyData.legend}</p>`; const dealerRow = "<th>Player</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10/A</th><th>Ace</th>"; function createTable(title, data) { let tableHTML = `<h3>${title}</h3><table><thead><tr>${dealerRow}</tr></thead><tbody>`; for (const playerHand in data) { tableHTML += `<tr><td><strong>${playerHand}</strong></td>`; const decisions = data[playerHand]; const dealerCardsOrder = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "A"]; dealerCardsOrder.forEach(dealerCard => { tableHTML += `<td>${decisions[dealerCard] || '-'}</td>`; }); tableHTML += `</tr>`; } tableHTML += `</tbody></table>`; return tableHTML; } html += createTable("Hard Totals", basicStrategyData.hardTotals); html += createTable("Soft Totals", basicStrategyData.softTotals); html += createTable("Pairs", basicStrategyData.pairs); basicStrategyChartContainerEl.innerHTML = html; }
+    function generateBasicStrategyChartHTML() { /* ... (no changes in this function) ... */ if (!basicStrategyChartContainerEl) return; let html = `<p><strong>Legend:</strong> ${basicStrategyData.legend}</p>`; const dealerRow = "<th>Player</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10/A</th><th>Ace</th>"; function createTable(title, data) { let tableHTML = `<h3>${title}</h3><table><thead><tr>${dealerRow}</tr></thead><tbody>`; for (const playerHand in data) { tableHTML += `<tr><td><strong>${playerHand}</strong></td>`; const decisions = data[playerHand]; const dealerCardsOrder = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "A"]; dealerCardsOrder.forEach(dealerCard => { tableHTML += `<td>${decisions[dealerCard] || '-'}</td>`; }); tableHTML += `</tr>`; } tableHTML += `</tbody></table>`; return tableHTML; } html += createTable("Hard Totals", basicStrategyData.hardTotals); html += createTable("Soft Totals", basicStrategyData.softTotals); html += createTable("Pairs", basicStrategyData.pairs); basicStrategyChartContainerEl.innerHTML = html; }
 
     // =========================================================================
     // 8. BETTING PRACTICE
     // =========================================================================
     function setupBettingPracticeControls() {
+        console.log("SCRIPT DEBUG: Setting up betting practice controls."); // ADDED LOG
         if (betMinButtonEl) {
-            betMinButtonEl.addEventListener('click', () => handleBetChoiceInput('min'));
+            console.log("SCRIPT DEBUG: betMinButtonEl FOUND. Adding listener."); // ADDED LOG
+            betMinButtonEl.addEventListener('click', () => {
+                console.log("SCRIPT DEBUG: Min Bet button CLICKED."); // ADDED LOG
+                handleBetChoiceInput('min');
+            });
         } else {
-            console.warn("Min Bet button not found");
+            console.warn("Min Bet button not found (betMinButtonEl is null).");
         }
 
         if (betMidButtonEl) {
-            betMidButtonEl.addEventListener('click', () => handleBetChoiceInput('mid'));
+            console.log("SCRIPT DEBUG: betMidButtonEl FOUND. Adding listener."); // ADDED LOG
+            betMidButtonEl.addEventListener('click', () => {
+                console.log("SCRIPT DEBUG: Mid Bet button CLICKED."); // ADDED LOG
+                handleBetChoiceInput('mid');
+            });
         } else {
-            console.warn("Mid Bet button not found");
+            console.warn("Mid Bet button not found (betMidButtonEl is null).");
         }
 
         if (betMaxButtonEl) {
-            betMaxButtonEl.addEventListener('click', () => handleBetChoiceInput('max'));
+            console.log("SCRIPT DEBUG: betMaxButtonEl FOUND. Adding listener."); // ADDED LOG
+            betMaxButtonEl.addEventListener('click', () => {
+                console.log("SCRIPT DEBUG: Max Bet button CLICKED."); // ADDED LOG
+                handleBetChoiceInput('max');
+            });
         } else {
-            console.warn("Max Bet button not found");
+            console.warn("Max Bet button not found (betMaxButtonEl is null).");
         }
 
         if (continueDealingButtonEl) {
-            continueDealingButtonEl.addEventListener('click', resumeAfterBettingPractice);
+            console.log("SCRIPT DEBUG: continueDealingButtonEl FOUND. Adding listener."); // ADDED LOG
+            continueDealingButtonEl.addEventListener('click', () => {
+                console.log("SCRIPT DEBUG: Continue Dealing button CLICKED."); // ADDED LOG
+                resumeAfterBettingPractice();
+            });
         } else {
-            console.warn("Continue Dealing button not found");
+            console.warn("Continue Dealing button not found (continueDealingButtonEl is null).");
         }
+        console.log("SCRIPT DEBUG: Finished setting up betting practice controls."); // ADDED LOG
     }
 
     function triggerBettingPractice() {
+        console.log("SCRIPT DEBUG: triggerBettingPractice called."); // ADDED LOG
         if (currentGameMode !== 'guessValue' || (levelSelectEl && levelSelectEl.value === "practice")) {
             dealNewCard(); 
             return;
@@ -268,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'block';
         if (bettingTrueCountDisplayEl) {
             let tcText = "N/A";
-            if (currentCountingSystem === 'hi-lo') { // Only show TC value for Hi-Lo, or if you adapt for other systems
+            if (currentCountingSystem === 'hi-lo') { 
                  tcText = isFinite(trueCount) ? trueCount.toFixed(1) : (trueCount === Infinity ? "Very High+" : (trueCount === -Infinity ? "Very Low-" : "N/A"));
             }
             bettingTrueCountDisplayEl.innerHTML = `Current True Count: <strong>${tcText}</strong>`;
@@ -276,8 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (bettingFeedbackEl) {
             bettingFeedbackEl.textContent = ''; 
-            bettingFeedbackEl.className = 'message-display'; // Reset classes, assuming CSS has .message-display base styles
-            bettingFeedbackEl.classList.remove('visible'); 
+            bettingFeedbackEl.className = ''; // Clear all classes
+            bettingFeedbackEl.classList.remove('visible', 'message-correct', 'message-wrong', 'message-info'); 
         }
         if (continueDealingButtonEl) {
             continueDealingButtonEl.style.display = 'none'; 
@@ -285,14 +302,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleBetChoiceInput(betChoice) {
-        if (!gamePausedForBetting) return; 
+        console.log("SCRIPT DEBUG: handleBetChoiceInput called with choice:", betChoice); // ADDED LOG
+        if (!gamePausedForBetting) {
+            console.warn("SCRIPT DEBUG: handleBetChoiceInput called but game not paused for betting."); // ADDED LOG
+            return;
+        }
 
         let feedbackText = "";
         let feedbackClass = "message-info"; 
         const tc = trueCount; 
 
-        // Example evaluation logic (can be expanded)
-        if (currentCountingSystem === 'hi-lo') { // Betting logic primarily for Hi-Lo's True Count
+        if (currentCountingSystem === 'hi-lo') { 
             if (tc < 1) {
                 if (betChoice === 'min') {
                     feedbackText = "Correct! With a True Count < +1, a minimum bet is generally advised.";
@@ -307,12 +327,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedbackClass = "message-correct";
                 } else if (betChoice === 'min') {
                     feedbackText = "You could consider a slightly larger bet (mid), but min is a safe play.";
-                    feedbackClass = "message-info"; // More informational than outright wrong
-                } else { // max bet
+                    feedbackClass = "message-info"; 
+                } else { 
                     feedbackText = "A max bet might be a bit aggressive here. A moderate bet is often preferred for this True Count.";
                     feedbackClass = "message-wrong";
                 }
-            } else { // tc >= 3
+            } else { 
                 if (betChoice === 'max') {
                     feedbackText = "Excellent! With a True Count >= +3, a larger bet is usually favorable.";
                     feedbackClass = "message-correct";
@@ -321,28 +341,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedbackClass = "message-wrong";
                 }
             }
-        } else { // For other systems like KO, or if TC is not applicable
+        } else { 
             feedbackText = `Betting guidance for ${countingSystemsData[currentCountingSystem].name} might differ. You chose ${betChoice.toUpperCase()} Bet.`;
-            // You might add specific KO betting advice based on Running Count here
         }
        
         feedbackText = `You chose: ${betChoice.toUpperCase()} Bet. ${feedbackText}`;
 
         if (bettingFeedbackEl) {
             bettingFeedbackEl.textContent = feedbackText;
-            // Ensure CSS for .message-display and .visible is in place
-            // And .message-correct, .message-wrong, .message-info
-            bettingFeedbackEl.className = `message-display ${feedbackClass} visible`; 
+            bettingFeedbackEl.className = ''; // Clear existing classes
+            bettingFeedbackEl.classList.add(feedbackClass); 
+            bettingFeedbackEl.classList.add('visible');
+            console.log("SCRIPT DEBUG: Betting feedback set - Text:", feedbackText, "Class:", feedbackClass); // ADDED LOG
         }
 
         if (continueDealingButtonEl) {
             continueDealingButtonEl.style.display = 'inline-block'; 
+            console.log("SCRIPT DEBUG: Continue dealing button displayed."); // ADDED LOG
         } else {
             console.warn("Continue Dealing button not found. Game progression might be affected.");
         }
     }
 
     function resumeAfterBettingPractice() {
+        console.log("SCRIPT DEBUG: resumeAfterBettingPractice called."); // ADDED LOG
         if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
         if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none';
         if (bettingFeedbackEl) { 
@@ -361,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 9. CORE GAME LOGIC ("Guess Card Value" mode)
     // =========================================================================
-    function updateAccuracyDisplay() {
+    function updateAccuracyDisplay() { /* ... (no changes in this function) ... */
         if (!accuracyDisplayEl) return;
         if (sessionTotalCardsDealt === 0) {
             accuracyDisplayEl.textContent = "Accuracy: N/A";
@@ -370,28 +392,25 @@ document.addEventListener('DOMContentLoaded', () => {
             accuracyDisplayEl.textContent = `Accuracy: ${accuracy.toFixed(1)}% (${sessionCorrectGuesses}/${sessionTotalCardsDealt})`;
         }
     }
-
-    function resetSessionStats() {
+    function resetSessionStats() { /* ... (no changes in this function) ... */
         sessionCorrectGuesses = 0;
         sessionTotalCardsDealt = 0;
         updateAccuracyDisplay();
     }
-
-    function updateCurrentSystemDisplay() { if (!currentSystemDisplayEl || !currentSystemValuesDisplayEl) return; const systemData = countingSystemsData[currentCountingSystem]; if (systemData) { currentSystemDisplayEl.textContent = systemData.name; currentSystemValuesDisplayEl.textContent = systemData.description; } }
-    function buildShoe() { console.log("SCRIPT DEBUG: buildShoe for system:", currentCountingSystem); const numDecks = (deckSizeEl && parseInt(deckSizeEl.value)) || 1; gameShoe = []; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numDecks; i++) { cardLabels.forEach(label => { const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; suits.forEach(suit => { gameShoe.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); }); }); } totalCardsInShoe = gameShoe.length; cardsDealtInShoe = 0; for (let i = gameShoe.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [gameShoe[i], gameShoe[j]] = [gameShoe[j], gameShoe[i]]; } console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards.`); }
-    function handleUserChoice(choice) { if (currentGameMode !== 'guessValue') return; if (!gameActive && !gamePausedForBetting) { startNewGame(); return; } if (gameActive && !gamePausedForBetting) { processGuess(choice); } }
-    function startNewGame() { if (currentGameMode !== 'guessValue') { displayMessage("Switch to 'Guess Card Value' mode to start this game.", "info"); return; } console.log("SCRIPT DEBUG: startNewGame (Guess Card Value mode)"); clearInterval(gameTimer); gameActive = true; gamePausedForBetting = false; score = 0; runningCount = 0; trueCount = 0; resetSessionStats(); buildShoe(); loadHighScoreForCurrentLevel(); updateScoreboardVisuals(); updateAllCountVisuals(); updateCurrentSystemDisplay(); displayMessage("Shoe ready. Good luck!", "info"); dealNewCard(); }
-    function processGuess(userChoice) { if (!currentCard || !gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); sessionTotalCardsDealt++; let expectedValue; if (userChoice === 'plus') expectedValue = 1; else if (userChoice === 'minus') expectedValue = -1; else expectedValue = 0; if (expectedValue === currentCard.pointVal) { score++; sessionCorrectGuesses++; runningCount += currentCard.pointVal; displayMessage("Correct!", "correct"); playSound(correctSound); if (score > highScore) { highScore = score; saveHighScoreForCurrentLevel(); } updateScoreboardVisuals(); updateAllCountVisuals(); updateAccuracyDisplay(); if (sessionTotalCardsDealt > 0 && sessionTotalCardsDealt % CARDS_BETWEEN_BETS === 0 && (levelSelectEl && levelSelectEl.value !== "practice")) { triggerBettingPractice(); } else { dealNewCard(); } } else { playSound(wrongSound); updateAccuracyDisplay(); gameOver(`Wrong guess! Card ${currentCard.label}${currentCard.suit} is ${currentCard.pointVal > 0 ? '+' : ''}${currentCard.pointVal} for ${countingSystemsData[currentCountingSystem].name}. RC: ${runningCount}`); } }
-    function dealNewCard() { if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; if (gameShoe.length === 0 || cardsDealtInShoe >= totalCardsInShoe * SHUFFLE_PENETRATION) { const penetrationPercent = totalCardsInShoe > 0 ? ((cardsDealtInShoe/totalCardsInShoe)*100).toFixed(0) : 0; displayMessage(`Shuffle time! Penetration: ${penetrationPercent}%. Starting new shoe.`, "info"); setTimeout(() => { if (gameActive && currentGameMode === 'guessValue') startNewGame(); }, 2000); return; } currentCard = gameShoe.pop(); cardsDealtInShoe++; updateAllCountVisuals(); animateCardFlip(); }
-    function updateAllCountVisuals() { if (runningCountDisplayEl) runningCountDisplayEl.textContent = `Running Count: ${runningCount}`; const decksRemaining = Math.max(0.01, (totalCardsInShoe - cardsDealtInShoe) / 52); if (currentCountingSystem === 'hi-lo' && totalCardsInShoe > 0) { trueCount = runningCount / decksRemaining; let trueCountText = "0.0"; if (isFinite(trueCount)) trueCountText = trueCount.toFixed(1); else if (trueCount === Infinity) trueCountText = "Very High+"; else if (trueCount === -Infinity) trueCountText = "Very Low-"; if (trueCountDisplayEl) { trueCountDisplayEl.textContent = `True Count: ${trueCountText}`; trueCountDisplayEl.style.display = 'block'; } } else if (trueCountDisplayEl) { trueCountDisplayEl.textContent = 'True Count: N/A'; trueCountDisplayEl.style.display = currentCountingSystem === 'ko' ? 'none' : 'block'; } if (deckInfoDisplayEl) deckInfoDisplayEl.textContent = `Shoe: ${cardsDealtInShoe}/${totalCardsInShoe} cards (${decksRemaining.toFixed(1)} decks left)`; }
+    function updateCurrentSystemDisplay() { /* ... (no changes in this function) ... */ if (!currentSystemDisplayEl || !currentSystemValuesDisplayEl) return; const systemData = countingSystemsData[currentCountingSystem]; if (systemData) { currentSystemDisplayEl.textContent = systemData.name; currentSystemValuesDisplayEl.textContent = systemData.description; } }
+    function buildShoe() { /* ... (no changes in this function) ... */ console.log("SCRIPT DEBUG: buildShoe for system:", currentCountingSystem); const numDecks = (deckSizeEl && parseInt(deckSizeEl.value)) || 1; gameShoe = []; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numDecks; i++) { cardLabels.forEach(label => { const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; suits.forEach(suit => { gameShoe.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); }); }); } totalCardsInShoe = gameShoe.length; cardsDealtInShoe = 0; for (let i = gameShoe.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [gameShoe[i], gameShoe[j]] = [gameShoe[j], gameShoe[i]]; } console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards.`); }
+    function handleUserChoice(choice) { /* ... (no changes in this function) ... */ if (currentGameMode !== 'guessValue') return; if (!gameActive && !gamePausedForBetting) { startNewGame(); return; } if (gameActive && !gamePausedForBetting) { processGuess(choice); } }
+    function startNewGame() { /* ... (no changes in this function) ... */ if (currentGameMode !== 'guessValue') { displayMessage("Switch to 'Guess Card Value' mode to start this game.", "info"); return; } console.log("SCRIPT DEBUG: startNewGame (Guess Card Value mode)"); clearInterval(gameTimer); gameActive = true; gamePausedForBetting = false; score = 0; runningCount = 0; trueCount = 0; resetSessionStats(); buildShoe(); loadHighScoreForCurrentLevel(); updateScoreboardVisuals(); updateAllCountVisuals(); updateCurrentSystemDisplay(); displayMessage("Shoe ready. Good luck!", "info"); dealNewCard(); }
+    function processGuess(userChoice) { /* ... (no changes in this function) ... */ if (!currentCard || !gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); sessionTotalCardsDealt++; let expectedValue; if (userChoice === 'plus') expectedValue = 1; else if (userChoice === 'minus') expectedValue = -1; else expectedValue = 0; if (expectedValue === currentCard.pointVal) { score++; sessionCorrectGuesses++; runningCount += currentCard.pointVal; displayMessage("Correct!", "correct"); playSound(correctSound); if (score > highScore) { highScore = score; saveHighScoreForCurrentLevel(); } updateScoreboardVisuals(); updateAllCountVisuals(); updateAccuracyDisplay(); if (sessionTotalCardsDealt > 0 && sessionTotalCardsDealt % CARDS_BETWEEN_BETS === 0 && (levelSelectEl && levelSelectEl.value !== "practice")) { triggerBettingPractice(); } else { dealNewCard(); } } else { playSound(wrongSound); updateAccuracyDisplay(); gameOver(`Wrong guess! Card ${currentCard.label}${currentCard.suit} is ${currentCard.pointVal > 0 ? '+' : ''}${currentCard.pointVal} for ${countingSystemsData[currentCountingSystem].name}. RC: ${runningCount}`); } }
+    function dealNewCard() { /* ... (no changes in this function) ... */ if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; if (gameShoe.length === 0 || cardsDealtInShoe >= totalCardsInShoe * SHUFFLE_PENETRATION) { const penetrationPercent = totalCardsInShoe > 0 ? ((cardsDealtInShoe/totalCardsInShoe)*100).toFixed(0) : 0; displayMessage(`Shuffle time! Penetration: ${penetrationPercent}%. Starting new shoe.`, "info"); setTimeout(() => { if (gameActive && currentGameMode === 'guessValue') startNewGame(); }, 2000); return; } currentCard = gameShoe.pop(); cardsDealtInShoe++; updateAllCountVisuals(); animateCardFlip(); }
+    function updateAllCountVisuals() { /* ... (no changes in this function) ... */ if (runningCountDisplayEl) runningCountDisplayEl.textContent = `Running Count: ${runningCount}`; const decksRemaining = Math.max(0.01, (totalCardsInShoe - cardsDealtInShoe) / 52); if (currentCountingSystem === 'hi-lo' && totalCardsInShoe > 0) { trueCount = runningCount / decksRemaining; let trueCountText = "0.0"; if (isFinite(trueCount)) trueCountText = trueCount.toFixed(1); else if (trueCount === Infinity) trueCountText = "Very High+"; else if (trueCount === -Infinity) trueCountText = "Very Low-"; if (trueCountDisplayEl) { trueCountDisplayEl.textContent = `True Count: ${trueCountText}`; trueCountDisplayEl.style.display = 'block'; } } else if (trueCountDisplayEl) { trueCountDisplayEl.textContent = 'True Count: N/A'; trueCountDisplayEl.style.display = currentCountingSystem === 'ko' ? 'none' : 'block'; } if (deckInfoDisplayEl) deckInfoDisplayEl.textContent = `Shoe: ${cardsDealtInShoe}/${totalCardsInShoe} cards (${decksRemaining.toFixed(1)} decks left)`; }
     
-    function animateCardFlip() {
+    function animateCardFlip() { /* ... (no changes in this function) ... */
         if (!currentCard || !cardContainerEl || !cardFrontEl || !cardBackEl) {
             console.warn("animateCardFlip: Missing DOM elements or currentCard.");
             if (gameActive) gameOver("Error displaying card."); 
             return;
         }
-
         cardFrontEl.textContent = `${currentCard.label}${currentCard.suit}`;
         cardFrontEl.className = 'card-face card-front'; 
         if (currentCard.color === 'red') {
@@ -399,41 +418,36 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             cardFrontEl.classList.add('black-card'); 
         }
-
         cardBackEl.textContent = '?';
-
         cardContainerEl.classList.remove('flipping'); 
         void cardContainerEl.offsetWidth; 
         cardContainerEl.classList.add('flipping'); 
-
         if (gameActive && !gamePausedForBetting && currentGameMode === 'guessValue') {
             startRoundTimer();
         }
     }
-
-    function gameOver(reason) { clearInterval(gameTimer); gameActive = false; displayMessage(`${reason}. Score: ${score}. Click 'New Shoe / Start Game' or a value to play again.`, "wrong"); }
+    function gameOver(reason) { /* ... (no changes in this function) ... */ clearInterval(gameTimer); gameActive = false; displayMessage(`${reason}. Score: ${score}. Click 'New Shoe / Start Game' or a value to play again.`, "wrong"); }
 
     // =========================================================================
     // 10. FLASHING CARDS DRILL LOGIC
     // =========================================================================
-    function setupFlashDrillControls() { if (!startFlashDrillButtonEl || !submitFlashDrillCountButtonEl) return; startFlashDrillButtonEl.addEventListener('click', startFlashDrill); submitFlashDrillCountButtonEl.addEventListener('click', evaluateFlashDrill); }
-    function startFlashDrill() { if (currentGameMode !== 'flashDrill') return; console.log("SCRIPT DEBUG: Starting Flash Drill"); drillActive = true; clearInterval(drillTimer); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = true; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none'; if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = ''; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.value = ''; const numCards = (flashDrillNumCardsInputEl && parseInt(flashDrillNumCardsInputEl.value)) || 10; const speedMs = ((flashDrillSpeedInputEl && parseFloat(flashDrillSpeedInputEl.value)) || 1) * 1000; drillCardSequence = []; drillActualRunningCount = 0; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numCards; i++) { const randomLabelIdx = Math.floor(Math.random() * cardLabels.length); const randomSuitIdx = Math.floor(Math.random() * suits.length); const label = cardLabels[randomLabelIdx]; const suit = suits[randomSuitIdx]; const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; drillCardSequence.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); } drillCurrentCardIdx = 0; flashNextDrillCard(speedMs); }
-    function flashNextDrillCard(speedMs) { if (!drillActive || drillCurrentCardIdx >= drillCardSequence.length) { endFlashDrillSequence(); return; } const card = drillCardSequence[drillCurrentCardIdx]; if (flashDrillCardDisplayAreaEl) { flashDrillCardDisplayAreaEl.innerHTML = `<div class="card-face card-front ${card.color}" style="width:120px; height:180px; display:flex; justify-content:center; align-items:center; font-size:4em; border:1px solid #ccc; border-radius:10px; margin:auto;">${card.label}${card.suit}</div>`; } drillActualRunningCount += card.pointVal; drillCurrentCardIdx++; drillTimer = setTimeout(() => { if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = ''; flashNextDrillCard(speedMs); }, speedMs); }
-    function endFlashDrillSequence() { console.log("SCRIPT DEBUG: Flash Drill sequence ended. Actual RC:", drillActualRunningCount); if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '<p style="text-align:center; padding-top:70px;">Sequence Complete!</p>'; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'block'; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.focus(); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; drillActive = false; }
-    function evaluateFlashDrill() { if (!flashDrillInputAreaEl || flashDrillInputAreaEl.style.display === 'none') return; const userCount = (flashDrillUserCountInputEl && parseInt(flashDrillUserCountInputEl.value)); if (isNaN(userCount)) { if (flashDrillFeedbackEl) { flashDrillFeedbackEl.textContent = "Please enter a valid number."; flashDrillFeedbackEl.className = 'message-display message-wrong visible';} return; } if (flashDrillFeedbackEl) { flashDrillFeedbackEl.classList.add('visible'); if (userCount === drillActualRunningCount) { flashDrillFeedbackEl.textContent = `Correct! Running count was ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-correct visible'; } else { flashDrillFeedbackEl.textContent = `Incorrect. Your count: ${userCount}. Actual count: ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-wrong visible'; } } if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; }
+    function setupFlashDrillControls() { /* ... (no changes in this function) ... */ if (!startFlashDrillButtonEl || !submitFlashDrillCountButtonEl) return; startFlashDrillButtonEl.addEventListener('click', startFlashDrill); submitFlashDrillCountButtonEl.addEventListener('click', evaluateFlashDrill); }
+    function startFlashDrill() { /* ... (no changes in this function) ... */ if (currentGameMode !== 'flashDrill') return; console.log("SCRIPT DEBUG: Starting Flash Drill"); drillActive = true; clearInterval(drillTimer); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = true; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'none'; if (flashDrillFeedbackEl) flashDrillFeedbackEl.textContent = ''; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.value = ''; const numCards = (flashDrillNumCardsInputEl && parseInt(flashDrillNumCardsInputEl.value)) || 10; const speedMs = ((flashDrillSpeedInputEl && parseFloat(flashDrillSpeedInputEl.value)) || 1) * 1000; drillCardSequence = []; drillActualRunningCount = 0; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numCards; i++) { const randomLabelIdx = Math.floor(Math.random() * cardLabels.length); const randomSuitIdx = Math.floor(Math.random() * suits.length); const label = cardLabels[randomLabelIdx]; const suit = suits[randomSuitIdx]; const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; drillCardSequence.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); } drillCurrentCardIdx = 0; flashNextDrillCard(speedMs); }
+    function flashNextDrillCard(speedMs) { /* ... (no changes in this function) ... */ if (!drillActive || drillCurrentCardIdx >= drillCardSequence.length) { endFlashDrillSequence(); return; } const card = drillCardSequence[drillCurrentCardIdx]; if (flashDrillCardDisplayAreaEl) { flashDrillCardDisplayAreaEl.innerHTML = `<div class="card-face card-front ${card.color}" style="width:120px; height:180px; display:flex; justify-content:center; align-items:center; font-size:4em; border:1px solid #ccc; border-radius:10px; margin:auto;">${card.label}${card.suit}</div>`; } drillActualRunningCount += card.pointVal; drillCurrentCardIdx++; drillTimer = setTimeout(() => { if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = ''; flashNextDrillCard(speedMs); }, speedMs); }
+    function endFlashDrillSequence() { /* ... (no changes in this function) ... */ console.log("SCRIPT DEBUG: Flash Drill sequence ended. Actual RC:", drillActualRunningCount); if (flashDrillCardDisplayAreaEl) flashDrillCardDisplayAreaEl.innerHTML = '<p style="text-align:center; padding-top:70px;">Sequence Complete!</p>'; if (flashDrillInputAreaEl) flashDrillInputAreaEl.style.display = 'block'; if (flashDrillUserCountInputEl) flashDrillUserCountInputEl.focus(); if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; drillActive = false; }
+    function evaluateFlashDrill() { /* ... (no changes in this function) ... */ if (!flashDrillInputAreaEl || flashDrillInputAreaEl.style.display === 'none') return; const userCount = (flashDrillUserCountInputEl && parseInt(flashDrillUserCountInputEl.value)); if (isNaN(userCount)) { if (flashDrillFeedbackEl) { flashDrillFeedbackEl.textContent = "Please enter a valid number."; flashDrillFeedbackEl.className = 'message-display message-wrong visible';} return; } if (flashDrillFeedbackEl) { flashDrillFeedbackEl.classList.add('visible'); if (userCount === drillActualRunningCount) { flashDrillFeedbackEl.textContent = `Correct! Running count was ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-correct visible'; } else { flashDrillFeedbackEl.textContent = `Incorrect. Your count: ${userCount}. Actual count: ${drillActualRunningCount}.`; flashDrillFeedbackEl.className = 'message-display message-wrong visible'; } } if (startFlashDrillButtonEl) startFlashDrillButtonEl.disabled = false; }
 
     // =========================================================================
     // 11. SCOREBOARD, MESSAGES, SOUNDS, LOCALSTORAGE
     // =========================================================================
-    function updateScoreboardVisuals() { if (scoreEl) scoreEl.textContent = score; if (highscoreEl) highscoreEl.textContent = highScore; }
-    function displayMessage(msg, typeClass) {
+    function updateScoreboardVisuals() { /* ... (no changes in this function) ... */ if (scoreEl) scoreEl.textContent = score; if (highscoreEl) highscoreEl.textContent = highScore; }
+    function displayMessage(msg, typeClass) { /* ... (no changes in this function) ... */
         if (messageDisplayEl) {
             messageDisplayEl.textContent = msg;
             messageDisplayEl.className = `message-display message-${typeClass || 'info'} visible`;
         }
     }
-
-    function playSound(soundElement) {
+    function playSound(soundElement) { /* ... (no changes in this function) ... */
         if (soundElement && musicOn) {
             soundElement.currentTime = 0;
             const playPromise = soundElement.play();
@@ -442,20 +456,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.warn(`Error playing sound ${soundElement.id}:`, error.message);
                 });
             }
-        } else if (soundElement && !musicOn) {
-            // console.log(`playSound: musicOn is false, not playing ${soundElement.id}`);
-        } else if (!soundElement) {
+        } else if (soundElement && !musicOn) {} else if (!soundElement) {
             console.warn("playSound: soundElement is null or undefined.");
         }
     }
-
-    function toggleMusic() {
+    function toggleMusic() { /* ... (no changes in this function) ... */
         console.log("toggleMusic called. Current musicOn state (before toggle):", musicOn);
         musicOn = !musicOn;
         console.log("musicOn state (after toggle):", musicOn);
         localStorage.setItem('cardCounterMusicOn', musicOn.toString());
         updateMusicButtonVisuals();
-
         if (bgMusic) {
             if (musicOn) {
                 console.log("Attempting to play background music.");
@@ -477,8 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("bgMusic element not found in toggleMusic function.");
         }
     }
-
-    function updateMusicButtonVisuals() {
+    function updateMusicButtonVisuals() { /* ... (no changes in this function) ... */
         if (musicToggleBtn) {
             musicToggleBtn.textContent = musicOn ? "Music ON" : "Music OFF";
             if (musicOn) {
@@ -486,16 +495,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 musicToggleBtn.classList.remove('on');
             }
-            console.log("Music button updated. Text:", musicToggleBtn.textContent, "Class 'on':", musicToggleBtn.classList.contains('on'));
         } else {
             console.warn("Music toggle button not found for updating visuals.");
         }
     }
-
-    function saveHighScoreForCurrentLevel() { try { const currentLevel = levelSelectEl && levelSelectEl.value; const currentDeckSize = deckSizeEl && deckSizeEl.value; const system = currentCountingSystem; const gameMode = currentGameMode; if (gameMode === 'guessValue' && currentLevel && currentDeckSize) { localStorage.setItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`, highScore.toString()); } } catch (e) { console.warn("Could not save high score:", e.message); } }
-    function loadHighScoreForCurrentLevel() { try { const currentLevel = levelSelectEl && levelSelectEl.value; const currentDeckSize = deckSizeEl && deckSizeEl.value; const system = currentCountingSystem; const gameMode = currentGameMode; if (gameMode === 'guessValue' && currentLevel && currentDeckSize) { const savedScore = localStorage.getItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`); highScore = parseInt(savedScore) || 0; } else { highScore = 0; } } catch (e) { console.warn("Could not load high score:", e.message); highScore = 0; } }
+    function saveHighScoreForCurrentLevel() { /* ... (no changes in this function) ... */ try { const currentLevel = levelSelectEl && levelSelectEl.value; const currentDeckSize = deckSizeEl && deckSizeEl.value; const system = currentCountingSystem; const gameMode = currentGameMode; if (gameMode === 'guessValue' && currentLevel && currentDeckSize) { localStorage.setItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`, highScore.toString()); } } catch (e) { console.warn("Could not save high score:", e.message); } }
+    function loadHighScoreForCurrentLevel() { /* ... (no changes in this function) ... */ try { const currentLevel = levelSelectEl && levelSelectEl.value; const currentDeckSize = deckSizeEl && deckSizeEl.value; const system = currentCountingSystem; const gameMode = currentGameMode; if (gameMode === 'guessValue' && currentLevel && currentDeckSize) { const savedScore = localStorage.getItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`); highScore = parseInt(savedScore) || 0; } else { highScore = 0; } } catch (e) { console.warn("Could not load high score:", e.message); highScore = 0; } }
     
-    function loadInitialSettings() {
+    function loadInitialSettings() { /* ... (no changes in this function) ... */
         const savedSpeed = localStorage.getItem('cardCounterSpeed');
         if (savedSpeed !== null) {
             currentCardSpeed = parseFloat(savedSpeed);
@@ -503,19 +510,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (levelSelectEl) updateCardSpeedInputFromLevel(); else currentCardSpeed = 5;
         }
-
         musicOn = localStorage.getItem('cardCounterMusicOn') === 'true';
-        console.log("loadInitialSettings: Loaded musicOn state as:", musicOn);
         updateMusicButtonVisuals();
-
         if (musicOn && bgMusic) {
-            console.log("loadInitialSettings: musicOn is true, attempting to play bgMusic.");
             setTimeout(() => { 
                 const playPromise = bgMusic.play();
                 if (playPromise !== undefined) {
-                    playPromise.then(_ => {
-                        console.log("Background music started based on saved preference (initial load).");
-                    }).catch(error => {
+                    playPromise.then(_ => {}).catch(error => {
                         console.warn("Initial background music autoplay was prevented by browser:", error.message);
                         displayMessage("Music was ON, but autoplay failed. Click button or interact.", "info");
                     });
@@ -523,8 +524,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         } else if (!bgMusic) {
             console.warn("loadInitialSettings: bgMusic element not found.");
-        } else {
-            console.log("loadInitialSettings: musicOn is false, not attempting to play bgMusic initially.");
         }
     }
 
@@ -533,4 +532,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     loadInitialSettings();
     initializeApp();
+    console.log("SCRIPT DEBUG: Script execution finished at bottom."); // ADDED LOG
 });
