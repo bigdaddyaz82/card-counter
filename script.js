@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const decksRemainingDisplay = document.getElementById('decksRemainingDisplay');
 
     const valueGuessSection = document.getElementById('valueGuessSection');
-    const cardValueGuessInput = document.getElementById('cardValueGuess');
-    const submitValueGuessBtn = document.getElementById('submitValueGuessBtn');
+    // REMOVED: cardValueGuessInput and submitValueGuessBtn
+    const valueGuessButtons = document.querySelectorAll('.value-btn'); // NEW: Select all value buttons
     const valueFeedback = document.getElementById('valueFeedback');
 
     const rcGuessSection = document.getElementById('rcGuessSection');
@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let deck = [];
     let runningCount = 0;
     let initialNumDecks = 0;
-    let currentCard = null; // Object: { rank: 'A', suitKey: 'S', displayString: 'Ace of ♠' }
-    let actualCardHiLoValue = 0; // The Hi-Lo value of the currentCard
+    let currentCard = null;
+    let actualCardHiLoValue = 0;
 
     function createDeck(numDecks) {
         const newDeck = [];
@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        // Shuffle deck (Fisher-Yates shuffle)
         for (let i = newDeck.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [newDeck[i], newDeck[j]] = [newDeck[j], newDeck[i]];
@@ -70,15 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
         runningCountDisplay.textContent = runningCount;
         const cardsLeft = deck.length;
         cardsRemainingDisplay.textContent = cardsLeft;
-
         const decksLeft = cardsLeft / 52;
         decksRemainingDisplay.textContent = decksLeft.toFixed(1);
-
         let trueCount = 0;
-        if (decksLeft > 0.25) { // Only calculate true count if enough decks remain
+        if (decksLeft > 0.25) {
             trueCount = runningCount / decksLeft;
         } else if (cardsLeft > 0) {
-            trueCount = runningCount / Math.max(decksLeft, 0.5); // Avoid division by very small number, use at least 0.5 deck
+            trueCount = runningCount / Math.max(decksLeft, 0.5);
         }
         trueCountDisplay.textContent = trueCount.toFixed(1);
     }
@@ -98,85 +95,51 @@ document.addEventListener('DOMContentLoaded', () => {
             rcGuessSection.classList.add('hidden');
             currentCardDisplay.textContent = "End of Shoe.";
             startGameBtn.textContent = "Start New Shoe";
-            // startGameBtn.disabled = false; // Already enabled
-            return false; // No card dealt
+            return false;
         }
 
         currentCard = deck.pop();
         actualCardHiLoValue = getCardHiLoValue(currentCard.rank);
-
         currentCardDisplay.textContent = currentCard.displayString;
-        // Reset card display color (if you were to implement suit colors)
-        // currentCardDisplay.className = 'card-display';
-        // if (currentCard.suitKey === "H" || currentCard.suitKey === "D") {
-        //     currentCardDisplay.classList.add('red-card');
-        // } else {
-        //     currentCardDisplay.classList.add('black-card');
-        // }
-
-
         valueFeedback.textContent = "";
         rcFeedback.textContent = "";
-        cardValueGuessInput.value = "";
-        rcGuessInput.value = "";
+        rcGuessInput.value = ""; // Clear RC guess input
 
         valueGuessSection.classList.remove('hidden');
-        rcGuessSection.classList.add('hidden'); // Hide RC guess until value is submitted
-        cardValueGuessInput.focus();
-        
+        rcGuessSection.classList.add('hidden');
         updateUIDisplays();
-        return true; // Card dealt
+        return true;
     }
 
     function handleStartGame() {
         initialNumDecks = parseInt(numDecksSelect.value);
         deck = createDeck(initialNumDecks);
         runningCount = 0;
-
         gameAreaDiv.classList.remove('hidden');
         shoeEndMessage.textContent = "";
-        shoeEndMessage.className = 'feedback-message'; // Reset class
+        shoeEndMessage.className = 'feedback-message';
         startGameBtn.textContent = "Restart Current Shoe";
-        
         dealNextCard();
     }
 
-    function handleSubmitValueGuess() {
-        const guessStr = cardValueGuessInput.value;
-        if (guessStr === "") {
-            valueFeedback.textContent = "Please enter -1, 0, or 1.";
-            valueFeedback.className = 'feedback error';
-            cardValueGuessInput.focus();
-            return;
-        }
-        const guess = parseInt(guessStr);
-
-        if (isNaN(guess) || ![-1, 0, 1].includes(guess)) {
-            valueFeedback.textContent = "Invalid input. Enter -1, 0, or 1.";
-            valueFeedback.className = 'feedback error';
-            cardValueGuessInput.value = "";
-            cardValueGuessInput.focus();
-            return;
-        }
-
-        if (guess === actualCardHiLoValue) {
+    // MODIFIED FUNCTION: handleValueGuess (replaces handleSubmitValueGuess)
+    function handleValueGuess(guessedValue) {
+        if (guessedValue === actualCardHiLoValue) {
             valueFeedback.textContent = `Correct! The value of ${currentCard.displayString} is ${actualCardHiLoValue}.`;
             valueFeedback.className = 'feedback correct';
-            // Transition to Running Count guess
+        } else {
+            valueFeedback.textContent = `Not quite. The value of ${currentCard.displayString} is actually ${actualCardHiLoValue}. Your guess: ${guessedValue}.`;
+            valueFeedback.className = 'feedback error';
+        }
+
+        // Always transition to Running Count guess after a short delay for feedback
+        setTimeout(() => {
             valueGuessSection.classList.add('hidden');
             rcGuessSection.classList.remove('hidden');
             rcGuessInput.focus();
-        } else {
-            valueFeedback.textContent = `Not quite. The value of ${currentCard.displayString} is actually ${actualCardHiLoValue}. Your guess: ${guess}.`;
-            valueFeedback.className = 'feedback error';
-            // Still transition, but user knows the correct value for the RC calculation
-            setTimeout(() => {
-                valueGuessSection.classList.add('hidden');
-                rcGuessSection.classList.remove('hidden');
-                rcGuessInput.focus();
-            }, 1800); // Give time to read feedback
-        }
+        }, valueFeedback.classList.contains('error') ? 1800 : 1000); // Shorter delay if correct
     }
+    // END OF MODIFIED FUNCTION
 
     function handleSubmitRcGuess() {
         const guessStr = rcGuessInput.value;
@@ -187,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const guess = parseInt(guessStr);
-        const expectedNewRc = runningCount + actualCardHiLoValue; // Use the actual card value
+        const expectedNewRc = runningCount + actualCardHiLoValue;
 
         if (isNaN(guess)) {
             rcFeedback.textContent = "Invalid input. Please enter a number.";
@@ -205,24 +168,22 @@ document.addEventListener('DOMContentLoaded', () => {
             rcFeedback.className = 'feedback error';
         }
         
-        // Update the actual running count with the correct value for progression
         runningCount = expectedNewRc;
         
-        // After a brief moment for feedback, deal next card or end shoe
         setTimeout(() => {
             rcFeedback.textContent = ""; 
             valueFeedback.textContent = ""; 
             if (deck.length > 0) {
                 dealNextCard();
             } else {
-                updateUIDisplays(); // Update final counts
+                updateUIDisplays();
                 shoeEndMessage.textContent = `Shoe finished! Final Running Count: ${runningCount}.`;
-                 shoeEndMessage.className = 'feedback-message';
+                shoeEndMessage.className = 'feedback-message';
                 if (runningCount === 0) {
-                     shoeEndMessage.textContent += " Perfect balance!";
+                    shoeEndMessage.textContent += " Perfect balance!";
                     shoeEndMessage.classList.add('correct');
                 } else {
-                     shoeEndMessage.textContent += ` Expected 0. Review your game!`;
+                    shoeEndMessage.textContent += ` Expected 0. Review your game!`;
                     shoeEndMessage.classList.add('error');
                 }
                 valueGuessSection.classList.add('hidden');
@@ -230,20 +191,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentCardDisplay.textContent = "End of Shoe.";
                 startGameBtn.textContent = "Start New Shoe";
             }
-        }, 1800); // Delay for user to read feedback
+        }, rcFeedback.classList.contains('error') ? 2000 : 1500); // Delay for user to read feedback
     }
 
     // --- Event Listeners ---
     startGameBtn.addEventListener('click', handleStartGame);
-    submitValueGuessBtn.addEventListener('click', handleSubmitValueGuess);
+
+    // NEW: Event listeners for the value guess buttons
+    valueGuessButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const guessedValue = parseInt(button.dataset.value);
+            handleValueGuess(guessedValue);
+        });
+    });
+    // END OF NEW Event Listeners
+
     submitRcGuessBtn.addEventListener('click', handleSubmitRcGuess);
 
-    cardValueGuessInput.addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent form submission if it were in a form
-            submitValueGuessBtn.click();
-        }
-    });
+    // REMOVED: Keypress listener for cardValueGuessInput
 
     rcGuessInput.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -252,6 +217,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialize: Hide game area until "Start Game" is clicked
     gameAreaDiv.classList.add('hidden');
 });
