@@ -145,9 +145,11 @@
 
     <div id="messageDisplay" class="message-display message-info">Select settings. Click 'New Shoe / Start Game' or a value to begin!</div>
 
-    <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio> <!-- Updated path to audio/ -->
-    <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio> <!-- Updated path to audio/ -->
-    <audio id="bgMusic" src="lofi-chill-background.mp3" loop preload="auto"></audio>
+    <!-- === UPDATED AUDIO TAGS START === -->
+    <audio id="correctSound" src="correct.mp3" preload="auto"></audio> <!-- No 'audio/' prefix -->
+    <audio id="wrongSound" src="wrong.mp3" preload="auto"></audio>   <!-- No 'audio/' prefix -->
+    <audio id="bgMusic" src="lofi-chill-background.mp3" loop preload="auto"></audio> <!-- Was already correct -->
+    <!-- === UPDATED AUDIO TAGS END === -->
 
     <!-- How to Play Modal -->
     <div id="howToPlayModal" class="modal">
