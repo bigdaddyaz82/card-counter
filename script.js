@@ -1,350 +1,375 @@
-class BlackjackGame {
-    constructor() {
-        this.SUITS = ['H', 'D', 'C', 'S']; // Hearts, Diamonds, Clubs, Spades
-        this.VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-        this.NUM_DECKS = 6;
-        this.RESHUFFLE_PENETRATION = 0.75; // Reshuffle after 75% of cards dealt
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DOM Elements ---
+    const dealerCardsEl = document.getElementById('dealer-cards');
+    const playerCardsEl = document.getElementById('player-cards');
+    const dealerScoreEl = document.getElementById('dealer-score');
+    const playerScoreEl = document.getElementById('player-score');
+    const hitButton = document.getElementById('hit-button');
+    const standButton = document.getElementById('stand-button');
+    const dealButton = document.getElementById('deal-button');
+    const gameMessageEl = document.getElementById('game-message');
+    const lastCardInfoEl = document.getElementById('last-card-info');
+    const runningCountEl = document.getElementById('running-count');
+    const trueCountEl = document.getElementById('true-count');
+    const decksRemainingEl = document.getElementById('decks-remaining');
+    const reshuffleMessageEl = document.getElementById('reshuffle-message');
 
-        this.shoe = [];
-        this.playerCards = [];
-        this.dealerCards = [];
-        this.playerScore = 0;
-        this.dealerScore = 0;
-        this.playerChips = 1000;
-        this.currentBet = 0;
-        this.runningCount = 0;
-        this.trueCount = 0;
-        this.isPlayerTurn = false;
-        this.initialDealDone = false;
 
-        // DOM Elements
-        this.chipCountEl = document.getElementById('chip-count');
-        this.currentBetEl = document.getElementById('current-bet');
-        this.runningCountEl = document.getElementById('running-count');
-        this.trueCountEl = document.getElementById('true-count');
-        this.cardsInShoeEl = document.getElementById('cards-in-shoe');
-        this.dealerScoreEl = document.getElementById('dealer-score');
-        this.dealerCardsEl = document.getElementById('dealer-cards');
-        this.playerScoreEl = document.getElementById('player-score');
-        this.playerCardsEl = document.getElementById('player-cards');
-        this.messageEl = document.getElementById('message');
-        this.betAmountInput = document.getElementById('bet-amount');
-        this.dealButton = document.getElementById('deal-button');
-        this.hitButton = document.getElementById('hit-button');
-        this.standButton = document.getElementById('stand-button');
-        this.bettingControlsEl = document.getElementById('betting-controls');
-        this.actionControlsEl = document.getElementById('action-controls');
+    // --- Game Variables ---
+    const NUM_DECKS = 4; // Number of decks in the shoe
+    let shoe = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let playerScore = 0;
+    let dealerScore = 0;
+    let playerAceCount = 0;
+    let dealerAceCount = 0;
+    let runningCount = 0;
+    let gameInProgress = false;
+    let dealerHoleCard = null; // To store the dealer's face-down card object
 
-        this._setupEventListeners();
-        this._initializeShoe();
-        this.updateDisplay();
+    const CARD_RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    const CARD_SUITS = ['H', 'D', 'C', 'S']; // Hearts, Diamonds, Clubs, Spades
+
+    // --- Game Logic Functions ---
+
+    function getCardBlackjackValue(rank) {
+        if (['K', 'Q', 'J', '10'].includes(rank)) return 10;
+        if (rank === 'A') return 11; // Ace is initially 11
+        return parseInt(rank);
     }
 
-    _createDeck() {
-        let deck = [];
-        for (let suit of this.SUITS) {
-            for (let value of this.VALUES) {
-                deck.push({ value, suit });
+    function getCardHiLoValue(rank) {
+        if (['A', 'K', 'Q', 'J', '10'].includes(rank)) return -1;
+        if (['2', '3', '4', '5', '6'].includes(rank)) return 1;
+        return 0; // 7, 8, 9
+    }
+
+    function createShoe() {
+        shoe = [];
+        for (let i = 0; i < NUM_DECKS; i++) {
+            for (const suit of CARD_SUITS) {
+                for (const rank of CARD_RANKS) {
+                    shoe.push({
+                        rank: rank,
+                        suit: suit,
+                        bjValue: getCardBlackjackValue(rank),
+                        countValue: getCardHiLoValue(rank),
+                        id: `${rank}${suit}${i}` // Unique ID for card element
+                    });
+                }
             }
         }
-        return deck;
+        shuffleShoe();
+        runningCount = 0;
+        updateCountsDisplay();
+        reshuffleMessageEl.textContent = "New Shoe! Shuffled.";
+        setTimeout(() => reshuffleMessageEl.textContent = "", 3000);
     }
 
-    _initializeShoe() {
-        this.shoe = [];
-        for (let i = 0; i < this.NUM_DECKS; i++) {
-            this.shoe.push(...this._createDeck());
-        }
-        this._shuffleShoe();
-        this.runningCount = 0; // Reset running count on new shoe
-        this.messageEl.textContent = "New shoe! Place your bet.";
-        this.messageEl.className = 'message reshuffle';
-    }
-
-    _shuffleShoe() {
-        // Fisher-Yates Shuffle
-        for (let i = this.shoe.length - 1; i > 0; i--) {
+    function shuffleShoe() {
+        for (let i = shoe.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [this.shoe[i], this.shoe[j]] = [this.shoe[j], this.shoe[i]];
+            [shoe[i], shoe[j]] = [shoe[j], shoe[i]];
         }
     }
 
-    _dealCard(targetHand, isDealerHidden = false) {
-        if (this.shoe.length === 0) {
-            this.messageEl.textContent = "Shoe is empty! This shouldn't happen.";
-            return null;
+    function dealCard(targetHand, targetEl, isVisible = true, isPlayer = true) {
+        if (shoe.length === 0) {
+            reshuffleMessageEl.textContent = "Shoe empty. Reshuffling...";
+            createShoe();
+            // Add a small delay or message to user
+            if (shoe.length === 0) { // Should not happen
+                gameMessageEl.textContent = "Error: Could not create shoe.";
+                return null;
+            }
         }
-        const card = this.shoe.pop();
-        card.hidden = isDealerHidden; // For dealer's first hidden card
+
+        const card = shoe.pop();
         targetHand.push(card);
-        if (!isDealerHidden) { // Don't count hidden card until revealed
-            this._updateRunningCount(card.value);
+
+        if (isVisible) {
+            runningCount += card.countValue;
+            lastCardInfoEl.textContent = `Card: ${card.rank}${card.suit} (Count: ${card.countValue > 0 ? '+' : ''}${card.countValue})`;
+        } else {
+            if (!isPlayer) dealerHoleCard = card; // Store dealer's hole card
+            lastCardInfoEl.textContent = ""; // Clear for hidden card
         }
-        this._calculateTrueCount();
+        updateCountsDisplay();
+        renderCard(card, targetEl, isVisible);
         return card;
     }
 
-    _updateRunningCount(cardValue) {
-        if (['2', '3', '4', '5', '6'].includes(cardValue)) {
-            this.runningCount++;
-        } else if (['10', 'J', 'Q', 'K', 'A'].includes(cardValue)) {
-            this.runningCount--;
+    function renderCard(card, targetEl, isVisible) {
+        const cardDiv = document.createElement('div');
+        cardDiv.classList.add('card');
+        cardDiv.id = `card-${card.id}`; // Assign a unique ID
+
+        if (isVisible) {
+            const rankSpan = document.createElement('span');
+            rankSpan.classList.add('rank');
+            rankSpan.textContent = card.rank;
+
+            const suitSpan = document.createElement('span');
+            suitSpan.classList.add('suit', `suit-${card.suit}`);
+            suitSpan.textContent = getSuitSymbol(card.suit); // Use symbols for suits
+
+            const countValSpan = document.createElement('span');
+            countValSpan.classList.add('count-value');
+            countValSpan.textContent = `${card.countValue > 0 ? '+' : ''}${card.countValue}`;
+
+            cardDiv.appendChild(rankSpan);
+            cardDiv.appendChild(suitSpan);
+            cardDiv.appendChild(countValSpan); // Show count value on the card
+        } else {
+            cardDiv.classList.add('back');
+            cardDiv.textContent = ""; // No text on back
+        }
+        targetEl.appendChild(cardDiv);
+    }
+
+    function getSuitSymbol(suitChar) {
+        switch(suitChar) {
+            case 'H': return '♥';
+            case 'D': return '♦';
+            case 'C': return '♣';
+            case 'S': return '♠';
+            default: return suitChar;
         }
     }
 
-    _calculateTrueCount() {
-        const decksRemaining = Math.max(0.25, this.shoe.length / 52); // Avoid division by zero or tiny denominators
-        this.trueCount = decksRemaining > 0 ? Math.round(this.runningCount / decksRemaining) : 0;
-    }
 
-    _getHandValue(hand) {
+    function calculateScore(hand) {
         let score = 0;
         let aceCount = 0;
-        for (let card of hand) {
-            if (card.hidden) continue; // Don't count hidden cards for score display yet
-
-            if (card.value === 'A') {
+        for (const card of hand) {
+            score += card.bjValue;
+            if (card.rank === 'A') {
                 aceCount++;
-                score += 11;
-            } else if (['K', 'Q', 'J'].includes(card.value)) {
-                score += 10;
-            } else {
-                score += parseInt(card.value);
             }
         }
         while (score > 21 && aceCount > 0) {
             score -= 10;
             aceCount--;
         }
-        return score;
+        return { score: score, aceCount: aceCount };
     }
 
-    _checkReshuffle() {
-        if (this.shoe.length < (this.NUM_DECKS * 52 * (1 - this.RESHUFFLE_PENETRATION))) {
-            this.messageEl.textContent = "Reshuffling the shoe...";
-            this.messageEl.className = 'message reshuffle';
-            setTimeout(() => { // Give a moment for the message to be seen
-                this._initializeShoe();
-                this.updateDisplay(); // Update counts and shoe size
-                this.messageEl.textContent = "Shoe reshuffled! Place your bet.";
-            }, 2000);
-            return true;
-        }
-        return false;
-    }
+    function updateScoresDisplay() {
+        const pResult = calculateScore(playerHand);
+        playerScore = pResult.score;
+        playerAceCount = pResult.aceCount;
+        playerScoreEl.textContent = playerScore;
 
-    _setupEventListeners() {
-        this.dealButton.addEventListener('click', () => this.startNewRound());
-        this.hitButton.addEventListener('click', () => this.playerHit());
-        this.standButton.addEventListener('click', () => this.playerStand());
-    }
-
-    startNewRound() {
-        if (this._checkReshuffle()) {
-             // Reshuffle message is handled in _checkReshuffle, wait for it
-            setTimeout(() => this.bettingControlsEl.style.display = 'block', 2100);
-            this.actionControlsEl.style.display = 'none';
-            return; // Wait for reshuffle to complete if it happened
-        }
-
-        const bet = parseInt(this.betAmountInput.value);
-        if (isNaN(bet) || bet <= 0 || bet > this.playerChips) {
-            this.messageEl.textContent = "Invalid bet amount.";
-            this.messageEl.className = 'message lose';
-            return;
-        }
-
-        this.currentBet = bet;
-        this.playerChips -= this.currentBet;
-        this.isPlayerTurn = true;
-        this.initialDealDone = false;
-
-        this.playerCards = [];
-        this.dealerCards = [];
-
-        // Deal initial cards
-        this._dealCard(this.playerCards);
-        this._dealCard(this.dealerCards, true); // Dealer's first card hidden
-        this._dealCard(this.playerCards);
-        this._dealCard(this.dealerCards);
-
-        this.playerScore = this._getHandValue(this.playerCards);
-        this.dealerScore = this._getHandValue(this.dealerCards); // Will only count visible card initially
-
-        this.updateDisplay();
-        this.bettingControlsEl.style.display = 'none';
-        this.actionControlsEl.style.display = 'block';
-        this.messageEl.textContent = "Your turn. Hit or Stand?";
-        this.messageEl.className = 'message';
-
-        // Check for player Blackjack immediately
-        if (this.playerScore === 21 && this.playerCards.length === 2) {
-            this.revealDealerCard(); // Need to see dealer's full hand
-            this.dealerScore = this._getHandValue(this.dealerCards);
-            this.updateDisplay();
-
-            if (this.dealerScore === 21 && this.dealerCards.length === 2) { // Dealer also has Blackjack
-                this.messageEl.textContent = "Push! Both have Blackjack.";
-                this.messageEl.className = 'message push';
-                this.playerChips += this.currentBet; // Return bet
-            } else {
-                this.messageEl.textContent = "Blackjack! You win 3:2!";
-                this.messageEl.className = 'message blackjack';
-                this.playerChips += this.currentBet * 2.5; // Bet back + 1.5x winnings
-            }
-            this.endRound();
-        }
-        this.initialDealDone = true;
-    }
-
-    playerHit() {
-        if (!this.isPlayerTurn) return;
-        this._dealCard(this.playerCards);
-        this.playerScore = this._getHandValue(this.playerCards);
-        this.updateDisplay();
-
-        if (this.playerScore > 21) {
-            this.messageEl.textContent = `Bust! You lost $${this.currentBet}.`;
-            this.messageEl.className = 'message lose';
-            this.endRound();
-        } else if (this.playerScore === 21) {
-            this.playerStand(); // Auto-stand on 21
-        }
-    }
-
-    playerStand() {
-        if (!this.isPlayerTurn) return;
-        this.isPlayerTurn = false;
-        this.revealDealerCard();
-        this.dealerPlay();
-    }
-
-    revealDealerCard() {
-        const hiddenCard = this.dealerCards.find(card => card.hidden);
-        if (hiddenCard) {
-            hiddenCard.hidden = false;
-            this._updateRunningCount(hiddenCard.value); // Now count the revealed card
-            this._calculateTrueCount();
-        }
-        this.dealerScore = this._getHandValue(this.dealerCards);
-        this.updateDisplay(); // Update display with revealed card and new counts
-    }
-
-    dealerPlay() {
-        this.messageEl.textContent = "Dealer's turn...";
-        this.messageEl.className = 'message';
-
-        // Dealer reveals hidden card (already done in playerStand via revealDealerCard)
-        // this.dealerScore is already updated.
-
-        const playInterval = setInterval(() => {
-            if (this.dealerScore < 17) { // Dealer hits on 16 or less (stands on soft 17 by default)
-                                        // To hit on soft 17: this.dealerScore < 17 || (this.dealerScore === 17 && this._hasAce(this.dealerCards) && this._getHandValue([{value:'A'}, ...this.dealerCards.filter(c=>c.value!=='A') && this._getHandValue(this.dealerCards.filter(c=>c.value!=='A')) === 6]))
-                                        // ^^^ Simplified soft 17 check: (this.dealerScore === 17 && this.dealerCards.some(c => c.value === 'A' && this._getHandValue(this.dealerCards) === 17))
-                                        // Correct soft 17 logic: If score is 17 and an Ace is counted as 11.
-                let hasAceContributingTo17 = false;
-                if (this.dealerScore === 17) {
-                    let tempScore = 0;
-                    let aceCount = 0;
-                    for(let card of this.dealerCards) {
-                        if(card.value === 'A') aceCount++;
-                        tempScore += this._getCardNumericValue(card.value, true); // Count Ace as 11
-                    }
-                    while(tempScore > 21 && aceCount > 0) {
-                        tempScore -=10;
-                        aceCount--;
-                    }
-                    if (tempScore === 17 && this.dealerCards.some(c => c.value === 'A' && this._getCardNumericValue(c.value, true) === 11)) {
-                       // This is a soft 17. For "Dealer STANDS on soft 17", we stop.
-                       // For "Dealer HITS on soft 17", we would continue to hit.
-                       // Current implementation: STANDS on soft 17.
-                       // To HIT on soft 17, add a game rule and check here, then deal.
-                    }
-                }
-
-
-                this._dealCard(this.dealerCards);
-                this.dealerScore = this._getHandValue(this.dealerCards);
-                this.updateDisplay();
-            } else {
-                clearInterval(playInterval);
-                this._determineWinner();
-            }
-        }, 1000); // Delay for dealer actions
-    }
-    
-    _getCardNumericValue(value, countAceAsEleven = false) {
-        if (['K', 'Q', 'J'].includes(value)) return 10;
-        if (value === 'A') return countAceAsEleven ? 11 : 1; // Simplified for this specific check
-        return parseInt(value);
-    }
-
-
-    _determineWinner() {
-        if (this.playerScore > 21) { // Player already busted, handled in playerHit
-            // this.messageEl.textContent = `Player busts! Dealer wins. You lost $${this.currentBet}.`;
-            // this.messageEl.className = 'message lose';
-        } else if (this.dealerScore > 21) {
-            this.messageEl.textContent = `Dealer busts! You win $${this.currentBet}!`;
-            this.messageEl.className = 'message win';
-            this.playerChips += this.currentBet * 2;
-        } else if (this.dealerScore === this.playerScore) {
-            this.messageEl.textContent = `Push! Bet of $${this.currentBet} returned.`;
-            this.messageEl.className = 'message push';
-            this.playerChips += this.currentBet;
-        } else if (this.playerScore > this.dealerScore) {
-            this.messageEl.textContent = `You win $${this.currentBet}!`;
-            this.messageEl.className = 'message win';
-            this.playerChips += this.currentBet * 2;
+        // For dealer, if game is ongoing and hole card exists, calculate score based on visible cards only for display
+        let dScoreToDisplay = 0;
+        if (gameInProgress && dealerHand.length > 0 && dealerHoleCard && dealerHand[0].id === dealerHoleCard.id && dealerHand.length > 1) {
+             // Calculate score only of the upcard if hole card is still hidden
+             dScoreToDisplay = calculateScore([dealerHand[1]]).score; // Assuming second card is the upcard
         } else {
-            this.messageEl.textContent = `Dealer wins. You lost $${this.currentBet}.`;
-            this.messageEl.className = 'message lose';
+            // Calculate full score if hole card is revealed or it's the end of game
+            const dResult = calculateScore(dealerHand);
+            dealerScore = dResult.score;
+            dealerAceCount = dResult.aceCount;
+            dScoreToDisplay = dealerScore;
         }
-        this.endRound();
+         dealerScoreEl.textContent = dScoreToDisplay;
     }
 
-    endRound() {
-        this.isPlayerTurn = false;
-        this.currentBet = 0;
-        this.bettingControlsEl.style.display = 'block';
-        this.actionControlsEl.style.display = 'none';
-        this.updateDisplay();
 
-        if (this.playerChips <= 0) {
-            this.messageEl.textContent = "Game Over! You're out of chips. Refresh to play again.";
-            this.messageEl.className = 'message lose';
-            this.dealButton.disabled = true;
-            this.betAmountInput.disabled = true;
+    function updateCountsDisplay() {
+        runningCountEl.textContent = runningCount;
+        const decksLeft = shoe.length / 52;
+        decksRemainingEl.textContent = decksLeft.toFixed(1);
+        if (decksLeft > 0.1) {
+            const trueCountVal = runningCount / decksLeft;
+            trueCountEl.textContent = trueCountVal.toFixed(2);
+        } else {
+            trueCountEl.textContent = "N/A";
         }
     }
 
-    updateDisplay() {
-        this.chipCountEl.textContent = this.playerChips;
-        this.currentBetEl.textContent = this.currentBet;
-        this.runningCountEl.textContent = this.runningCount;
-        this.trueCountEl.textContent = this.trueCount;
-        this.cardsInShoeEl.textContent = this.shoe.length;
+    function startNewHand() {
+        // Reshuffle logic (e.g., if less than 25% of shoe remains)
+        if (shoe.length < (NUM_DECKS * 52 * 0.25) && shoe.length > 0) { // Don't reshuffle if just started
+            reshuffleMessageEl.textContent = "Low deck penetration. Reshuffling...";
+            setTimeout(() => { // Delay reshuffle slightly for message visibility
+                createShoe();
+                resetHandState();
+                dealInitialCards();
+            }, 1500);
+            return;
+        } else if (shoe.length === 0) {
+            createShoe(); // If shoe is completely empty, create a new one immediately
+        }
 
-        this.dealerScoreEl.textContent = this.initialDealDone ? (this.dealerCards.some(c=>c.hidden) ? this._getHandValue(this.dealerCards.filter(c=>!c.hidden)) : this.dealerScore) : 0;
-        this.playerScoreEl.textContent = this.playerScore;
 
-        this._renderCards(this.dealerCards, this.dealerCardsEl);
-        this._renderCards(this.playerCards, this.playerCardsEl);
+        resetHandState();
+        dealInitialCards();
     }
 
-    _renderCards(hand, element) {
-        element.innerHTML = '';
-        for (let card of hand) {
-            const cardDiv = document.createElement('div');
-            cardDiv.classList.add('card');
-            cardDiv.textContent = card.hidden ? '?' : `${card.value}${card.suit[0]}`; // Show suit initial
-            if (card.suit === 'H' || card.suit === 'D') {
-                cardDiv.style.color = 'red';
+    function resetHandState() {
+        gameInProgress = true;
+        playerHand = [];
+        dealerHand = [];
+        dealerHoleCard = null;
+        playerScore = 0;
+        dealerScore = 0;
+        playerAceCount = 0;
+        dealerAceCount = 0;
+
+        // Clear card displays
+        dealerCardsEl.innerHTML = '';
+        playerCardsEl.innerHTML = '';
+        gameMessageEl.textContent = '';
+        lastCardInfoEl.textContent = ''; // Clear last card info for new hand
+
+        hitButton.disabled = false;
+        standButton.disabled = false;
+        dealButton.textContent = "New Hand";
+        updateScoresDisplay(); // Reset scores to 0 on display
+        // Counts (RC, TC) are not reset here, they persist through hands until shuffle
+    }
+
+
+    function dealInitialCards() {
+        // Player gets two cards face up
+        dealCard(playerHand, playerCardsEl, true, true);
+        dealCard(playerHand, playerCardsEl, true, true);
+
+        // Dealer gets one card face down, one face up
+        dealCard(dealerHand, dealerCardsEl, false, false); // Hole card
+        dealCard(dealerHand, dealerCardsEl, true, false);  // Up card
+
+        updateScoresDisplay();
+        checkInitialBlackjack();
+    }
+
+    function checkInitialBlackjack() {
+        updateScoresDisplay(); // Ensure scores are current
+        const playerHasBlackjack = playerScore === 21 && playerHand.length === 2;
+        const dealerUpCard = dealerHand.length > 1 ? dealerHand[1] : null; // Second card is upcard
+        const dealerShowsPotentialBlackjack = dealerUpCard && (dealerUpCard.bjValue === 10 || dealerUpCard.rank === 'A');
+
+        if (playerHasBlackjack) {
+            revealDealerHoleCard(true); // Reveal dealer card
+            updateScoresDisplay(); // Update dealer score with hole card
+            const dealerHasBlackjack = dealerScore === 21 && dealerHand.length === 2;
+            if (dealerHasBlackjack) {
+                gameMessageEl.textContent = "Push! Both have Blackjack.";
+            } else {
+                gameMessageEl.textContent = "Player Blackjack! Player wins!";
             }
-            element.appendChild(cardDiv);
+            endHand();
+        } else if (dealerShowsPotentialBlackjack) {
+            // In a real game, dealer checks for Blackjack if showing Ace or 10.
+            // For simplicity here, we'll reveal and check if player stands or busts.
+            // If player doesn't have blackjack, game continues.
         }
     }
-}
 
-// Initialize the game
-const game = new BlackjackGame();
+
+    function hit() {
+        if (!gameInProgress) return;
+        dealCard(playerHand, playerCardsEl, true, true);
+        updateScoresDisplay();
+
+        if (playerScore > 21) {
+            gameMessageEl.textContent = "Player Busts! Dealer wins.";
+            revealDealerHoleCard(false); // Reveal even on bust for count
+            endHand();
+        } else if (playerScore === 21) {
+            stand(); // Auto-stand if player hits to 21
+        }
+    }
+
+    function stand() {
+        if (!gameInProgress) return;
+        revealDealerHoleCard(true); // Reveal and count dealer's hole card
+        updateScoresDisplay(); // Update dealer's score with the revealed card
+
+        // Dealer's turn
+        while (dealerScore < 17 && playerScore <= 21) {
+            // Dealer must hit on soft 17 in many games, adjust if needed.
+            // For simplicity: dealer hits until 17 or more.
+            if (dealerScore < 17 || (dealerScore === 17 && dealerAceCount > 0 && calculateScore(dealerHand).score === 17) ) { // Hit on soft 17
+                 dealCard(dealerHand, dealerCardsEl, true, false);
+                 updateScoresDisplay();
+            } else {
+                break; // Stand on hard 17 or more, or soft 18+
+            }
+        }
+        determineWinner();
+        endHand();
+    }
+
+    function revealDealerHoleCard(updateCount = true) {
+        if (dealerHoleCard) {
+            const holeCardEl = document.getElementById(`card-${dealerHoleCard.id}`);
+            if (holeCardEl) {
+                holeCardEl.classList.remove('back');
+                holeCardEl.innerHTML = ''; // Clear back content
+
+                const rankSpan = document.createElement('span');
+                rankSpan.classList.add('rank');
+                rankSpan.textContent = dealerHoleCard.rank;
+
+                const suitSpan = document.createElement('span');
+                suitSpan.classList.add('suit', `suit-${dealerHoleCard.suit}`);
+                suitSpan.textContent = getSuitSymbol(dealerHoleCard.suit);
+
+                const countValSpan = document.createElement('span');
+                countValSpan.classList.add('count-value');
+                countValSpan.textContent = `${dealerHoleCard.countValue > 0 ? '+' : ''}${dealerHoleCard.countValue}`;
+
+
+                holeCardEl.appendChild(rankSpan);
+                holeCardEl.appendChild(suitSpan);
+                holeCardEl.appendChild(countValSpan);
+
+
+                if (updateCount) {
+                    runningCount += dealerHoleCard.countValue;
+                    lastCardInfoEl.textContent = `Dealer Hole: ${dealerHoleCard.rank}${dealerHoleCard.suit} (Count: ${dealerHoleCard.countValue > 0 ? '+' : ''}${dealerHoleCard.countValue})`;
+                    updateCountsDisplay();
+                }
+            }
+            dealerHoleCard = null; // Hole card is now revealed
+        }
+    }
+
+    function determineWinner() {
+        updateScoresDisplay(); // Final score update
+        if (playerScore > 21) {
+            gameMessageEl.textContent = "Player Busts! Dealer wins.";
+        } else if (dealerScore > 21) {
+            gameMessageEl.textContent = "Dealer Busts! Player wins.";
+        } else if (dealerScore > playerScore) {
+            gameMessageEl.textContent = "Dealer wins.";
+        } else if (playerScore > dealerScore) {
+            gameMessageEl.textContent = "Player wins.";
+        } else {
+            gameMessageEl.textContent = "Push!";
+        }
+    }
+
+    function endHand() {
+        gameInProgress = false;
+        hitButton.disabled = true;
+        standButton.disabled = true;
+        dealButton.textContent = "Deal New Hand";
+    }
+
+    // --- Event Listeners ---
+    hitButton.addEventListener('click', hit);
+    standButton.addEventListener('click', stand);
+    dealButton.addEventListener('click', () => {
+        if (!gameInProgress || shoe.length < (NUM_DECKS * 52 * 0.75)) { // Start new game or if hand ended
+            startNewHand();
+        }
+    });
+
+    // --- Initial Game Setup ---
+    createShoe(); // Create and shuffle the shoe first
+    startNewHand(); // Then deal the first hand
+});
