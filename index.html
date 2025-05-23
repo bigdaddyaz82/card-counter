@@ -43,12 +43,17 @@
                 Waiting for game to start...
             </div>
 
+            <!-- MODIFIED SECTION: valueGuessSection -->
             <div id="valueGuessSection">
-                <label for="cardValueGuess">What is this card's Hi-Lo Value? (-1, 0, or 1):</label>
-                <input type="number" id="cardValueGuess" min="-1" max="1" step="1">
-                <button id="submitValueGuessBtn">Submit Value</button>
+                <p class="question-label">What is this card's Hi-Lo Value?</p>
+                <div class="value-guess-buttons">
+                    <button class="value-btn" data-value="-1">-1</button>
+                    <button class="value-btn" data-value="0">0</button>
+                    <button class="value-btn" data-value="1">+1</button>
+                </div>
                 <p id="valueFeedback" class="feedback"></p>
             </div>
+            <!-- END OF MODIFIED SECTION -->
 
             <div id="rcGuessSection" class="hidden"> <!-- Initially hidden -->
                 <label for="rcGuess">What is the NEW Running Count?:</label>
