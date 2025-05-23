@@ -1,158 +1,105 @@
-/* Reset and base */
-* {
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #eee;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    background-color: #335c3d; /* Dark green */
+    color: #fff;
+    margin: 0;
+    padding-top: 20px; /* Add some padding at the top */
 }
 
 .container {
-  max-width: 400px;
-  width: 100%;
-  background: #1c2833;
-  border-radius: 12px;
-  box-shadow: 0 0 15px #0ff;
-  padding: 20px;
-  text-align: center;
-  position: relative;
+    background-color: #2c3e50; /* Dark blue-gray */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
 }
 
-/* Header */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+h1 {
+    color: #f1c40f; /* Yellow */
 }
 
-header h1 {
-  font-weight: 600;
-  font-size: 1.5rem;
-  margin: 0;
+h2 {
+    color: #e0e0e0;
+    margin-top: 15px;
+    margin-bottom: 5px;
 }
 
-button {
-  background: #0ff;
-  border: none;
-  border-radius: 8px;
-  color: #022;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 8px 12px;
-  transition: background 0.3s ease;
-  user-select: none;
+.info-area p, .message-area p {
+    margin: 5px 0;
+    font-size: 1.1em;
 }
 
-button:hover,
-button:focus {
-  background: #05d3d3;
-  outline: none;
+.game-area {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    min-height: 120px; /* Ensure space for cards */
 }
 
-/* Card area */
-.card-area {
-  margin: 20px 0;
-  height: 190px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.hand-area {
+    width: 45%;
+    background-color: #3a506b; /* Slightly lighter blue-gray */
+    padding: 10px;
+    border-radius: 5px;
 }
 
-.card-area img {
-  width: 140px;
-  height: 190px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px #0ff;
-  transition: transform 0.4s ease;
-  user-select: none;
-  animation: pulseLight 2.5s infinite;
+.cards {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap */
+    justify-content: center;
+    align-items: center;
+    min-height: 60px; /* Min height for card display */
 }
 
-@keyframes pulseLight {
-  0%, 100% {
-    box-shadow: 0 0 15px #0ff;
-  }
-  50% {
-    box-shadow: 0 0 30px #00faff;
-  }
+.card {
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 8px;
+    margin: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    min-width: 30px; /* Ensure card has some width */
+    text-align: center;
 }
 
-/* Count buttons */
-.count-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
+.controls-area button, .controls-area input {
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.count-btn {
-  font-size: 1.2rem;
-  width: 70px;
-  height: 50px;
-  border-radius: 12px;
-  box-shadow: 0 0 8px #0ff;
-  user-select: none;
+.controls-area button {
+    background-color: #f1c40f; /* Yellow */
+    color: #2c3e50; /* Dark blue-gray */
 }
 
-/* Scoreboard */
-.scoreboard p {
-  margin: 5px 0;
-  font-weight: 500;
+.controls-area button:hover {
+    background-color: #d4ac0d; /* Darker yellow */
 }
 
-/* Message */
-.message {
-  margin-top: 15px;
-  font-weight: 600;
-  min-height: 24px;
+.controls-area input[type="number"] {
+    width: 70px;
+    text-align: right;
 }
 
-/* Modal */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(20, 30, 40, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  z-index: 99;
+#betting-controls, #action-controls {
+    margin-top: 15px;
 }
 
-.modal-content {
-  background: #0e1a25;
-  border-radius: 10px;
-  padding: 20px;
-  max-width: 350px;
-  width: 100%;
-  color: #a1f0f0;
-  text-align: left;
-  box-shadow: 0 0 20px #0ff;
-}
-
-.hidden {
-  display: none;
-}
-
-.modal-content h2,
-.modal-content h3 {
-  margin-top: 0;
-}
-
-/* Accessibility focus */
-button:focus-visible {
-  outline: 3px solid #0ff;
-  outline-offset: 3px;
-}
+/* Message styling */
+#message.win { color: #2ecc71; /* Green */ }
+#message.lose { color: #e74c3c; /* Red */ }
+#message.push { color: #f39c12; /* Orange */ }
+#message.blackjack { color: #3498db; /* Blue */ font-weight: bold; }
+#message.reshuffle { color: #9b59b6; /* Purple */ font-weight: bold; }
