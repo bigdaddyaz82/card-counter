@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. DOM ELEMENTS
     // =========================================================================
     const cardContainerEl = document.getElementById('cardContainer');
-    const cardFrontEl = document.querySelector('#cardContainer .card-front');
-    const cardBackEl = document.querySelector('#cardContainer .card-back');
+    const cardFrontEl = document.querySelector('#cardContainer .card-front'); // Ensure this path is correct
+    const cardBackEl = document.querySelector('#cardContainer .card-back');   // Ensure this path is correct
     const scoreEl = document.getElementById('score');
     const highscoreEl = document.getElementById('highscore');
     const timerDisplayEl = document.getElementById('timerDisplay');
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const moonIcon = '🌙'; // For Light Mode
 
     // =========================================================================
-    // 2. CARD DATA & COUNTING SYSTEMS (Keep your existing data)
+    // 2. CARD DATA & COUNTING SYSTEMS
     // =========================================================================
     const suits = ['♥', '♦', '♣', '♠'];
     const cardLabels = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -83,13 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCountingSystem = 'hi-lo';
 
     // =========================================================================
-    // 3. GAME STATE VARIABLES (Keep your existing variables)
+    // 3. GAME STATE VARIABLES
     // =========================================================================
     let currentCard = null, score = 0, runningCount = 0, highScore = 0, gameTimer = null, timeLeft = 0, gameActive = false;
-    let musicOn = false; // Will be updated by loadInitialSettings
+    let musicOn = false;
     let gameShoe = [], cardsDealtInShoe = 0, totalCardsInShoe = 0, trueCount = 0;
     const SHUFFLE_PENETRATION = 0.75;
-    let currentCardSpeed = 5; // Default, will be updated
+    let currentCardSpeed = 5;
     let sessionCorrectGuesses = 0, sessionTotalCardsDealt = 0, gamePausedForBetting = false;
     const CARDS_BETWEEN_BETS = 10;
     const levelDefaultTimes = { practice: 600, beginner: 15, advanced: 10, expert: 5 };
@@ -100,17 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. INITIALIZATION & SETUP
     // =========================================================================
     function initializeApp() {
-        // Event Listeners for controls
         if (levelSelectEl) levelSelectEl.addEventListener('change', handleGameSettingChange);
         if (deckSizeEl) deckSizeEl.addEventListener('change', handleGameSettingChange);
         if (countingSystemSelectEl) countingSystemSelectEl.addEventListener('change', handleGameSystemChange);
         if (gameModeSelectEl) gameModeSelectEl.addEventListener('change', handleGameModeChange);
 
         if (musicToggleBtn) {
-            musicToggleBtn.addEventListener('click', () => {
-                console.log("Music Toggle Button Clicked!");
-                toggleMusic();
-            });
+            musicToggleBtn.addEventListener('click', toggleMusic);
         } else {
             console.warn("Music toggle button not found!");
         }
@@ -122,8 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newShoeButtonEl.addEventListener('click', startNewGame);
         }
 
-        // Feature Setups
-        setupThemeToggle(); // This will also call loadInitialTheme
+        setupThemeToggle();
         setupCardSpeedControl();
         setupHowToPlayModal();
         setupBasicStrategyModal();
@@ -141,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         score = 0; runningCount = 0; trueCount = 0; cardsDealtInShoe = 0;
         sessionCorrectGuesses = 0; sessionTotalCardsDealt = 0;
         
-        if(levelSelectEl) updateCardSpeedInputFromLevel(); // Check if element exists
+        if(levelSelectEl) updateCardSpeedInputFromLevel();
         loadHighScoreForCurrentLevel();
         updateScoreboardVisuals();
         updateAllCountVisuals();
@@ -171,14 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 5. THEME TOGGLE (Light/Dark Mode)
     // =========================================================================
-    function applyTheme(theme) { // theme is 'light' or 'dark'
-        bodyEl.classList.remove('light-mode', 'dark-mode'); // Clear existing
+    function applyTheme(theme) {
+        bodyEl.classList.remove('light-mode', 'dark-mode');
         if (theme === 'light') {
             bodyEl.classList.add('light-mode');
-            if (themeIconEl) themeIconEl.textContent = moonIcon; // Show moon for light mode
-        } else { // 'dark'
+            if (themeIconEl) themeIconEl.textContent = moonIcon;
+        } else {
             bodyEl.classList.add('dark-mode');
-            if (themeIconEl) themeIconEl.textContent = sunIcon;  // Show sun for dark mode
+            if (themeIconEl) themeIconEl.textContent = sunIcon;
         }
         localStorage.setItem('theme', theme);
         console.log("Theme applied:", theme);
@@ -186,21 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadInitialTheme() {
         const savedTheme = localStorage.getItem('theme');
-        const bodyIsDarkByDefault = bodyEl.classList.contains('dark-mode'); // From HTML
+        const bodyIsDarkByDefault = bodyEl.classList.contains('dark-mode');
         console.log("loadInitialTheme: savedTheme =", savedTheme, ", bodyIsDarkByDefault =", bodyIsDarkByDefault);
 
         if (savedTheme) {
             applyTheme(savedTheme);
         } else if (bodyIsDarkByDefault) {
-            applyTheme('dark'); // Ensure icon and local storage are set if HTML default is dark
+            applyTheme('dark');
         } else {
-            // Fallback if no saved theme and body doesn't have dark-mode class by default
             const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (systemPrefersDark) {
-                applyTheme('dark');
-            } else {
-                applyTheme('light');
-            }
+            applyTheme(systemPrefersDark ? 'dark' : 'light');
         }
     }
 
@@ -213,9 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentTheme = bodyEl.classList.contains('light-mode') ? 'light' : 'dark';
             applyTheme(currentTheme === 'light' ? 'dark' : 'light');
         });
-        loadInitialTheme(); // Load theme when setting up the toggle
+        loadInitialTheme();
     }
-
 
     // =========================================================================
     // 6. CARD SPEED & TIMER
@@ -237,25 +226,132 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     // 8. BETTING PRACTICE
     // =========================================================================
-    function setupBettingPracticeControls() { /* ... your existing code ... */ }
-    function triggerBettingPractice() { if (currentGameMode !== 'guessValue' || (levelSelectEl && levelSelectEl.value === "practice")) { dealNewCard(); return; } /* ... rest of your existing code ... */ }
-    function handleBetChoiceInput(betChoice) { /* ... your existing code ... */ }
-    function resumeAfterBettingPractice() { /* ... your existing code ... */ }
+    function setupBettingPracticeControls() {
+        // Add event listeners to betMinButtonEl, betMidButtonEl, betMaxButtonEl if they exist
+        // to call handleBetChoiceInput with appropriate values.
+        // Add event listener to continueDealingButtonEl to call resumeAfterBettingPractice.
+        // Example: if (betMinButtonEl) betMinButtonEl.addEventListener('click', () => handleBetChoiceInput('min'));
+    }
+
+    function triggerBettingPractice() {
+        if (currentGameMode !== 'guessValue' || (levelSelectEl && levelSelectEl.value === "practice")) {
+            dealNewCard(); // Bypass betting for practice mode or non-guessValue modes
+            return;
+        }
+
+        // Actual betting practice logic would go here:
+        // 1. Pause the game timer and card dealing.
+        gamePausedForBetting = true;
+        clearInterval(gameTimer);
+        if (timerDisplayEl) timerDisplayEl.textContent = `Time: PAUSED`;
+        displayMessage("Betting Practice: What's your bet based on the True Count?", "info");
+
+        // 2. Show the betting UI.
+        if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'block';
+        if (bettingTrueCountDisplayEl) {
+            let tcText = (trueCountDisplayEl && trueCountDisplayEl.textContent) ? trueCountDisplayEl.textContent.replace('True Count: ', '') : 'N/A';
+            bettingTrueCountDisplayEl.textContent = `Current True Count: ${tcText}`;
+        }
+        if (bettingFeedbackEl) bettingFeedbackEl.textContent = ''; // Clear old feedback
+
+        // 3. Wait for user input (handleBetChoiceInput will be called by button clicks).
+        // For now, to make game flow, we'll just deal next card after a log.
+        // console.log("Betting practice triggered. Implement UI and handleBetChoiceInput logic. Dealing next card for now.");
+        // dealNewCard(); // Remove this line once betting UI is functional
+    }
+
+    function handleBetChoiceInput(betChoice) {
+        // This function would evaluate the user's betChoice against the current trueCount.
+        // Provide feedback in bettingFeedbackEl.
+        // Example:
+        // let feedback = "";
+        // const tc = trueCount; // Use the actual trueCount variable
+        // if (tc < 1) {
+        //     if (betChoice === 'min') feedback = "Correct! Low TC, minimum bet is wise.";
+        //     else feedback = "Consider a minimum bet with a low True Count.";
+        // } else if (tc >= 1 && tc < 3) {
+        //     if (betChoice === 'mid') feedback = "Good choice for a moderate True Count!";
+        //     else feedback = "A moderate bet might be suitable here.";
+        // } else { // tc >= 3
+        //     if (betChoice === 'max') feedback = "Excellent! High True Count, max bet!";
+        //     else feedback = "With a high True Count, a larger bet is usually best.";
+        // }
+        // if (bettingFeedbackEl) bettingFeedbackEl.textContent = feedback;
+        // if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'block'; // Show button to continue
+        console.log(`Bet choice: ${betChoice}. Implement evaluation logic.`);
+        if (bettingFeedbackEl) bettingFeedbackEl.textContent = `You chose ${betChoice}. Evaluation pending.`;
+        // For now, automatically resume or show a continue button.
+        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'inline-block';
+
+    }
+
+    function resumeAfterBettingPractice() {
+        if (bettingPracticeSectionEl) bettingPracticeSectionEl.style.display = 'none';
+        if (continueDealingButtonEl) continueDealingButtonEl.style.display = 'none';
+        gamePausedForBetting = false;
+        displayMessage("Resuming game...", "info");
+        dealNewCard(); // Deal the next card to continue the game
+    }
+
 
     // =========================================================================
     // 9. CORE GAME LOGIC ("Guess Card Value" mode)
     // =========================================================================
-    function updateAccuracyDisplay() { /* ... your existing code ... */ }
-    function resetSessionStats() { /* ... your existing code ... */ }
+    function updateAccuracyDisplay() {
+        if (!accuracyDisplayEl) return;
+        if (sessionTotalCardsDealt === 0) {
+            accuracyDisplayEl.textContent = "Accuracy: N/A";
+        } else {
+            const accuracy = (sessionCorrectGuesses / sessionTotalCardsDealt) * 100;
+            accuracyDisplayEl.textContent = `Accuracy: ${accuracy.toFixed(1)}% (${sessionCorrectGuesses}/${sessionTotalCardsDealt})`;
+        }
+    }
+
+    function resetSessionStats() {
+        sessionCorrectGuesses = 0;
+        sessionTotalCardsDealt = 0;
+        updateAccuracyDisplay();
+    }
+
     function updateCurrentSystemDisplay() { if (!currentSystemDisplayEl || !currentSystemValuesDisplayEl) return; const systemData = countingSystemsData[currentCountingSystem]; if (systemData) { currentSystemDisplayEl.textContent = systemData.name; currentSystemValuesDisplayEl.textContent = systemData.description; } }
     function buildShoe() { console.log("SCRIPT DEBUG: buildShoe for system:", currentCountingSystem); const numDecks = (deckSizeEl && parseInt(deckSizeEl.value)) || 1; gameShoe = []; const systemValues = countingSystemsData[currentCountingSystem].values; for (let i = 0; i < numDecks; i++) { cardLabels.forEach(label => { const baseVal = cardBaseValues[label]; const pointVal = systemValues[baseVal] !== undefined ? systemValues[baseVal] : systemValues[label]; suits.forEach(suit => { gameShoe.push({ label, suit, pointVal, color: (suit === '♥' || suit === '♦') ? 'red' : 'black' }); }); }); } totalCardsInShoe = gameShoe.length; cardsDealtInShoe = 0; for (let i = gameShoe.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [gameShoe[i], gameShoe[j]] = [gameShoe[j], gameShoe[i]]; } console.log(`SCRIPT DEBUG: Shoe built with ${totalCardsInShoe} cards.`); }
     function handleUserChoice(choice) { if (currentGameMode !== 'guessValue') return; if (!gameActive && !gamePausedForBetting) { startNewGame(); return; } if (gameActive && !gamePausedForBetting) { processGuess(choice); } }
     function startNewGame() { if (currentGameMode !== 'guessValue') { displayMessage("Switch to 'Guess Card Value' mode to start this game.", "info"); return; } console.log("SCRIPT DEBUG: startNewGame (Guess Card Value mode)"); clearInterval(gameTimer); gameActive = true; gamePausedForBetting = false; score = 0; runningCount = 0; trueCount = 0; resetSessionStats(); buildShoe(); loadHighScoreForCurrentLevel(); updateScoreboardVisuals(); updateAllCountVisuals(); updateCurrentSystemDisplay(); displayMessage("Shoe ready. Good luck!", "info"); dealNewCard(); }
-    function processGuess(userChoice) { if (!currentCard || !gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); sessionTotalCardsDealt++; let expectedValue; if (userChoice === 'plus') expectedValue = 1; else if (userChoice === 'minus') expectedValue = -1; else expectedValue = 0; if (expectedValue === currentCard.pointVal) { score++; sessionCorrectGuesses++; runningCount += currentCard.pointVal; displayMessage("Correct!", "correct"); playSound(correctSound); if (score > highScore) { highScore = score; saveHighScoreForCurrentLevel(); } updateScoreboardVisuals(); updateAllCountVisuals(); updateAccuracyDisplay(); if (sessionCorrectGuesses > 0 && sessionCorrectGuesses % CARDS_BETWEEN_BETS === 0 && (levelSelectEl && levelSelectEl.value !== "practice")) { triggerBettingPractice(); } else { dealNewCard(); } } else { playSound(wrongSound); updateAccuracyDisplay(); gameOver(`Wrong guess! Card ${currentCard.label}${currentCard.suit} is ${currentCard.pointVal > 0 ? '+' : ''}${currentCard.pointVal} for ${countingSystemsData[currentCountingSystem].name}. RC: ${runningCount}`); } }
+    function processGuess(userChoice) { if (!currentCard || !gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; clearInterval(gameTimer); sessionTotalCardsDealt++; let expectedValue; if (userChoice === 'plus') expectedValue = 1; else if (userChoice === 'minus') expectedValue = -1; else expectedValue = 0; if (expectedValue === currentCard.pointVal) { score++; sessionCorrectGuesses++; runningCount += currentCard.pointVal; displayMessage("Correct!", "correct"); playSound(correctSound); if (score > highScore) { highScore = score; saveHighScoreForCurrentLevel(); } updateScoreboardVisuals(); updateAllCountVisuals(); updateAccuracyDisplay(); if (sessionTotalCardsDealt > 0 && sessionTotalCardsDealt % CARDS_BETWEEN_BETS === 0 && (levelSelectEl && levelSelectEl.value !== "practice")) { triggerBettingPractice(); } else { dealNewCard(); } } else { playSound(wrongSound); updateAccuracyDisplay(); gameOver(`Wrong guess! Card ${currentCard.label}${currentCard.suit} is ${currentCard.pointVal > 0 ? '+' : ''}${currentCard.pointVal} for ${countingSystemsData[currentCountingSystem].name}. RC: ${runningCount}`); } }
     function dealNewCard() { if (!gameActive || gamePausedForBetting || currentGameMode !== 'guessValue') return; if (gameShoe.length === 0 || cardsDealtInShoe >= totalCardsInShoe * SHUFFLE_PENETRATION) { const penetrationPercent = totalCardsInShoe > 0 ? ((cardsDealtInShoe/totalCardsInShoe)*100).toFixed(0) : 0; displayMessage(`Shuffle time! Penetration: ${penetrationPercent}%. Starting new shoe.`, "info"); setTimeout(() => { if (gameActive && currentGameMode === 'guessValue') startNewGame(); }, 2000); return; } currentCard = gameShoe.pop(); cardsDealtInShoe++; updateAllCountVisuals(); animateCardFlip(); }
     function updateAllCountVisuals() { if (runningCountDisplayEl) runningCountDisplayEl.textContent = `Running Count: ${runningCount}`; const decksRemaining = Math.max(0.01, (totalCardsInShoe - cardsDealtInShoe) / 52); if (currentCountingSystem === 'hi-lo' && totalCardsInShoe > 0) { trueCount = runningCount / decksRemaining; let trueCountText = "0.0"; if (isFinite(trueCount)) trueCountText = trueCount.toFixed(1); else if (trueCount === Infinity) trueCountText = "Very High+"; else if (trueCount === -Infinity) trueCountText = "Very Low-"; if (trueCountDisplayEl) { trueCountDisplayEl.textContent = `True Count: ${trueCountText}`; trueCountDisplayEl.style.display = 'block'; } } else if (trueCountDisplayEl) { trueCountDisplayEl.textContent = 'True Count: N/A'; trueCountDisplayEl.style.display = currentCountingSystem === 'ko' ? 'none' : 'block'; } if (deckInfoDisplayEl) deckInfoDisplayEl.textContent = `Shoe: ${cardsDealtInShoe}/${totalCardsInShoe} cards (${decksRemaining.toFixed(1)} decks left)`; }
-    function animateCardFlip() { /* ... your existing code ... */ }
-    function updateCardFaceAndFlipToFront() { /* ... your existing code ... */ }
+    
+    function animateCardFlip() {
+        if (!currentCard || !cardContainerEl || !cardFrontEl || !cardBackEl) {
+            console.warn("animateCardFlip: Missing DOM elements or currentCard.");
+            if (gameActive) gameOver("Error displaying card."); // Prevent game from stalling
+            return;
+        }
+
+        // 1. Set the content for the front of the card
+        cardFrontEl.textContent = `${currentCard.label}${currentCard.suit}`;
+        cardFrontEl.className = 'card-face card-front'; // Reset base classes
+        if (currentCard.color === 'red') {
+            cardFrontEl.classList.add('red-card'); // Ensure CSS for .red-card (e.g., color: red;)
+        } else {
+            cardFrontEl.classList.add('black-card'); // Ensure CSS for .black-card (e.g., color: black;)
+        }
+
+        // Ensure card back is consistently styled (e.g., with a '?')
+        cardBackEl.textContent = '?';
+
+        // 2. Trigger the flip animation
+        cardContainerEl.classList.remove('flipping'); // Reset if called multiple times
+        void cardContainerEl.offsetWidth; // Force reflow to allow re-triggering CSS animation
+        cardContainerEl.classList.add('flipping'); // Add class that CSS uses to animate the flip
+
+        // 3. Start the round timer
+        // This starts timer as flip begins. Adjust with setTimeout if needed for animation duration.
+        if (gameActive && !gamePausedForBetting && currentGameMode === 'guessValue') {
+            startRoundTimer();
+        }
+    }
+
     function gameOver(reason) { clearInterval(gameTimer); gameActive = false; displayMessage(`${reason}. Score: ${score}. Click 'New Shoe / Start Game' or a value to play again.`, "wrong"); }
 
     // =========================================================================
@@ -274,9 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayMessage(msg, typeClass) {
         if (messageDisplayEl) {
             messageDisplayEl.textContent = msg;
-            messageDisplayEl.className = `message-display message-${typeClass || 'info'} visible`; // Add 'visible'
-            // Optional: auto-hide message after a few seconds
-            // setTimeout(() => { if(messageDisplayEl) messageDisplayEl.classList.remove('visible'); }, 5000);
+            messageDisplayEl.className = `message-display message-${typeClass || 'info'} visible`;
         }
     }
 
@@ -290,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } else if (soundElement && !musicOn) {
-            console.log(`playSound: musicOn is false, not playing ${soundElement.id}`);
+            // console.log(`playSound: musicOn is false, not playing ${soundElement.id}`);
         } else if (!soundElement) {
             console.warn("playSound: soundElement is null or undefined.");
         }
@@ -310,20 +404,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
                         console.log("Background music playback started/resumed.");
-                        if (musicToggleBtn) musicToggleBtn.classList.add('on');
                     }).catch(error => {
                         console.warn("Background music playback failed after toggle:", error.message);
-                        displayMessage("Music play failed. Browser may need interaction. Try again.", "info");
-                        // If play fails, we should ideally revert musicOn state and button
-                        // musicOn = false; 
-                        // localStorage.setItem('cardCounterMusicOn', musicOn.toString());
-                        // updateMusicButtonVisuals(); // Revert button
+                        displayMessage("Music play failed. Browser may need interaction.", "info");
                     });
                 }
             } else {
                 console.log("Attempting to pause background music.");
                 bgMusic.pause();
-                if (musicToggleBtn) musicToggleBtn.classList.remove('on');
                 console.log("Background music paused.");
             }
         } else {
@@ -349,7 +437,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadHighScoreForCurrentLevel() { try { const currentLevel = levelSelectEl && levelSelectEl.value; const currentDeckSize = deckSizeEl && deckSizeEl.value; const system = currentCountingSystem; const gameMode = currentGameMode; if (gameMode === 'guessValue' && currentLevel && currentDeckSize) { const savedScore = localStorage.getItem(`cardCounterHighScore_${system}_${gameMode}_${currentLevel}_${currentDeckSize}`); highScore = parseInt(savedScore) || 0; } else { highScore = 0; } } catch (e) { console.warn("Could not load high score:", e.message); highScore = 0; } }
     
     function loadInitialSettings() {
-        // Speed
         const savedSpeed = localStorage.getItem('cardCounterSpeed');
         if (savedSpeed !== null) {
             currentCardSpeed = parseFloat(savedSpeed);
@@ -358,25 +445,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (levelSelectEl) updateCardSpeedInputFromLevel(); else currentCardSpeed = 5;
         }
 
-        // Music
         musicOn = localStorage.getItem('cardCounterMusicOn') === 'true';
         console.log("loadInitialSettings: Loaded musicOn state as:", musicOn);
-        updateMusicButtonVisuals(); // Update button based on loaded state
+        updateMusicButtonVisuals();
 
         if (musicOn && bgMusic) {
             console.log("loadInitialSettings: musicOn is true, attempting to play bgMusic.");
-            setTimeout(() => { // Small delay
+            setTimeout(() => { 
                 const playPromise = bgMusic.play();
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
                         console.log("Background music started based on saved preference (initial load).");
-                        if (musicToggleBtn) musicToggleBtn.classList.add('on');
                     }).catch(error => {
                         console.warn("Initial background music autoplay was prevented by browser:", error.message);
-                        displayMessage("Music was ON, but autoplay failed. Click button or interact, then try again.", "info");
-                        // musicOn = false; // Keep musicOn true, button ON, let user toggle if needed
-                        // localStorage.setItem('cardCounterMusicOn', 'false');
-                        // updateMusicButtonVisuals();
+                        displayMessage("Music was ON, but autoplay failed. Click button or interact.", "info");
                     });
                 }
             }, 100);
@@ -384,13 +466,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("loadInitialSettings: bgMusic element not found.");
         } else {
             console.log("loadInitialSettings: musicOn is false, not attempting to play bgMusic initially.");
-            if (musicToggleBtn) musicToggleBtn.classList.remove('on');
         }
     }
 
     // =========================================================================
     // 12. START THE APPLICATION
     // =========================================================================
-    loadInitialSettings(); // Music, Speed
-    initializeApp();       // Event listeners, Theme, UI, Game State
+    loadInitialSettings();
+    initializeApp();
 });
