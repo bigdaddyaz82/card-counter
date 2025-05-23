@@ -265,7 +265,8 @@ h1 {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* --- Game Mode Selector --- */
+/* --- Game Mode Selector - COMMENTED OUT as feature is removed --- */
+/*
 .game-mode-selector {
     margin-top: 15px;
     margin-bottom: 15px;
@@ -281,6 +282,7 @@ h1 {
 .game-mode-selector select {
     min-width: 200px; 
 }
+*/
 
 /* --- Timer & Card Display --- */
 #timerDisplay {
@@ -385,38 +387,33 @@ h1 {
 }
 
 /* --- Current System Description / Instructions --- */
-/* The #instructions div in HTML now primarily acts as a wrapper. */
-/* The #currentSystemValuesDisplay span inside it will show the description and get these styles. */
 #currentSystemValuesDisplay { 
-  display: block; /* Make the span behave like a block for padding/bg */
+  display: block; 
   font-size: 0.95em;
   line-height: 1.6;
-  margin-top: 5px; /* Adjust spacing relative to "System: Hi-Lo." */
-  margin-bottom: 10px; /* Adjust spacing before "Identify the card's value:" */
+  margin-top: 5px; 
+  margin-bottom: 10px; 
   color: var(--text-secondary);
   text-align: left;
   background-color: color-mix(in srgb, var(--input-border) 15%, transparent);
-  padding: 10px 15px; /* Slightly less padding than the original #instructions block */
+  padding: 10px 15px; 
   border-radius: 8px;
 }
-#instructions p { /* General styling for paragraphs within #instructions if needed */
+#instructions p { 
     margin: 8px 0;
-    text-align: left; /* Ensure text alignment if needed */
+    text-align: left; 
 }
-#instructions p:last-child { /* "Identify the card's value:" */
-    margin-top: 15px; /* Add some space above this line */
+#instructions p:last-child { 
+    margin-top: 15px; 
 }
 #currentSystemValuesDisplay p, 
 #currentSystemValuesDisplay strong, 
 #currentSystemValuesDisplay ul, 
 #currentSystemValuesDisplay ul li {
-    /* These styles apply IF the description string set by JS contains HTML elements */
-    /* Currently, description is plain text, so these might not be directly used by it. */
-    /* But they are good if you ever add HTML to the description strings. */
-    color: inherit; /* Inherit from parent span/div */
+    color: inherit; 
 }
 #currentSystemValuesDisplay strong {
-  color: var(--text-primary); /* Override inherited if needed for strong tags within */
+  color: var(--text-primary); 
   font-weight: 600;
 }
 
@@ -499,84 +496,26 @@ h1 {
   color: var(--message-info-text);
 }
 
-/* --- Flashing Cards Drill Area - STYLES COMMENTED OUT as feature is removed --- */
+/* --- Flashing Cards Drill Area - STYLES COMMENTED OUT --- */
 /*
-#flashDrillArea {
-  padding: 15px;
-  border: 1px dashed var(--input-border);
-  border-radius: 8px;
-  margin-top: 20px;
-}
-#flashDrillArea h3 {
-  color: var(--accent-primary);
-  margin-top: 0;
-}
-.drill-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-.drill-controls .control-group {
-  min-width: 200px; 
-}
-#startFlashDrillButton { 
-  background-color: var(--accent-primary);
-  color: var(--button-primary-text);
-  border: none; 
-}
-#startFlashDrillButton:hover {
-  background-color: var(--accent-primary-darker);
-}
-#flashDrillCardDisplayArea .card-front.red { color: var(--card-front-text-red); }
-#flashDrillCardDisplayArea .card-front.black { color: var(--card-front-text-black); }
-
-#flashDrillInputArea {
-  margin-top: 20px;
-  text-align: center;
-}
-#flashDrillInputArea label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-secondary);
-}
-#flashDrillInputArea input[type="number"] {
-  width: 100px;
-  margin-right: 10px;
-  text-align: center;
-}
-#submitFlashDrillCountButton { 
-  background-color: var(--button-secondary-bg);
-}
-#submitFlashDrillCountButton:hover {
-  background-color: var(--button-secondary-hover-bg);
-}
-#flashDrillFeedback {
-    font-weight: 600;
-    min-height: 1.5em;
-    padding: 8px 12px;
-    border-radius: 6px;
-    text-align: center;
-    margin-top: 15px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-#flashDrillFeedback.visible {
-    opacity: 1;
-}
-#flashDrillFeedback.message-correct {
-  background-color: var(--message-correct-bg-alpha);
-  color: var(--accent-green);
-}
-#flashDrillFeedback.message-wrong {
-  background-color: var(--message-wrong-bg-alpha);
-  color: var(--accent-red);
-}
-#flashDrillFeedback.message-info {
-  background-color: var(--message-info-bg-alpha);
-  color: var(--message-info-text);
-}
+#flashDrillArea { ... }
+#flashDrillArea h3 { ... }
+.drill-controls { ... }
+.drill-controls .control-group { ... }
+#startFlashDrillButton { ... }
+#startFlashDrillButton:hover { ... }
+#flashDrillCardDisplayArea .card-front.red { ... }
+#flashDrillCardDisplayArea .card-front.black { ... }
+#flashDrillInputArea { ... }
+#flashDrillInputArea label { ... }
+#flashDrillInputArea input[type="number"] { ... }
+#submitFlashDrillCountButton { ... }
+#submitFlashDrillCountButton:hover { ... }
+#flashDrillFeedback { ... }
+#flashDrillFeedback.visible { ... }
+#flashDrillFeedback.message-correct { ... }
+#flashDrillFeedback.message-wrong { ... }
+#flashDrillFeedback.message-info { ... }
 */
 
 /* --- Betting Practice Section --- */
@@ -608,8 +547,8 @@ h1 {
   margin-bottom: 15px;
   flex-wrap: wrap;
 }
-.betting-buttons button, /* General style for Min, Mid, Max bet buttons */
-#continueDealingButton {  /* Style for Continue button */
+.betting-buttons button,
+#continueDealingButton {  
   font-family: var(--font-main);
   font-size: 0.95em;
   font-weight: 500;
@@ -651,7 +590,6 @@ h1 {
 #bettingFeedback.visible {
     opacity: 1;
 }
-/* Using generic message classes for betting feedback for consistency if JS sets them */
 #bettingFeedback.message-correct { 
   color: var(--accent-green);
   background-color: var(--betting-feedback-correct-bg-alpha);
@@ -864,20 +802,11 @@ h1 {
   
   /* Flash Drill Responsive rules are not needed as feature is removed */
   /*
-  #flashDrillArea {
-      padding: 10px;
-  }
-  .drill-controls {
-      flex-direction: column;
-  }
-  .drill-controls .control-group {
-      width: 100%;
-  }
-  #flashDrillInputArea input[type="number"] {
-      width: 80px;
-  }
+  #flashDrillArea { ... }
+  .drill-controls { ... }
+  .drill-controls .control-group { ... }
+  #flashDrillInputArea input[type="number"] { ... }
   */
-
 
   #bettingPracticeSection {
       padding: 15px;
@@ -911,4 +840,4 @@ h1 {
   #basicStrategyChartContainer td {
     padding: 4px 5px;
   }
-  }
+}
