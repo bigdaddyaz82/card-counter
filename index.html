@@ -2,179 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Card Counter Trainer</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css"> <!-- Ensure this points to your updated CSS file -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body class="dark-mode"> <!-- Default to dark-mode, JS will handle toggling -->
+<body>
   <div class="container">
-    <header class="app-header"> <!-- NEW: Optional header for title and theme toggle -->
-        <h1>Card Counter Trainer</h1>
-        <!-- NEW: Light/Dark Mode Toggle Button -->
-        <button id="themeToggle" title="Toggle light/dark theme" aria-label="Toggle theme">
-            <span id="themeIcon">☀️</span> <!-- Default to sun icon (assuming dark mode default) -->
-        </button>
+    <header>
+      <h1>Card Counter Trainer</h1>
+      <button id="musicToggle" aria-label="Toggle music">Music OFF</button>
+      <button id="howToPlayBtn">How to Play</button>
     </header>
 
-    <div class="game-controls">
-      <div class="control-group" id="levelSelectContainer">
-        <label for="level">Level:</label>
-        <select id="level">
-          <option value="practice">Practice (∞ time)</option>
-          <option value="beginner" selected>Beginner (15s)</option>
-          <option value="advanced">Advanced (10s)</option>
-          <option value="expert">Expert (5s)</option>
-        </select>
-      </div>
-      
-      <div class="control-group" id="deckSizeContainer">
-        <label for="deckSize">Decks:</label>
-        <select id="deckSize">
-          <option value="1">1 Deck</option>
-          <option value="2">2 Decks</option>
-          <option value="4" selected>4 Decks</option>
-          <option value="6">6 Decks</option>
-          <option value="8">8 Decks</option>
-        </select>
+    <main>
+      <div class="card-area">
+        <img id="cardImage" src="cards/back.png" alt="Card" />
       </div>
 
-      <div class="control-group" id="speedControlContainer">
-        <label for="cardSpeed">Card Speed (s):</label>
-        <input type="number" id="cardSpeed" min="0.5" max="600" step="0.1" value="5">
+      <div class="count-buttons">
+        <button class="count-btn" data-value="+1">+1</button>
+        <button class="count-btn" data-value="0">0</button>
+        <button class="count-btn" data-value="-1">-1</button>
       </div>
 
-      <!-- NEW: Counting System Selector -->
-      <div class="control-group" id="systemSelectContainer">
-        <label for="countingSystem">System:</label>
-        <select id="countingSystem">
-            <option value="hi-lo" selected>Hi-Lo</option>
-            <option value="ko">KO (Rookie)</option>
-        </select>
+      <div class="scoreboard">
+        <p>Running Count: <span id="runningCount">0</span></p>
+        <p>True Count: <span id="trueCount">0.0</span></p>
+        <p>Accuracy: <span id="accuracy">N/A</span></p>
       </div>
-      
-      <button id="howToPlayButton">How to Play</button>
-      <!-- NEW: Basic Strategy Button -->
-      <button id="basicStrategyButton">Basic Strategy</button>
-      <button id="musicToggle">Music OFF</button>
-      <button id="newShoeButton">New Shoe / Start Game</button>
-    </div>
 
-    <!-- NEW: Game Mode Selector (for Flashing Cards Drill) -->
-    <div class="game-mode-selector control-group">
-        <label for="gameMode">Game Mode:</label>
-        <select id="gameMode">
-            <option value="guessValue" selected>Guess Card Value</option>
-            <option value="flashDrill">Flashing Cards Drill</option>
-        </select>
-    </div>
+      <button id="startGameBtn">New Shoe / Start Game</button>
 
-    <!-- Main Game Area (for Guess Card Value mode) -->
-    <div id="mainGameArea">
-        <div id="timerDisplay">Time: 5s</div>
-        <div class="card-area">
-          <div id="cardContainer">
-            <div class="card-face card-back">?</div>
-            <div class="card-face card-front"></div>
-          </div>
-        </div>
-        <div class="count-displays">
-            <div id="runningCountDisplay">Running Count: 0</div>
-            <div id="trueCountDisplay">True Count: 0.0</div>
-        </div>
-        <div id="deckInfoDisplay">Shoe: 0/208 cards (4.0 decks left)</div>
-        <div id="instructions">
-            <p>System: <strong id="currentSystemDisplay">Hi-Lo</strong>. Values: <strong id="currentSystemValuesDisplay">+1 (2-6), 0 (7-9), -1 (10-A)</strong></p>
-            <p>Identify the card's value:</p>
-        </div>
-        <div class="action-buttons">
-          <button data-choice="plus" title="Cards: 2, 3, 4, 5, 6">+1</button>
-          <button data-choice="zero" title="Cards: 7, 8, 9">0</button>
-          <button data-choice="minus" title="Cards: 10, J, Q, K, A">-1</button>
-        </div>
-    </div>
+      <div id="message" class="message"></div>
+    </main>
 
-    <!-- NEW: Flashing Cards Drill Area (initially hidden by JS/CSS) -->
-    <div id="flashDrillArea" style="display:none;">
-        <h3>Flashing Cards Drill</h3>
-        <div class="drill-controls">
-            <div class="control-group">
-                <label for="flashDrillNumCards">Number of Cards:</label>
-                <input type="number" id="flashDrillNumCards" value="10" min="5" max="52">
-            </div>
-            <div class="control-group">
-                <label for="flashDrillSpeed">Speed per Card (s):</label>
-                <input type="number" id="flashDrillSpeed" value="1" min="0.2" max="5" step="0.1">
-            </div>
-            <button id="startFlashDrillButton">Start Drill</button>
-        </div>
-        <div id="flashDrillCardDisplayArea" class="card-area" style="min-height: 190px;"> <!-- Ensure space for card -->
-            <!-- Card will be shown here by JS -->
-        </div>
-        <div id="flashDrillInputArea" style="display:none; margin-top:15px;">
-            <label for="flashDrillUserCount">Enter Final Running Count:</label>
-            <input type="number" id="flashDrillUserCount">
-            <button id="submitFlashDrillCountButton">Submit Count</button>
-        </div>
-        <p id="flashDrillFeedback" style="margin-top:10px;"></p>
-    </div>
-
-
-    <div id="scoreboard">
-      <p>Score: <span id="score">0</span></p>
-      <p>High Score: <span id="highscore">0</span></p>
-      <p>Accuracy: <span id="accuracyDisplay">N/A</span></p>
-    </div>
-
-    <div id="bettingPracticeSection" style="display:none;">
-      <h3>Betting Practice</h3>
-      <p>Current True Count: <strong id="bettingTrueCountDisplay">0.0</strong></p>
-      <p>How would you bet?</p>
-      <div class="betting-buttons">
-        <button id="betMinButton" class="bet-button">Min Bet</button>
-        <button id="betMidButton" class="bet-button">Mid Bet</button>
-        <button id="betMaxButton" class="bet-button">Max Bet</button>
-      </div>
-      <p id="bettingFeedback"></p>
-      <button id="continueDealingButton" style="display:none;">Continue Dealing</button>
-    </div>
-
-    <div id="messageDisplay" class="message-display message-info">Select settings. Click 'New Shoe / Start Game' or a value to begin!</div>
-
-    <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio> <!-- Updated path to audio/ -->
-    <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio> <!-- Updated path to audio/ -->
-    <audio id="bgMusic" src="lofi-chill-background.mp3" loop preload="auto"></audio>
-
-    <!-- How to Play Modal -->
-    <div id="howToPlayModal" class="modal">
+    <!-- How To Play Modal -->
+    <div id="howToPlayModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-content">
-        <span id="closeHowToPlayModalButton" class="close-button">&times;</span>
-        <div id="howToPlayContent"> <!-- NEW: Wrapper for dynamic content -->
-            <h2>How to Play Card Counting</h2>
-            <!-- JS will populate this based on selected system -->
-            <p>Select a counting system (Hi-Lo or KO) from the controls to see specific instructions.</p>
-        </div>
+        <h2 id="modalTitle">How to Play Card Counting</h2>
+        <p>This trainer will show cards one at a time. Your goal is to keep track of the running count using the Hi-Lo system:</p>
+        <ul>
+          <li>Cards 2-6: +1</li>
+          <li>Cards 7-9: 0</li>
+          <li>10, J, Q, K, A: -1</li>
+        </ul>
+        <p>Click the matching count button as each card is shown.</p>
+        <h3>Betting Advice:</h3>
+        <ul>
+          <li><strong>True Count ≤ 1:</strong> Minimum bet (play safe)</li>
+          <li><strong>True Count 2-3:</strong> Medium bet</li>
+          <li><strong>True Count ≥ 4:</strong> Maximum bet (strong advantage)</li>
+        </ul>
+        <button id="closeModalBtn">Close</button>
       </div>
     </div>
 
-    <!-- NEW: Basic Strategy Modal -->
-    <div id="basicStrategyModal" class="modal">
-        <div class="modal-content">
-            <span id="closeBasicStrategyModalButton" class="close-button">&times;</span>
-            <h2>Basic Strategy Chart</h2>
-            <p>(Assumes H17, DAS, No Surrender - common rules. Specify if different)</p>
-            <div id="basicStrategyChartContainer">
-                <!-- JS will populate this with tables: Hard Totals, Soft Totals, Pairs -->
-                <p>Loading chart...</p>
-            </div>
-        </div>
-    </div>
-
-  </div> <!-- End of .container -->
+    <!-- Audio Elements -->
+    <audio id="correctSound" src="audio/correct.mp3" preload="auto"></audio>
+    <audio id="wrongSound" src="audio/wrong.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="audio/lofi-chill.mp3" loop preload="auto"></audio>
+  </div>
 
   <script src="script.js"></script>
 </body>
