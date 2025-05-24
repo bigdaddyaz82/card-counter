@@ -1,94 +1,74 @@
-/* ... (Keep your existing styles for body, .container, h1, h2, .game-stats, .betting-area, .actions, .message, .strategy-guide etc.) ... */
-
-.cards-area {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align cards at their top edge */
-    min-height: 100px; /* Ensure enough space for cards */
-    margin-bottom: 15px;
-    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
-    gap: 8px; /* Space between cards */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #1a1a1a;
+  color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* --- Revised Card Styling --- */
-.card-display {
-    background-color: #fff; /* CRITICAL: White background for the card */
-    color: #000;           /* Default text color for card content */
-    border: 1px solid #999; /* A clear border for the card */
-    border-radius: 7px;     /* Rounded corners */
-    width: 65px;            /* Card width */
-    height: 90px;           /* Card height */
-    padding: 5px;           /* Inner spacing */
-    box-sizing: border-box; /* Includes padding and border in width/height */
-    display: flex;
-    flex-direction: column;    /* Stack rank and bottom-info vertically */
-    justify-content: space-between; /* Pushes rank towards top, bottom-info towards bottom */
-    align-items: center;       /* Centers rank horizontally by default */
-    position: relative;        /* For fine-tuning children if needed */
-    font-family: Arial, Helvetica, sans-serif; /* Clear, readable font */
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.25); /* Subtle shadow for depth */
+.app {
+  width: 95%;
+  max-width: 600px;
+  background-color: #2a2a2a;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 }
 
-.card-rank {
-    font-size: 1.8em; /* Prominent rank size */
-    font-weight: bold;
-    text-align: center; /* Ensure rank is centered if it's a block or full width */
-    line-height: 1.2;   /* Adjust vertical alignment of rank text */
-    width: 100%;      /* Make rank span full width for text-align:center to work well */
-    margin-top: 5px;  /* Some space from the top of the card */
+h1, h2 {
+  text-align: center;
+  color: #ffd700;
 }
 
-/* NEW container for suit and count at the bottom, for better layout control */
-.card-bottom-info {
-    display: flex;         /* Arrange suit and count side-by-side */
-    align-items: center;   /* Vertically align suit and count */
-    justify-content: flex-end; /* Push them to the right side of this container */
-    width: 100%;           /* Make this container take full width of card padding area */
-    margin-bottom: 2px;  /* Small space from the bottom of the card */
-    padding-right: 2px;    /* Small space from the right edge of the card */
+label {
+  display: block;
+  margin-top: 15px;
 }
 
-.card-suit-symbol {
-    font-size: 1.1em;  /* Size of the suit symbol (♥, ♦, ♣, ♠) */
-    font-weight: normal; /* Suits are often not as bold as the rank */
-    line-height: 1;    /* Keep it compact */
-    margin-right: 3px; /* Space between the suit symbol and the count value */
+input, select, button {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #333;
+  color: #fff;
 }
 
-.card-count-value-text {
-    font-size: 0.9em;  /* Size of the Hi-Lo count value (+1, -1, 0) */
-    font-weight: bold;
-    line-height: 1;
-    /* Color can be set here explicitly, or inherit from .card-display */
-    /* Example: color: #0000FF; (blue) */
+button {
+  background-color: #4caf50;
+  margin-top: 20px;
+  cursor: pointer;
 }
 
-/* Suit Colors - applied to the suit symbol elements */
-.card-display.suit-H .card-suit-symbol,
-.card-display.suit-D .card-suit-symbol {
-    color: #D00000; /* Red for Hearts and Diamonds */
-}
-.card-display.suit-C .card-suit-symbol,
-.card-display.suit-S .card-suit-symbol {
-    color: #000000; /* Black for Clubs and Spades */
+button:hover {
+  background-color: #45a049;
 }
 
-
-/* Card Back Styling */
-.card-back {
-    background-color: #2a52be; /* A nice royal blue for card back */
-    border: 1px solid #1a3a8a;
-    display: flex; /* For centering pattern if any */
-    justify-content: center;
-    align-items: center;
-    /* Clear any accidental text if structure is reused */
-    color: transparent;
+#cardArea {
+  font-size: 3rem;
+  text-align: center;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #111;
+  border-radius: 10px;
+  border: 2px solid #444;
 }
-.card-back::after { /* Optional: simple pattern for card back */
-    content: '';
-    display: block;
-    width: 75%;
-    height: 75%;
-    border: 2px dashed rgba(255,255,255,0.25);
-    border-radius: 5px;
+
+.hidden {
+  display: none;
+}
+
+#feedback {
+  white-space: pre-line;
+  margin-top: 20px;
+  background-color: #222;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #555;
 }
