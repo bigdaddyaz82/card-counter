@@ -1,95 +1,20 @@
-// --- Card Rendering (Text-Based, with improved layout) ---
-function renderCard(card, targetEl, isVisible) {
-    const cardDiv = document.createElement('div');
-    cardDiv.classList.add('card-display');
-    cardDiv.id = `card-${card.id}`; // Used for revealing the hole card
+let deck = [], runningCount = 0, trueCount = 0, cardsDealt = 0; let decksUsed = 1, countSystem = 'hi-lo', quizInterval = 15, quizCount = 0;
 
-    if (isVisible) {
-        // Add suit-specific class to the main cardDiv for styling suit symbols
-        cardDiv.classList.add(`suit-${card.suit}`);
+const cardValues = { '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 0, '8': 0, '9': 0, '10': -1, 'J': -1, 'Q': -1, 'K': -1, 'A': -1 };
 
-        // Rank Display (typically at the top/center)
-        const rankSpan = document.createElement('span');
-        rankSpan.classList.add('card-rank');
-        rankSpan.textContent = CARD_RANKS_MAP[card.rank].display;
-        cardDiv.appendChild(rankSpan);
+function generateDeck(num) { const cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']; let fullDeck = []; for (let i = 0; i < num * 4; i++) { fullDeck.push(...cards); } return fullDeck.sort(() => Math.random() - 0.5); }
 
-        // Container for Suit Symbol and Hi-Lo Count Value (at the bottom)
-        const bottomInfoContainer = document.createElement('div');
-        bottomInfoContainer.classList.add('card-bottom-info');
+function startTraining() { decksUsed = parseInt(document.getElementById("deckCount").value); countSystem = document.getElementById("countSystem").value; deck = generateDeck(decksUsed); runningCount = 0; trueCount = 0; cardsDealt = 0; quizCount = 0; document.getElementById("setup").classList.add("hidden"); document.getElementById("trainer").classList.remove("hidden"); dealCard(); }
 
-        const suitSpan = document.createElement('span');
-        suitSpan.classList.add('card-suit-symbol');
-        suitSpan.innerHTML = getSuitSymbol(card.suit); // Use innerHTML for HTML entities like ♥
-        bottomInfoContainer.appendChild(suitSpan);
+function dealCard() { if (deck.length === 0) return alert("Deck is empty. Restart the game."); const card = deck.pop(); cardsDealt++; updateCount(card); document.getElementById("card").textContent = card; document.getElementById("runningCount").textContent = runningCount; document.getElementById("trueCount").textContent = calculateTrueCount(); document.getElementById("cardsDealt").textContent = cardsDealt;
 
-        const countValueEl = document.createElement('span');
-        countValueEl.classList.add('card-count-value-text');
-        let countText = card.countValue.toString();
-        if (card.countValue > 0) {
-            countText = "+" + countText; // Add '+' for positive counts
-        }
-        countValueEl.textContent = countText;
-        bottomInfoContainer.appendChild(countValueEl);
+if (cardsDealt % quizInterval === 0) { document.getElementById("trainer").classList.add("hidden"); document.getElementById("quiz").classList.remove("hidden"); } }
 
-        cardDiv.appendChild(bottomInfoContainer);
+function updateCount(card) { const val = cardValues[card] || 0; runningCount += val; }
 
-    } else {
-        // This is a face-down card (Dealer's hole card initially)
-        cardDiv.classList.add('card-back');
-    }
-    targetEl.appendChild(cardDiv);
-}
+function calculateTrueCount() { let decksRemaining = ((decksUsed * 52) - cardsDealt) / 52; decksRemaining = Math.max(1, decksRemaining); trueCount = Math.round(runningCount / decksRemaining); return trueCount; }
 
-// --- Revealing Dealer's Hole Card (Update to match new rendering structure) ---
-function revealDealerHoleCard(updateCountForGameLogic = true) {
-    if (dealerHoleCard) {
-        const holeCardDiv = document.getElementById(`card-${dealerHoleCard.id}`);
-        if (holeCardDiv) {
-            // Clear current content (e.g., card back styling/content)
-            holeCardDiv.innerHTML = '';
-            holeCardDiv.classList.remove('card-back');
+function submitQuiz() { const userTrue = parseInt(document.getElementById("userTrueCount").value); const userBet = document.getElementById("userBet").value; let feedback = "Correct True Count: " + trueCount + "\n"; feedback += "Your Answer: " + userTrue + "\n"; feedback += "Suggested Bet (example logic): " + (trueCount > 1 ? "Raise bet" : "Min bet") + "\n"; feedback += "Your Bet: " + userBet;
 
-            // Apply visible card styling
-            holeCardDiv.classList.add('card-display'); // Re-add if removed, though usually not
-            holeCardDiv.classList.add(`suit-${dealerHoleCard.suit}`);
+document.getElementById("quiz").classList.add("hidden"); document.getElementById("results").classList.remove("hidden"); document.getElementById("feedback").textContent = feedback; }
 
-            // Rank Display
-            const rankSpan = document.createElement('span');
-            rankSpan.classList.add('card-rank');
-            rankSpan.textContent = CARD_RANKS_MAP[dealerHoleCard.rank].display;
-            holeCardDiv.appendChild(rankSpan);
-
-            // Container for Suit Symbol and Hi-Lo Count Value
-            const bottomInfoContainer = document.createElement('div');
-            bottomInfoContainer.classList.add('card-bottom-info');
-
-            const suitSpan = document.createElement('span');
-            suitSpan.classList.add('card-suit-symbol');
-            suitSpan.innerHTML = getSuitSymbol(dealerHoleCard.suit);
-            bottomInfoContainer.appendChild(suitSpan);
-
-            const countValueEl = document.createElement('span');
-            countValueEl.classList.add('card-count-value-text');
-            let countText = dealerHoleCard.countValue.toString();
-            if (dealerHoleCard.countValue > 0) {
-                countText = "+" + countText;
-            }
-            countValueEl.textContent = countText;
-            bottomInfoContainer.appendChild(countValueEl);
-
-            holeCardDiv.appendChild(bottomInfoContainer);
-
-
-            // Update running count if this reveal is part of game logic
-            if (updateCountForGameLogic) {
-                runningCount += dealerHoleCard.countValue;
-                let hiloTextForMsg = dealerHoleCard.countValue > 0 ? `+${dealerHoleCard.countValue}` : dealerHoleCard.countValue.toString();
-                lastCardInfoEl.textContent = `Dealer Hole: ${dealerHoleCard.displayRank}${getSuitSymbol(dealerHoleCard.suit)} (Count: ${hiloTextForMsg})`;
-                updateCountsDisplay();
-            }
-        }
-        dealerHoleCard = null; // The card is no longer hidden
-    }
-    updateScoresDisplay(); // Always update scores after revealing
-}
